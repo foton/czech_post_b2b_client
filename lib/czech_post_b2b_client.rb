@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'stepped_service'
+
 require 'czech_post_b2b_client/version'
 require 'czech_post_b2b_client/configuration'
 require 'czech_post_b2b_client/request_builders'

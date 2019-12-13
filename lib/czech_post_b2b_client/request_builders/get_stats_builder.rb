@@ -8,15 +8,23 @@ module CzechPostB2bClient
         @to_date = to_date.to_time
       end
 
-      def to_xml
-        Ox.dump(document)
+      def steps
+        %i[build_doc render_xml]
       end
 
       private
 
       attr_reader :from_date, :to_date
 
-      def document
+      def build_doc
+        @document ||= build_document
+      end
+
+      def render_xml
+        @result = Ox.dump(@document)
+      end
+
+      def build_document
         doc = Ox::Document.new
         doc << ox_instruct(attributes: { version: '1.0', encoding: 'UTF-8', standalone: 'yes' })
 
@@ -36,6 +44,8 @@ module CzechPostB2bClient
         end
 
         doc << bb
+
+        doc
       end
     end
   end

@@ -43,9 +43,10 @@ module CzechPostB2bClient
 
       def test_it_build_correct_xml
         Time.stub(:now, @build_time) do
-          xml = CzechPostB2bClient::RequestBuilders::GetStatsBuilder.new(from_date: @from_date,
-                                                                         to_date: @to_date).to_xml
-          assert_equal expected_xml, xml
+          builder = CzechPostB2bClient::RequestBuilders::GetStatsBuilder.call(from_date: @from_date,
+                                                                         to_date: @to_date)
+          assert builder.success?
+          assert_equal expected_xml, builder.result
         end
       end
     end

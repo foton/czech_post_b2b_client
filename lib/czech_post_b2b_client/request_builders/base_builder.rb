@@ -3,7 +3,7 @@ require 'ox'
 
 module CzechPostB2bClient
   module RequestBuilders
-    class BaseBuilder
+    class BaseBuilder < SteppedService::Base
       TIME_FORMAT = '%FT%T.%L%:z' # '2014-03-12T13:33:34.573+01:00'
 
       def to_xml
