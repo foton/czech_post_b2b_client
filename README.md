@@ -1,4 +1,23 @@
 # CzechPostB2bClient
+Accessing B2B API of Czech Post for bulk processing of packages ("B2B - WS PodáníOnline").
+
+There are these supported operations on API:
+- *sendParcels* - stores data of parcels for async processing [HTTP POST]
+- *getResultParcels* - return results of such processing [HTTP GET]
+- *getStats* - returns statistics of parcels sent in time period [HTTP GET]
+- *getParcelState* - returns state of listed parcels [HTTP GET]
+- *getParcelsPrinting* - returns PDF with address labels/stickers for listed parcels [HTTP GET]
+
+## Common usage/user story ##
+1) Collect parcels data in Your app
+2) Call *sendParcel*, which will store required parcels data and transmit them to Your local post office.
+3) Print address stickers (*getParcelsPrinting*) and put them on parcels.
+4) Deliver parcels to Your local post office.
+5) Periodically check status of delivering by calling *getParcelState*.
+6) Improve your guesstimation of delivery time by working with historical data collected through *getStats*.
+
+
+
 
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/czech_post_b2b_client`. To experiment with that code, run `bin/console` for an interactive prompt.
 

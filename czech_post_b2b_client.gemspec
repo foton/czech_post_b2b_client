@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Petr Mlčoch']
   spec.email         = ['foton@centrum.cz']
 
-  spec.summary       = %q{Accessing B2B API of Czech Post for bulk processing of packages.}
+  spec.summary       = %q{Accessing B2B API of Czech Post for bulk processing of packages ("B2B - WS PodáníOnline").}
   spec.homepage      = 'https://github.com/foton/czech_post_b2b_client'
   spec.license       = 'MIT'
 
