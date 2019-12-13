@@ -1,0 +1,40 @@
+require:
+#  - rubocop-minitest
+
+AllCops:
+  Include:
+    - "**/Gemfile"
+    - "**/Rakefile"
+    - "**/*.rb"
+    - "**/*.ru"
+    - "**/Rakefile"
+    - "**/*.rake"
+    - "**/*.jb"
+  Exclude:
+    - "bin/*"
+Rails:
+  Enabled: false
+Documentation:
+  Enabled: false
+Metrics/LineLength:
+  Max: 100
+Metrics/AbcSize:
+  Max: 20
+Metrics/MethodLength:
+  Max: 20
+Metrics/BlockLength:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Max: 7
+Metrics/ClassLength:
+  Max: 210
+Metrics/ModuleLength:
+  Max: 200
+Style/TrivialAccessors:
+  Enabled: true
+Style/MixinUsage:
+  Enabled: true
+Style/YodaCondition:
+  EnforcedStyle: forbid_for_equality_operators_only
+Naming/PredicateName:
+  Enabled: true

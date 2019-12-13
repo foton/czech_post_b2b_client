@@ -41,7 +41,14 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Configuration ###
+You have to add Your `contract_id` and path to certificate to configuration
+```
+CzechPostB2bClient.configure do |config|
+  config.contract_id = '123456'
+  config.path_from_root_to_certificate = './post_cert.crt'
+end
+```
 
 ## Development
 

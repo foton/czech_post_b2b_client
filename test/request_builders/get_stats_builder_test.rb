@@ -1,12 +1,25 @@
-require "test_helper"
+# frozen_string_literal: true
+
+require 'test_helper'
 require 'date'
+require 'time'
 
 module CzechPostB2bClient
   module Test
     class GetStatsBuilderTest < Minitest::Test
       def setup
-        @from_date = Date.today - 2
-        @to_date = Date.today
+        @expected_from_date_str = '2019-06-18T00:00:00.000+02:00'
+        @expected_to_date_str = '2019-12-12T00:00:00.000+01:00'
+        @expected_build_time_str = '2019-12-12T12:34:56.789+01:00'
+        @contract_id = '123456I'
+
+        @from_date = Date.parse(@expected_from_date_str)
+        @to_date = Date.parse(@expected_to_date_str)
+        @build_time = Time.parse(@expected_build_time_str)
+
+        CzechPostB2bClient.configure do |config|
+          config.contract_id = @contract_id
+        end
       end
 
       def expected_xml
@@ -15,13 +28,13 @@ module CzechPostB2bClient
           <b2bRequest xmlns="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:ns2="https://b2b.postaonline.cz/schema/POLServices-v1">
             <header>
               <idExtTransaction>1</idExtTransaction>
-              <timeStamp>2014-03-12T13:33:34.573+01:00</timeStamp>
-              <idContract>25195667001</idContract>
+              <timeStamp>#{@expected_build_time_str}</timeStamp>
+              <idContract>#{@contract_id}</idContract>
             </header>
             <serviceData>
               <ns2:getStats>
-                <ns2:dateBegin>2016-02-18T00:00:00.000+02:00</ns2:dateBegin>
-                <ns2:dateEnd>2016-02-18T23:59:00.000+02:00</ns2:dateEnd>
+                <ns2:dateBegin>#{@expected_from_date_str}</ns2:dateBegin>
+                <ns2:dateEnd>#{@expected_to_date_str}</ns2:dateEnd>
               </ns2:getStats>
             </serviceData>
           </b2bRequest>
@@ -29,8 +42,11 @@ module CzechPostB2bClient
       end
 
       def test_it_build_correct_xml
-        xml = CzechPostB2bClient::RequestBuilders::GetStatsBuilder.new(from_date: @from_date , to_date: @to_date).to_xml
-        assert_equal expected_xml, xml
+        Time.stub(:now, @build_time) do
+          xml = CzechPostB2bClient::RequestBuilders::GetStatsBuilder.new(from_date: @from_date,
+                                                                         to_date: @to_date).to_xml
+          assert_equal expected_xml, xml
+        end
       end
     end
   end
