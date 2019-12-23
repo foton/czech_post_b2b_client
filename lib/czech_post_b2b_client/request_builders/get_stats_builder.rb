@@ -3,9 +3,10 @@
 module CzechPostB2bClient
   module RequestBuilders
     class GetStatsBuilder < BaseBuilder
-      def initialize(from_date:, to_date:)
+      def initialize(from_date:, to_date:, request_id: 1)
         @from_date = from_date.to_time
         @to_date = to_date.to_time
+        @request_id = request_id
       end
 
       def steps
@@ -14,9 +15,13 @@ module CzechPostB2bClient
 
       private
 
-      attr_reader :from_date, :to_date
+      attr_reader :from_date, :to_date, :request_id
 
       def build_doc
+        document
+      end
+
+      def document
         @document ||= build_document
       end
 
@@ -30,7 +35,7 @@ module CzechPostB2bClient
 
         bb = ox_element('b2bRequest', attributes: configuration.namespaces) do |b2b_req|
           b2b_req << ox_element('header') do |header|
-            header << ox_element('idExtTransaction', value: 1)
+            header << ox_element('idExtTransaction', value: request_id)
             header << ox_element('timeStamp', value: Time.now.strftime(TIME_FORMAT))
             header << ox_element('idContract', value: configuration.contract_id)
           end

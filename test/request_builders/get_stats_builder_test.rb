@@ -12,6 +12,7 @@ module CzechPostB2bClient
         @expected_to_date_str = '2019-12-12T00:00:00.000+01:00'
         @expected_build_time_str = '2019-12-12T12:34:56.789+01:00'
         @contract_id = '123456I'
+        @request_id = 42
 
         @from_date = Date.parse(@expected_from_date_str)
         @to_date = Date.parse(@expected_to_date_str)
@@ -27,7 +28,7 @@ module CzechPostB2bClient
           <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
           <b2bRequest xmlns="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:ns2="https://b2b.postaonline.cz/schema/POLServices-v1">
             <header>
-              <idExtTransaction>1</idExtTransaction>
+              <idExtTransaction>#{@request_id}</idExtTransaction>
               <timeStamp>#{@expected_build_time_str}</timeStamp>
               <idContract>#{@contract_id}</idContract>
             </header>
@@ -44,11 +45,22 @@ module CzechPostB2bClient
       def test_it_build_correct_xml
         Time.stub(:now, @build_time) do
           builder = CzechPostB2bClient::RequestBuilders::GetStatsBuilder.call(from_date: @from_date,
-                                                                         to_date: @to_date)
+                                                                              to_date: @to_date,
+                                                                              request_id: @request_id)
           assert builder.success?
           assert_equal expected_xml, builder.result
         end
       end
+
+      def test_it_assings_request_id_if_it_is_not_present
+        Time.stub(:now, @build_time) do
+          builder = CzechPostB2bClient::RequestBuilders::GetStatsBuilder.call(from_date: @from_date,
+                                                                              to_date: @to_date)
+          assert builder.success?
+          assert_equal expected_xml.gsub(">#{@request_id}</", '>1</'), builder.result
+        end
+      end
+
     end
   end
 end
