@@ -60,7 +60,6 @@ module CzechPostB2bClient
           assert_equal expected_xml.gsub(">#{@request_id}</", '>1</'), builder.result
         end
       end
-
     end
   end
 end

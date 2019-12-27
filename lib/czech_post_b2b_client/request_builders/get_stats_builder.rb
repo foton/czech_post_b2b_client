@@ -3,35 +3,19 @@
 module CzechPostB2bClient
   module RequestBuilders
     class GetStatsBuilder < BaseBuilder
+      attr_reader :from_date, :to_date
+
       def initialize(from_date:, to_date:, request_id: 1)
         @from_date = from_date.to_time
         @to_date = to_date.to_time
         @request_id = request_id
       end
 
-      def steps
-        %i[build_doc render_xml]
-      end
-
       private
 
-      attr_reader :from_date, :to_date, :request_id
-
-      def build_doc
-        document
-      end
-
-      def document
-        @document ||= build_document
-      end
-
-      def render_xml
-        @result = Ox.dump(@document)
-      end
-
-      def build_document
-        doc = Ox::Document.new
-        doc << ox_instruct(attributes: { version: '1.0', encoding: 'UTF-8', standalone: 'yes' })
+      def build_xml_struct
+        @xml_struct = Ox::Document.new
+        @xml_struct << ox_instruct(attributes: { version: '1.0', encoding: 'UTF-8', standalone: 'yes' })
 
         bb = ox_element('b2bRequest', attributes: configuration.namespaces) do |b2b_req|
           b2b_req << ox_element('header') do |header|
@@ -48,9 +32,9 @@ module CzechPostB2bClient
           end
         end
 
-        doc << bb
+        @xml_struct << bb
 
-        doc
+        @xml_struct
       end
     end
   end

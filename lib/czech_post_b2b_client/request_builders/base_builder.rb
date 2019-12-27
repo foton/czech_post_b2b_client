@@ -4,13 +4,29 @@ require 'ox'
 module CzechPostB2bClient
   module RequestBuilders
     class BaseBuilder < SteppedService::Base
+      attr_reader :request_id
+
       TIME_FORMAT = '%FT%T.%L%:z' # '2014-03-12T13:33:34.573+01:00'
 
-      def to_xml
-        raise 'implement me'
+      def initialize( request_id: 1)
+        @request_id = request_id
+      end
+
+      def steps
+        %i[build_xml_struct render_xml]
       end
 
       private
+
+      attr_reader :xml_struct
+
+      def build_xml_struct
+        raise 'implement me'
+      end
+
+      def render_xml
+        @result = Ox.dump(xml_struct)
+      end
 
       def configuration
         CzechPostB2bClient.configuration
