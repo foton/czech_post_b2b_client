@@ -18,11 +18,11 @@ module CzechPostB2bClient
         @options = {
           customer_id: 'EE89',
           contract_number: '2511327004',
-          template_id: 7, # 7 => adresní štítek (alonž) - samostatný
-          margin_in_mm: { top: 5, left: 3},
+          template_id: 7, # 7 => adresni stitek (alonz) - samostatny
+          margin_in_mm: { top: 5, left: 3 },
           position_order: 1
         }
-        @parcel_codes=%w[RR123456789E RR123456789F RR123456789G]
+        @parcel_codes = %w[RR123456789E RR123456789F RR123456789G]
 
         CzechPostB2bClient.configure do |config|
           config.contract_id = @contract_id
@@ -31,31 +31,31 @@ module CzechPostB2bClient
 
       def expected_xml
         <<~XML
-        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-        <b2bRequest xmlns="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:ns2="https://b2b.postaonline.cz/schema/POLServices-v1">
-          <header>
-            <idExtTransaction>#{@request_id}</idExtTransaction>
-            <timeStamp>#{@expected_build_time_str}</timeStamp>
-            <idContract>#{@contract_id}</idContract>
-          </header>
-          <serviceData>
-            <ns2:getParcelsPrinting>
-              <ns2:doPrintingHeader>
-                <ns2:customerID>#{options[:customer_id]}</ns2:customerID>
-                <ns2:contractNumber>#{options[:contract_number]}</ns2:contractNumber>
-                <ns2:idForm>#{options[:template_id]}</ns2:idForm>
-                <ns2:shiftHorizontal>#{options[:margin_in_mm][:left]}</ns2:shiftHorizontal>
-                <ns2:shiftVertical>#{options[:margin_in_mm][:top]}</ns2:shiftVertical>
-                <ns2:position>#{options[:position_order]}</ns2:position>
-              </ns2:doPrintingHeader>
-              <ns2:doPrintingData>
-                <ns2:parcelCode>#{parcel_codes[0]}</ns2:parcelCode>
-                <ns2:parcelCode>#{parcel_codes[1]}</ns2:parcelCode>
-                <ns2:parcelCode>#{parcel_codes[2]}</ns2:parcelCode>
-              </ns2:doPrintingData>
-            </ns2:getParcelsPrinting>
-          </serviceData>
-        </b2bRequest>
+          <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+          <b2bRequest xmlns="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:ns2="https://b2b.postaonline.cz/schema/POLServices-v1">
+            <header>
+              <idExtTransaction>#{@request_id}</idExtTransaction>
+              <timeStamp>#{@expected_build_time_str}</timeStamp>
+              <idContract>#{@contract_id}</idContract>
+            </header>
+            <serviceData>
+              <ns2:getParcelsPrinting>
+                <ns2:doPrintingHeader>
+                  <ns2:customerID>#{options[:customer_id]}</ns2:customerID>
+                  <ns2:contractNumber>#{options[:contract_number]}</ns2:contractNumber>
+                  <ns2:idForm>#{options[:template_id]}</ns2:idForm>
+                  <ns2:shiftHorizontal>#{options[:margin_in_mm][:left]}</ns2:shiftHorizontal>
+                  <ns2:shiftVertical>#{options[:margin_in_mm][:top]}</ns2:shiftVertical>
+                  <ns2:position>#{options[:position_order]}</ns2:position>
+                </ns2:doPrintingHeader>
+                <ns2:doPrintingData>
+                  <ns2:parcelCode>#{parcel_codes[0]}</ns2:parcelCode>
+                  <ns2:parcelCode>#{parcel_codes[1]}</ns2:parcelCode>
+                  <ns2:parcelCode>#{parcel_codes[2]}</ns2:parcelCode>
+                </ns2:doPrintingData>
+              </ns2:getParcelsPrinting>
+            </serviceData>
+          </b2bRequest>
         XML
       end
 
@@ -79,44 +79,58 @@ module CzechPostB2bClient
       end
 
       def test_allows_max_500_parcel_codes
-        skip
+        parcel_codes500 = 500.times.collect { |i| "RR123#{i + 100}T" }
+
+        builder = CzechPostB2bClient::RequestBuilders::GetParcelsPrintingBuilder.call(parcel_codes: parcel_codes500,
+                                                                                      options: options)
+
+        assert builder.success?
+
+        parcel_codes501 = parcel_codes500 + ['RR666111E']
+        builder = CzechPostB2bClient::RequestBuilders::GetParcelsPrintingBuilder.call(parcel_codes: parcel_codes501,
+                                                                                      options: options)
+
+        assert builder.failed?
+        assert_includes builder.errors[:parcel_codes], 'Maximum of 500 parcel codes are allowed!'
+      end
+
+      def test_requires_at_least_1_parcel_code
+        builder = CzechPostB2bClient::RequestBuilders::GetParcelsPrintingBuilder.call(parcel_codes: [],
+                                                                                      options: options)
+
+        assert builder.failed?
+        assert_includes builder.errors[:parcel_codes], 'Minimum of 1 parcel code is required!'
+
+        builder = CzechPostB2bClient::RequestBuilders::GetParcelsPrintingBuilder.call(parcel_codes: ['RR666111E'],
+                                                                                      options: options)
+
+        assert builder.success?
       end
 
       def test_allows_max_20_template_ids
-        skip
+        skip 'There can be up to 20 `idForm` nodes, but I do not know how it works yet'
       end
 
       def test_validate_id_form
-        skip
-        # 7 - adresní štítek (alonž) - samostatný
-        # 8 - adresní štítek (alonž) + dobírková poukázka A
-        # 10 - poštovní dobírková poukázka A - samostatná
-        # 11 - poštovní dobírková poukázka A - 3x (A4)
-        # 12 - Poštovní dobírková poukázka C
-        # 13 - Dobírková složenka ČSOB
-        # 20 - adresní štítek bianco - 4x (A4)
-        # 21 - adresní štítek bianco - samostatný
-        # 22 - obálka 1 - C6
-        # 23 - obálka 2 - C5
-        # 24 - obálka 3 - B4
-        # 25 - obálka 4 - DL bez okénka
-        # 26 - štítky pro RR - 3x8 (A4)
-        # 38 - Integrovaný doklad
-        # 39 - adresní štítek bianco - samostatný (na šířku)
-        # 40 - Adresní údaje 3x8 (A4)
-        # 41 - Dodejka
-        # 56 - CN22
-        # 57 - CN23
-        # 58 - AŠ - samostatný Standardní balík do zahraničí
-        # 59 - AŠ - 4xA4 Standardní balík do zahraničí
-        # 60 - AŠ - samostatný Cenný balík do zahraničí
-        # 61 - 4xA4 Cenný balík do zahraničí
-        # 62 - AŠ - samostatný EMS zahraničí
-        # 63 - AŠ - 2xA4 EMS do zahraničí
-        # 72 - Harmonizovaný štítek pro MZ produkty – samostatný
-        # 73 - Harmonizovaný štítek pro MZ produkty –  4x (A4)
+        allowed_template_ids.each do |template_id|
+          builder = CzechPostB2bClient::RequestBuilders::GetParcelsPrintingBuilder.call(parcel_codes: parcel_codes,
+                                                                                        options: options.merge(template_id: template_id))
 
-        # Formuláře ID 72 a 73 je možno použít pouze pro zásilky s prefixem CE do zemí AT, DE, FR, GR, HR, CH, IS, LU, LV, NO, PL, SK
+          assert builder.success?, "Build should be succesfull for template_id: '#{template_id}'"
+        end
+
+        [1, 2, 99].each do |template_id|
+          builder = CzechPostB2bClient::RequestBuilders::GetParcelsPrintingBuilder.call(parcel_codes: parcel_codes,
+                                                                                        options: options.merge(template_id: template_id))
+
+          assert builder.failed?, "Build should NOT be succesfull for template_id: '#{template_id}'"
+          assert_includes builder.errors[:template_id], "Value '#{template_id}' is not allowed!"
+        end
+      end
+
+      def allowed_template_ids
+        # see CzechPostB2bClient::PrintingTemplate
+        [7, 8, 10, 11, 12, 13, 20, 21, 22, 23, 24, 25, 26, 38, 39, 40, 41, 56, 57, 58, 59, 60, 61, 62, 63, 72, 73]
       end
     end
   end

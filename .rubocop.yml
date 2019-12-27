@@ -17,7 +17,7 @@ Rails:
 Documentation:
   Enabled: false
 Metrics/LineLength:
-  Max: 100
+  Max: 120
 Metrics/AbcSize:
   Max: 20
 Metrics/MethodLength:
