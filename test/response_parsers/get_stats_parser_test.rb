@@ -5,25 +5,10 @@ require 'test_helper'
 module CzechPostB2bClient
   module Test
     class GetStatsParserTest < Minitest::Test
-      def setup
-        @expected_from_date_str = '2019-06-18T00:00:00.000+02:00'
-        @expected_to_date_str = '2019-12-12T00:00:00.000+01:00'
-        @expected_build_time_str = '2019-12-12T12:34:56.789+01:00'
-        @contract_id = '123456I'
-
-        @from_date = Date.parse(@expected_from_date_str)
-        @to_date = Date.parse(@expected_to_date_str)
-        @build_time = Time.parse(@expected_build_time_str)
-
-        CzechPostB2bClient.configure do |config|
-          config.contract_id = @contract_id
-        end
-      end
-
       def response_xml
         <<~XML
-            <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-            <v1:b2bSyncResponse xmlns:v1="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:v1_1="https://b2b.postaonline.cz/schema/POLServices-v1">
+          <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+          <v1:b2bSyncResponse xmlns:v1="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:v1_1="https://b2b.postaonline.cz/schema/POLServices-v1">
             <v1:header>
               <v1:timeStamp>2016-02-25T08:30:03.678Z</v1:timeStamp>
               <v1:b2bRequestHeader>
