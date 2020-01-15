@@ -13,7 +13,7 @@
 	<documentation xml:lang="cs">06.01.2016 - verze 1.0 - Uvodni</documentation>
 	<documentation xml:lang="cs">05.02.2016 - verze 1.1 - Omezeni poctu opakovani u doParcelData, getParcelState</documentation>
 	<documentation xml:lang="cs">07.03.2016 - verze 1.2 - Zmena typu objektu service, category, note</documentation>
-	<documentation xml:lang="cs">01.06.2016 - verze 1.3 - Doplneny elementy getParcelsPrinting, getParcelsPrintingResponse; 
+	<documentation xml:lang="cs">01.06.2016 - verze 1.3 - Doplneny elementy getParcelsPrinting, getParcelsPrintingResponse;
 							    - zmena simpleType phoneNumberType;
 							    - uprava doParcelHeader - zmena povinnosti senderAddress, novy nepovinny parametry locationNumber</documentation>
 	<documentation xml:lang="cs">26.05.2017 - verze 1.4 - přidání elementu do doParcelParams</documentation>
@@ -30,7 +30,7 @@
 	    </sequence>
 	</complexType>
     </element>
-    
+
     <element name="getResultParcelsResponse">
 	<complexType>
 	    <sequence>
@@ -161,7 +161,7 @@
 	</complexType>
     </element>
 
-    <!-- COMPLEX TYPES -->  
+    <!-- COMPLEX TYPES -->
 
     <complexType name="doParcelHeader">
 	<sequence>
@@ -227,7 +227,7 @@
         </element>
 	</sequence>
     </complexType>
-    
+
     <complexType name="doParcelHeaderAddress">
 	<sequence>
 	    <element name="companyName" type="tns:string50">
@@ -273,8 +273,8 @@
 	    <element name="isoCountry" type="tns:string2" minOccurs="0" default="CZ"/>
 	    <element name="subIsoCountry" type="tns:string6" minOccurs="0"/>
 	</sequence>
-    </complexType>    
-    
+    </complexType>
+
     <complexType name="doParcelBank">
 	<sequence>
 	    <element name="prefixAccount" type="tns:positiveInteger6" minOccurs="0">
@@ -293,8 +293,8 @@
 		</annotation>
 	    </element>
 	</sequence>
-    </complexType> 
-    
+    </complexType>
+
     <complexType name="doParcelContacts">
 	<sequence>
 	    <element name="mobileNumber" type="tns:phoneNumberType" minOccurs="0">
@@ -313,7 +313,7 @@
 		</annotation>
 	    </element>
 	</sequence>
-    </complexType>    
+    </complexType>
 
     <complexType name="doParcelData">
 	<sequence>
@@ -471,7 +471,7 @@
             <annotation>
                 <documentation xml:lang="cs">Počet dní pro vrácení zásilky</documentation>
             </annotation>
-        </element>	
+        </element>
 	</sequence>
     </complexType>
 
@@ -622,7 +622,7 @@
 		</annotation>
 	    </element>
 	</sequence>
-    </complexType>     
+    </complexType>
 
     <complexType name="doParcelHeaderResult">
 	<sequence>
@@ -638,7 +638,7 @@
 	    <element name="doParcelStateResponse" type="tns:doParcelStateResponse" maxOccurs="unbounded"/>
 	</sequence>
     </complexType>
-    
+
     <complexType name="doParcelStateResponse">
 	<sequence>
 	    <element name="responseCode" type="tns:positiveInteger3min1" minOccurs="1"/>
@@ -648,7 +648,7 @@
 
     <complexType name="doParcelState">
 	<sequence>
-	    <element name="idParcel" type="string" minOccurs="0">
+	    <element name="idParcel" type="string" minOccurs="0"> <!-- WHAT!! There does not have to be ID?-->
 		<annotation>
 		    <documentation xml:lang="cs">ID zásilky</documentation>
 		</annotation>
@@ -792,7 +792,7 @@
 			63 - AŠ - 2xA4 EMS do zahraničí
 			72 - Harmonizovaný štítek pro MZ produkty – samostatný
 			73 - Harmonizovaný štítek pro MZ produkty –  4x (A4)
-												
+
 			Formuláře ID 72 a 73 je možno použít pouze pro zásilky s prefixem CE do zemí AT, DE, FR, GR, HR, CH, IS, LU, LV, NO, PL, SK
 
 		    </documentation>
@@ -845,7 +845,7 @@
 			Stav tisku:     responseCode    responseText                Popis
                         ==============================================================================================
                         1            OK                                              Data parametrů zpracování v pořádku
-                        2            INTERNALL_ERROR                                 Jiná chyba systému                       
+                        2            INTERNALL_ERROR                                 Jiná chyba systému
                         100            INVALID_PARCEL_CODE                             Neplatné ID zásilky
                         378            INVALID_PREFIX_COMBINATION                      Zásilka je chybně přiřazena k id tiskové šablony
                         379            PARCEL_DOES_NOT_MEET_THE_REQUIREMENTS_FORM      Parametry zásilky nesplňují podmínky požadovaného formuláře
@@ -1032,34 +1032,34 @@
 	    <totalDigits value="10"/>
 	</restriction>
     </simpleType>
-    
+
     <simpleType name="positiveInteger6">
 	<restriction base="positiveInteger">
 	    <totalDigits value="6"/>
 	</restriction>
     </simpleType>
-    
+
     <simpleType name="positiveInteger4">
 	<restriction base="positiveInteger">
 	    <totalDigits value="4"/>
 	</restriction>
-    </simpleType>    
+    </simpleType>
     <simpleType name="positiveInteger3">
         <restriction base="positiveInteger">
             <totalDigits value="3"/>
         </restriction>
-    </simpleType>        
+    </simpleType>
 
     <simpleType name="phoneNumberType">
 	<restriction base="string">
             <maxLength value="13"/>
         </restriction>
     </simpleType>
-    
+
     <simpleType name="mailAddress">
 	<restriction base="string">
 	    <pattern value="[\-._a-zA-Z0-9]{1,50}@[\-._a-zA-Z0-9]{1,50}"/>
 	</restriction>
-    </simpleType>    
+    </simpleType>
 
 </schema>
