@@ -7,7 +7,7 @@ require 'time'
 module CzechPostB2bClient
   module Test
     class GetParcelStateBuilderTest < Minitest::Test
-      attr_reader :parcel_codes, :options
+      attr_reader :parcel_codes
 
       def setup
         @expected_build_time_str = '2019-12-12T12:34:56.789+01:00'
@@ -15,7 +15,6 @@ module CzechPostB2bClient
         @request_id = 42
         @build_time = Time.parse(@expected_build_time_str)
 
-        @options = {}
         @parcel_codes = %w[RR123456789E RR123456789F RR123456789G]
 
         CzechPostB2bClient.configure do |config|
@@ -47,7 +46,6 @@ module CzechPostB2bClient
       def test_it_build_correct_xml
         Time.stub(:now, @build_time) do
           builder = CzechPostB2bClient::RequestBuilders::GetParcelStateBuilder.call(parcel_codes: parcel_codes,
-                                                                                    options: options,
                                                                                     request_id: @request_id)
           assert builder.success?
           assert_equal expected_xml, builder.result
@@ -56,8 +54,8 @@ module CzechPostB2bClient
 
       def test_it_assings_request_id_if_it_is_not_present
         Time.stub(:now, @build_time) do
-          builder = CzechPostB2bClient::RequestBuilders::GetParcelStateBuilder.call(parcel_codes: parcel_codes,
-                                                                                    options: options)
+          builder = CzechPostB2bClient::RequestBuilders::GetParcelStateBuilder.call(parcel_codes: parcel_codes)
+
           assert builder.success?
           assert_equal expected_xml.gsub(">#{@request_id}</", '>1</'), builder.result
         end
@@ -66,28 +64,24 @@ module CzechPostB2bClient
       def test_allows_max_10_parcel_codes
         parcel_codes_in_limit = 10.times.collect { |i| "RR123#{i + 100}T" }
 
-        builder = CzechPostB2bClient::RequestBuilders::GetParcelStateBuilder.call(parcel_codes: parcel_codes_in_limit,
-                                                                                  options: options)
+        builder = CzechPostB2bClient::RequestBuilders::GetParcelStateBuilder.call(parcel_codes: parcel_codes_in_limit)
 
         assert builder.success?
 
         parcel_codes_over_limit = parcel_codes_in_limit + ['RR666111E']
-        builder = CzechPostB2bClient::RequestBuilders::GetParcelStateBuilder.call(parcel_codes: parcel_codes_over_limit,
-                                                                                  options: options)
+        builder = CzechPostB2bClient::RequestBuilders::GetParcelStateBuilder.call(parcel_codes: parcel_codes_over_limit)
 
         assert builder.failed?
         assert_includes builder.errors[:parcel_codes], 'Maximum of 10 parcel codes are allowed!'
       end
 
       def test_requires_at_least_1_parcel_code
-        builder = CzechPostB2bClient::RequestBuilders::GetParcelStateBuilder.call(parcel_codes: [],
-                                                                                  options: options)
+        builder = CzechPostB2bClient::RequestBuilders::GetParcelStateBuilder.call(parcel_codes: [])
 
         assert builder.failed?
         assert_includes builder.errors[:parcel_codes], 'Minimum of 1 parcel code is required!'
 
-        builder = CzechPostB2bClient::RequestBuilders::GetParcelStateBuilder.call(parcel_codes: ['RR666111E'],
-                                                                                  options: options)
+        builder = CzechPostB2bClient::RequestBuilders::GetParcelStateBuilder.call(parcel_codes: ['RR666111E'])
 
         assert builder.success?
       end

@@ -3,11 +3,10 @@
 module CzechPostB2bClient
   module RequestBuilders
     class GetParcelStateBuilder < BaseBuilder
-      attr_reader :parcel_codes, :options
+      attr_reader :parcel_codes
 
-      def initialize(parcel_codes:, options:, request_id: 1)
+      def initialize(parcel_codes:, request_id: 1)
         @parcel_codes = parcel_codes
-        @options = options
         @request_id = request_id
       end
 
@@ -19,10 +18,10 @@ module CzechPostB2bClient
           fail!
         end
 
-        if parcel_codes.size > 10
-          errors.add(:parcel_codes, 'Maximum of 10 parcel codes are allowed!')
-          fail!
-        end
+        return if parcel_codes.size <= 10
+
+        errors.add(:parcel_codes, 'Maximum of 10 parcel codes are allowed!')
+        fail!
       end
 
       def service_data_struct
@@ -31,7 +30,7 @@ module CzechPostB2bClient
         end
       end
 
-      def get_parcel_state
+      def get_parcel_state # rubocop:disable Naming/AccessorMethodName
         ox_element('ns2:getParcelState') do |parcel_state|
           parcel_codes.each do |parcel_code|
             parcel_state << ox_element('ns2:idParcel', value: parcel_code.to_s)

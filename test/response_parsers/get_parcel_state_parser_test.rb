@@ -164,6 +164,11 @@ module CzechPostB2bClient
         assert_equal expected_struct, parser.result
       end
 
+      def test_it_handle_parcels_out_of_evidence
+        # it seems, that data are stored for 1 year at Czech Post
+        skip
+      end
+
       def expected_parcels_hash # rubocop:disable Metrics/MethodLength
         {
           'BA0109964075X' => {
