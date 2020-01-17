@@ -13,10 +13,10 @@ module CzechPostB2bClient
       private
 
       def validate_data
-        if transaction_id.nil? || transaction_id == ''
-          errors.add(:transaction_id, 'Must be present!')
-          fail!
-        end
+        return unless transaction_id.nil? || transaction_id == ''
+
+        errors.add(:transaction_id, 'Must be present!')
+        fail!
       end
 
       def service_data_struct

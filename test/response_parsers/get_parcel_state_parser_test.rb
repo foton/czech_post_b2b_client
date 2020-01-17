@@ -174,8 +174,7 @@ module CzechPostB2bClient
           'BA0109964075X' => {
             parcel_type: 'BA',
             weight_in_kg: 0.690,  # hopefully it is in KG
-            cash_on_delivery_amount: 111.5,
-            cash_on_delivery_currency: 'CZK',
+            cash_on_delivery:{ amount: 111.5, currency_iso_code: 'CZK'}
             pieces: 2,
             deposited_until: Date.new(2015, 9, 2),
             deposited_for_days: 15,
@@ -186,8 +185,8 @@ module CzechPostB2bClient
           'BA0146149139X' => {
             parcel_type: 'BA',
             weight_in_kg: 0.686,  # hopefully it is in KG
-            cash_on_delivery_amount: 0.0,
-            cash_on_delivery_currency: '',
+            cod_amount: 0.0,
+            cash_on_delivery:{ amount: 0.0, currency_iso_code: ''},
             pieces: 1,
             deposited_until: nil,
             deposited_for_days: 15,

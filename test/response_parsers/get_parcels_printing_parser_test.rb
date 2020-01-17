@@ -47,7 +47,7 @@ module CzechPostB2bClient
         {
           printings: {
             options: {
-              customer_id: 'EE89',
+              customer_package_id: 'EE89',
               contract_number: '12345678',
               template_id: 20, # 7 => adresni stitek (alonz) - samostatny
               margin_in_mm: { top: 2, left: 1 },
