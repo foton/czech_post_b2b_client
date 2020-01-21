@@ -25,18 +25,18 @@ module CzechPostB2bClient
       end
 
       def service_data_struct
-        ox_element('serviceData') do |srv_data|
-          srv_data << get_parcel_state
+        new_element('serviceData').tap do |srv_data|
+          add_element_to(srv_data, get_parcel_state)
         end
       end
 
       def get_parcel_state # rubocop:disable Naming/AccessorMethodName
-        ox_element('ns2:getParcelState') do |parcel_state|
+        new_element('ns2:getParcelState').tap do |parcel_state|
           parcel_codes.each do |parcel_code|
-            parcel_state << ox_element('ns2:idParcel', value: parcel_code.to_s)
+            add_element_to(parcel_state, 'ns2:idParcel', value: parcel_code.to_s)
           end
 
-          parcel_state << ox_element('ns2:language', value: configuration.language.to_s)
+          add_element_to(parcel_state, 'ns2:language', value: configuration.language.to_s)
         end
       end
     end

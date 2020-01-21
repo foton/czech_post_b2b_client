@@ -14,11 +14,15 @@ module CzechPostB2bClient
       private
 
       def service_data_struct
-        ox_element('serviceData') do |srv_data|
-          srv_data << ox_element('ns2:getStats') do |get_stats|
-            get_stats << ox_element('ns2:dateBegin', value: from_date.strftime(TIME_FORMAT))
-            get_stats << ox_element('ns2:dateEnd', value: to_date.strftime(TIME_FORMAT))
-          end
+        new_element('serviceData').tap do |srv_data|
+          add_element_to(srv_data, get_stats)
+        end
+      end
+
+      def get_stats # rubocop:disable Naming/AccessorMethodName
+        new_element('ns2:getStats').tap do |get_stats|
+          add_element_to(get_stats, 'ns2:dateBegin', value: from_date.strftime(TIME_FORMAT))
+          add_element_to(get_stats, 'ns2:dateEnd', value: to_date.strftime(TIME_FORMAT))
         end
       end
     end

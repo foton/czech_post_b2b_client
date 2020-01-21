@@ -21,7 +21,7 @@ module CzechPostB2bClient
 
       def service_data_struct
         # No <serviceDate> element in this case
-        ox_element('idTransaction', value: transaction_id)
+        new_element('idTransaction', value: transaction_id)
       end
     end
   end

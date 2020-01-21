@@ -28,15 +28,15 @@ module CzechPostB2bClient
       end
 
       def build_xml_struct
-        @xml_struct = Ox::Document.new(encoding: 'utf-8')
-        @xml_struct << ox_instruct(attributes: { version: '1.0', encoding: 'UTF-8', standalone: 'yes' })
+        @xml_struct = struct_base
+        add_element_to(@xml_struct, new_instruct(attributes: { version: '1.0', encoding: 'UTF-8', standalone: 'yes' }))
 
-        bb = ox_element('b2bRequest', attributes: configuration.namespaces) do |b2b_req|
-          b2b_req << b2b_req_header
-          b2b_req << service_data_struct
+        bb = new_element('b2bRequest', attributes: configuration.namespaces).tap do |b2b_req|
+          add_element_to(b2b_req, b2b_req_header)
+          add_element_to(b2b_req, service_data_struct)
         end
 
-        @xml_struct << bb
+        add_element_to(@xml_struct, bb)
 
         @xml_struct
       end
@@ -53,11 +53,15 @@ module CzechPostB2bClient
         configuration.namespaces.to_a.collect { |ns, url| "#{ns}=\"#{url}\"" }.join(' ')
       end
 
+      def struct_base
+        Ox::Document.new(encoding: 'utf-8')
+      end
+
       def b2b_req_header
-        ox_element('header') do |header|
-          header << ox_element('idExtTransaction', value: request_id)
-          header << ox_element('timeStamp', value: Time.now.strftime(TIME_FORMAT))
-          header << ox_element('idContract', value: configuration.contract_id)
+        new_element('header').tap do |header|
+          add_element_to(header, 'idExtTransaction', value: request_id)
+          add_element_to(header, 'timeStamp', value: Time.now.strftime(TIME_FORMAT))
+          add_element_to(header, 'idContract', value: configuration.contract_id)
         end
       end
 
@@ -76,24 +80,10 @@ module CzechPostB2bClient
         end
       end
 
-      def ox_element(name, attributes: {}, value: nil, &block)
-        ox_node(Ox::Element.new(name), { attributes: attributes, value: value }, &block)
-      end
-
-      def ox_instruct(attributes: {})
-        ox_node(Ox::Instruct.new(:xml), attributes: attributes)
-      end
-
-      def ox_node(node, args = {})
-        (args[:attributes] || {}).each_pair { |key, val| node[key] = val }
-
-        if block_given?
-          yield(node)
-        elsif args[:value].to_s != ''
-          node << args[:value].to_s
+      def new_instruct(attributes: {})
+        Ox::Instruct.new(:xml).tap do |elm|
+          attributes.each_pair { |key, val| elm[key] = val }
         end
-
-        node
       end
     end
   end

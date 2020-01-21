@@ -33,29 +33,33 @@ module CzechPostB2bClient
       end
 
       def service_data_struct
-        ox_element('serviceData') do |srv_data|
-          srv_data << ox_element('ns2:getParcelsPrinting') do |get_parcels_printing|
-            get_parcels_printing << do_printing_header
-            get_parcels_printing << do_printing_data
-          end
+        new_element('serviceData').tap do |srv_data|
+          add_element_to(srv_data, get_parcels_printing)
+        end
+      end
+
+      def get_parcels_printing # rubocop:disable Naming/AccessorMethodName
+        new_element('ns2:getParcelsPrinting').tap do |get_parcels_printing|
+          add_element_to(get_parcels_printing, do_printing_header)
+          add_element_to(get_parcels_printing, do_printing_data)
         end
       end
 
       def do_printing_header
-        ox_element('ns2:doPrintingHeader') do |printing_header|
-          printing_header << ox_element('ns2:customerID', value: options[:customer_id]) # Technologicke cislo podavatele
-          printing_header << ox_element('ns2:contractNumber', value: options[:contract_number]) # Nepovine: ID CCK slozky podavatele
-          printing_header << ox_element('ns2:idForm', value: options[:template_id]) # Nepovine[0-20x]: ID formulare
-          printing_header << ox_element('ns2:shiftHorizontal', value: options[:margin_in_mm][:left]) # Hodnota posunu doprava v mm
-          printing_header << ox_element('ns2:shiftVertical', value: options[:margin_in_mm][:top]) # Hodnota posunu dolu v mm
-          printing_header << ox_element('ns2:position', value: options[:position_order]) # Nepovinna: Hodnota pozice
+        new_element('ns2:doPrintingHeader').tap do |printing_header|
+          add_element_to(printing_header, 'ns2:customerID', value: options[:customer_id]) # Technologicke cislo podavatele
+          add_element_to(printing_header, 'ns2:contractNumber', value: options[:contract_number]) # Nepovine: ID CCK slozky podavatele
+          add_element_to(printing_header, 'ns2:idForm', value: options[:template_id]) # Nepovine[0-20x]: ID formulare
+          add_element_to(printing_header, 'ns2:shiftHorizontal', value: options[:margin_in_mm][:left]) # Hodnota posunu doprava v mm
+          add_element_to(printing_header, 'ns2:shiftVertical', value: options[:margin_in_mm][:top]) # Hodnota posunu dolu v mm
+          add_element_to(printing_header, 'ns2:position', value: options[:position_order]) # Nepovinna: Hodnota pozice
         end
       end
 
       def do_printing_data
-        ox_element('ns2:doPrintingData') do |printing_data|
+        new_element('ns2:doPrintingData').tap do |printing_data|
           parcel_codes.each do |parcel_code|
-            printing_data << ox_element('ns2:parcelCode', value: parcel_code.to_s)
+            add_element_to(printing_data, 'ns2:parcelCode', value: parcel_code.to_s)
           end
         end
       end
