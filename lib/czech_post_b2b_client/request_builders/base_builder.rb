@@ -28,7 +28,7 @@ module CzechPostB2bClient
       end
 
       def build_xml_struct
-        @xml_struct = Ox::Document.new
+        @xml_struct = Ox::Document.new(encoding: 'utf-8')
         @xml_struct << ox_instruct(attributes: { version: '1.0', encoding: 'UTF-8', standalone: 'yes' })
 
         bb = ox_element('b2bRequest', attributes: configuration.namespaces) do |b2b_req|
@@ -58,6 +58,21 @@ module CzechPostB2bClient
           header << ox_element('idExtTransaction', value: request_id)
           header << ox_element('timeStamp', value: Time.now.strftime(TIME_FORMAT))
           header << ox_element('idContract', value: configuration.contract_id)
+        end
+      end
+
+      def add_element_to(parent_element, element, attributes: {}, value: nil)
+        if element.is_a?(String)
+          parent_element << new_element(element, attributes: attributes, value: value) unless value.nil?
+        else
+          parent_element << element unless element.nil?
+        end
+      end
+
+      def new_element(name, attributes: {}, value: '')
+        Ox::Element.new(name).tap do |elm|
+          attributes.each_pair { |key, val| elm[key] = val }
+          elm << value.to_s
         end
       end
 
