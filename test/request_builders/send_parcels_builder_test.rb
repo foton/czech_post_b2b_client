@@ -7,15 +7,14 @@ require 'time'
 module CzechPostB2bClient
   module Test
     class SendParcelsBuilderTest < Minitest::Test
-      attr_reader :transaction_id
+      attr_reader :builder_class
 
       def setup
         @expected_build_time_str = '2019-12-12T12:34:56.789+01:00'
         @contract_id = '123456I'
         @request_id = 42
         @build_time = Time.parse(@expected_build_time_str)
-
-        @transaction_id = '1C6921F2-0153-4000-E000-21F00AA06329'
+        @builder_class = CzechPostB2bClient::RequestBuilders::SendParcelsBuilder
 
         CzechPostB2bClient.configure do |config|
           config.contract_id = @contract_id
@@ -24,9 +23,8 @@ module CzechPostB2bClient
 
       def test_it_build_correct_full_xml
         Time.stub(:now, @build_time) do
-          builder = CzechPostB2bClient::RequestBuilders::SendParcelsBuilder.call(common_data: full_common_data,
-                                                                                 parcels: full_parcels_data,
-                                                                                 request_id: @request_id)
+          builder = builder_class.call(common_data: full_common_data, parcels: full_parcels_data, request_id: @request_id)
+
           assert builder.success?, "Should be successful, but have errors #{builder.errors}"
           assert_equal expected_full_xml, builder.result
         end
@@ -34,60 +32,65 @@ module CzechPostB2bClient
 
       def test_it_build_correct_short_xml
         Time.stub(:now, @build_time) do
-          builder = CzechPostB2bClient::RequestBuilders::SendParcelsBuilder.call(common_data: short_common_data,
-                                                                                 parcels: short_parcels_data,
-                                                                                 request_id: @request_id)
+          builder = builder_class.call(common_data: short_common_data, parcels: short_parcels_data, request_id: @request_id)
+
           assert builder.success?, "Should be successful, but have errors #{builder.errors}"
           assert_equal expected_short_xml, builder.result
         end
       end
 
-      # def test_it_assings_request_id_if_it_is_not_present
-      #   Time.stub(:now, @build_time) do
-      #     builder = CzechPostB2bClient::RequestBuilders::SendParcelsBuilder.call(transaction_id: transaction_id)
+      def test_it_assings_request_id_if_it_is_not_present
+        Time.stub(:now, @build_time) do
+          builder = builder_class.call(common_data: short_common_data, parcels: short_parcels_data)
 
-      #     assert builder.success?
-      #     assert_equal expected_xml.gsub(">#{@request_id}</", '>1</'), builder.result
-      #   end
-      # end
+          assert builder.success?
+          assert_equal expected_short_xml.gsub(">#{@request_id}</", '>1</'), builder.result
+        end
+      end
 
-      # def test_it_requires_at_least_one_parcel
-      #   builder = CzechPostB2bClient::RequestBuilders::SendParcelsBuilder.call(transaction_id: '')
+      def test_it_allows_zero_parcels
+        builder = builder_class.call(common_data: short_common_data, parcels: [])
 
-      #   assert builder.failed?
-      #   assert_includes builder.errors[:transaction_id], 'Must be present!'
-      # end
+        assert builder.success?
+      end
 
-      # def test_it_allows_max_1000_parcels
-      #   builder = CzechPostB2bClient::RequestBuilders::SendParcelsBuilder.call(transaction_id: '')
+      def test_it_allows_max_1000_parcels
+        parcels_hashes = Array.new(1000) { |i| minimal_parcel_data_for_id("package_#{i}") }
+        builder = builder_class.call(common_data: short_common_data, parcels: parcels_hashes)
+        assert builder.success?
 
-      #   assert builder.failed?
-      #   assert_includes builder.errors[:transaction_id], 'Must be present!'
-      # end
+        parcels_hashes += [minimal_parcel_data_for_id('package_1001')]
+        builder = builder_class.call(common_data: short_common_data, parcels: parcels_hashes)
 
-      # def test_it_validates_cash_on_delivery_params
-      #   builder = CzechPostB2bClient::RequestBuilders::SendParcelsBuilder.call(transaction_id: '')
+        assert builder.failed?
+        assert_includes builder.errors[:parcels], 'Maximum of 1000 parcels are allowed!'
+      end
 
-      #   assert builder.failed?
-      #   assert_includes builder.errors[:transaction_id], 'Must be present!'
-      # end
+      def test_it_checks_for_required_common_params
+        builder = builder_class.call(common_data: {}, parcels: [])
 
-      # def test_it_validates_parcel_data
-      #   builder = CzechPostB2bClient::RequestBuilders::SendParcelsBuilder.call(transaction_id: '')
+        assert builder.failed?
+        %i[parcels_sending_date customer_id sending_post_office_code].each do |key|
+          assert_includes builder.errors[:common_data], "Missing value for key { :#{key} }!"
+        end
+      end
 
-      #   assert builder.failed?
-      #   assert_includes builder.errors[:transaction_id], 'Must be present!'
-      # end
+      def test_it_checks_for_required_parcels_params
+        parcel_hashes = [
+          { params: { record_id: 'package_ok', parcel_code_prefix: 'XY' } },
+          { params: { record_id: 'package_no_prefix' } },
+          { params: { record_id: '', parcel_code_prefix: 'XY' } }
+        ]
 
-      # def test_it_validates_sender_data
-      #   builder = CzechPostB2bClient::RequestBuilders::SendParcelsBuilder.call(transaction_id: '')
+        builder = builder_class.call(common_data: short_common_data, parcels: parcel_hashes)
 
-      #   assert builder.failed?
-      #   assert_includes builder.errors[:transaction_id], 'Must be present!'
-      # end
-
-
-
+        assert builder.failed?
+        expected_errors = [
+          "Missing value for key { :params => :parcel_code_prefix } for 2. parcel (record_id: 'package_no_prefix')!",
+          "Missing value for key { :params => :record_id } for 3. parcel (record_id: '')!"
+        ]
+        assert_equal expected_errors, builder.errors[:parcels]
+      end
 
       private
 
@@ -95,8 +98,8 @@ module CzechPostB2bClient
         {
           customer_id: 'U219',
           parcels_sending_date: Date.new(2016, 02, 12),
-          sending_post_office_code: 28002,
-          sending_post_office_location_number: 98765, # optional
+          sending_post_office_code: 28_002,
+          sending_post_office_location_number: 98_765, # optional
           close_requests_batch: false, # we want to use more requests for one bulk delivery  (default is true, one request = one delivery)
           sender: full_sender_data,
           cash_on_delivery: full_cash_on_delivery_data, # optional
@@ -134,15 +137,17 @@ module CzechPostB2bClient
             country_iso_code: 'CZ'
           },
           mobile_phone: '+420777888999', # optional
-          phone: '+420027912191',  # optional
-          email: 'rehor.jan@cpost.cz',  # optional
+          phone: '+420027912191', # optional
+          email: 'rehor.jan@cpost.cz', # optional
           custom_card_number: 'string_20' # optional
         }
       end
 
       def short_sender_data
         shortie = full_sender_data.select { |k, _v| %i[mobile_phone email].include?(k) }
-        shortie[:address] = full_sender_data[:address].reject { |k, _v| %i[first_name last_name addition_to_name sequence_number country_iso_code].include?(k) }
+        shortie[:address] = full_sender_data[:address].reject do |k, _v|
+          %i[first_name last_name addition_to_name sequence_number country_iso_code].include?(k)
+        end
         shortie
       end
 
@@ -181,6 +186,10 @@ module CzechPostB2bClient
           params: full_parcel_data_params.select { |k, _v| %i[record_id parcel_code_prefix].include?(k) },
           addressee: short_addressee_data
         }
+      end
+
+      def minimal_parcel_data_for_id(id)
+        { params: { record_id: id, parcel_code_prefix: 'RA' } }
       end
 
       def short_parcel_data2
@@ -262,7 +271,9 @@ module CzechPostB2bClient
 
       def short_addressee_data
         shortie = full_addressee_data.select { |k, _v| %i[email].include?(k) }
-        shortie[:address] = full_addressee_data[:address].reject { |k, _v| %i[company_name addition_to_name sequence_number country_iso_code subcountry_iso_code].include?(k) }
+        shortie[:address] = full_addressee_data[:address].reject do |k, _v|
+          %i[company_name addition_to_name sequence_number country_iso_code subcountry_iso_code].include?(k)
+        end
         shortie
       end
 

@@ -14,9 +14,7 @@ module CzechPostB2bClient
       private
 
       def validate_data
-        if parcels.size > 1000
-          errors.add(:parcels, 'Maximum of 1000 parcels are allowed!')
-        end
+        errors.add(:parcels, 'Maximum of 1000 parcels are allowed!') if parcels.size > 1000
 
         validate_common_data_required_fields
         validate_parcels_required_fields
@@ -34,8 +32,9 @@ module CzechPostB2bClient
         [[:parcels_sending_date],
          [:customer_id],
          [:sending_post_office_code]].each do |key_chain|
-           if common_data.dig(*key_chain).nil?
-             errors.add(:common_data, "Key :#{key_chain.join(' => ')} must be present!")
+           value = common_data.dig(*key_chain)
+           if value.nil? || value == ''
+             errors.add(:common_data, "Missing value for key { :#{key_chain.join(' => :') } }!")
            end
          end
       end
@@ -48,10 +47,12 @@ module CzechPostB2bClient
           %i[params parcel_code_prefix]
         ]
         parcels.each_with_index do |parcel_data, index|
-          parcel_id = parcel_data[:record_id]
+          parcel_id = parcel_data.dig(:params, :record_id)
           rq_fields.each do |key_chain|
-            if parcel_data.dig(*key_chain).nil?
-              errors.add(:parcels, "Missing key :#{key_chain.join(' => ')} for #{index + 1}. parcel (record_id: #{parcel_id})!")
+            value = parcel_data.dig(*key_chain)
+
+            if value.nil? || value == ''
+              errors.add(:parcels, "Missing value for key { :#{key_chain.join(' => :')} } for #{index + 1}. parcel (record_id: '#{parcel_id}')!")
             end
           end
         end
@@ -170,9 +171,18 @@ module CzechPostB2bClient
       end
 
       def do_parcel_address(parcel_data)
-        addressee_data = parcel_data[:addressee]
+        add_parcel_adress_element('ns2:doParcelAddress', parcel_data[:addressee])
+      end
+
+      def do_parcel_address_document(parcel_data)
+        add_parcel_adress_element('ns2:doParcelAddressDocument', parcel_data[:document_addressee])
+      end
+
+      def add_parcel_adress_element(element_name, addressee_data)
+        return nil if addressee_data.nil?
+
         address_data = addressee_data[:address]
-        new_element('ns2:doParcelAddress').tap do |do_parcel_address|
+        new_element(element_name).tap do |do_parcel_address|
           add_element_to(do_parcel_address, 'ns2:recordID', value: addressee_data[:addressee_id]) # Nepovinne: Interni oznaceni adresata
 
           add_address_elements(do_parcel_address, address_data) # Nepovinne: Adresa
@@ -192,34 +202,6 @@ module CzechPostB2bClient
           end
 
           add_element_to(do_parcel_address, 'ns2:adviceNote', value: addressee_data[:advice_note]) # Nepovinne: Poznamka k dodejce
-        end
-      end
-
-      def do_parcel_address_document(parcel_data)
-        addressee_data = parcel_data[:document_addressee]
-        return nil if addressee_data.nil?
-
-        address_data = addressee_data[:address]
-        new_element('ns2:doParcelAddressDocument').tap do |do_parcel_doc_address|
-          add_element_to(do_parcel_doc_address, 'ns2:recordID', value: addressee_data[:addressee_id]) # Nepovinne: Interni oznaceni adresata
-
-          add_address_elements(do_parcel_doc_address, address_data) # Nepovinne: Adresa
-
-          add_element_to(do_parcel_doc_address, 'ns2:subject', value: addressee_data[:addressee_type]) # Nepovinne: Typ adresata
-          add_element_to(do_parcel_doc_address, 'ns2:ic', value: addressee_data[:ic]) # Nepovinne: ICO
-          add_element_to(do_parcel_doc_address, 'ns2:dic', value: addressee_data[:dic]) # Nepovinne: DIC
-          add_element_to(do_parcel_doc_address, 'ns2:specification', value: addressee_data[:addressee_specification]) # Nepovinne: Specifikace napr. datum narozeni
-
-          add_bank_elements(do_parcel_doc_address, addressee_data[:bank_account]) # Nepovinne. Kod banky, cislo a predcisli uctu
-          add_contact_elements(do_parcel_doc_address, addressee_data) # Nepovinne. Telefon, Mobil a Email
-
-          add_element_to(do_parcel_doc_address, 'ns2:custCardNum', value: addressee_data[:custom_card_number]) # Nepovinne: cislo zakaznicke karty
-
-          (addressee_data[:advice_informations] || []).each_with_index do |adv_info, index|
-            add_element_to(do_parcel_doc_address, 'ns2:adviceInformation' + (index + 1).to_s, value: adv_info) # Nepovinne: Informace 1- 6 k dodejce
-          end
-
-          add_element_to(do_parcel_doc_address, 'ns2:adviceNote', value: addressee_data[:advice_note]) # Nepovinne: Poznamka k dodejce
         end
       end
 
