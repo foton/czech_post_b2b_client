@@ -17,6 +17,49 @@ There are these supported operations on API:
 6) Improve your guesstimation of delivery time by working with historical data collected through *getStats*.
 
 
+## Instalation
+### Registration at Czech Post
+Get  "komerční certifikát PostSignum" ( 1month testing version can be obtained at http://www.postsignum.cz/testovaci_certifikat.html).
+https://b2b.postaonline.cz supports TLS 1.2, 1.1. 1.0
+
+### Setting up gem
+   Set up your `contract_id`, `customer_id` (both from CP signed contract), `certificate_path` and `certificate_password` in configuration:
+   ```
+    CzechPostB2bClient.configure do |config|
+      config.contract_id = 'contract_id' # from CP signed contract
+      config.customer_id = 'customer_id' # from CP signed contract
+      config.certificate_path = 'full_path/to/your/postsignum_certificate'
+      config.contract_id = 'certificate_password'
+      config.sending_post_office_code = 12_345 # PSC of post office where parcels will be physically delivered and submitted
+    end
+   ```
+   Because PostSignum Certificate Authority is not trusted by default, correct certificate chain is in `certs/` folder. If You have problem with them, create and issue. Maybe they are outdated now.
+
+## Usage
+  You have to know which parcel type (according to CP) you sending.
+
+  1) Pack your parcel(s)
+  2) Call `ParcelsSender.call(sender_data, parcels)` , this will return expected time to ask for results and `transmission_id`.
+  3) When such time passed ask for results by calling `ParcelsSendProcessUpdater.call(transmission_id)`. You can get error `Processing is not yet finished` or parcels have assigned `code` and `sending_state` (matching parcels by `id`)
+  4) Print address sheets of parcels(s) by calling `AddressSheetsGenerator.call(parcels)`
+
+  5) Repeat steps 1-4 untill You deside to deliver packages to post office.
+
+  6) Close your parcels submission by `ParcelsSubmissionCloser.call`.
+  7) They will await You at post office with warm welcome (hopefully).
+  8) You can check current status of delivering by `DeliveringInspector.call(parcels)`, which will update `parcel.current_state`, `parcel.last_state_change` and `parcel.state_changes`.
+  9) And You can always ask for statistics! Use `PeriodStatisticator.call(from: date_from, to: date_to)`.
+
+  ### Example usage
+  ```
+  sender_adress =  CzechPostB2bClient::Address(first_name:, last_name:)
+  sender_data =  CzechPostB2bClient::SenderData(address: sender_adress)
+  ...
+  ``
+
+
+
+
 
 
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/czech_post_b2b_client`. To experiment with that code, run `bin/console` for an interactive prompt.

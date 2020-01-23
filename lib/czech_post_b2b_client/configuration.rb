@@ -1,8 +1,16 @@
 # frozen_string_literal: true
+require 'logger'
 
 module CzechPostB2bClient
   class Configuration
-    attr_accessor :contract_id, :path_from_root_to_certificate, :namespaces, :language
+    attr_accessor :customer_id,
+                  :contract_id,
+                  :sending_post_office_code,
+                  :certificate_path,
+                  :certificate_password,
+                  :namespaces,
+                  :language,
+                  :logger
 
     def initialize
       # set defaults here
@@ -14,6 +22,7 @@ module CzechPostB2bClient
       @namespaces = { 'xmlns' => 'https://b2b.postaonline.cz/schema/B2BCommon-v1',
                       'xmlns:ns2' => 'https://b2b.postaonline.cz/schema/POLServices-v1' }
       @language = :cs
+      @logger = defined?(Rails) ? ::Rails.logger : ::Logger.new(STDOUT)
     end
   end
 end

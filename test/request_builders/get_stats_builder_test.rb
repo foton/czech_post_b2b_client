@@ -18,9 +18,7 @@ module CzechPostB2bClient
         @to_date = Date.parse(@expected_to_date_str)
         @build_time = Time.parse(@expected_build_time_str)
 
-        CzechPostB2bClient.configure do |config|
-          config.contract_id = @contract_id
-        end
+        setup_configuration(contract_id: @contract_id)
       end
 
       def expected_xml

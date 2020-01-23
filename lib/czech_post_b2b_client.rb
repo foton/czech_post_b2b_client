@@ -19,4 +19,8 @@ module CzechPostB2bClient
     self.configuration ||= Configuration.new
     yield(configuration)
   end
+
+  def self.logger
+    self.configuration.logger
+  end
 end

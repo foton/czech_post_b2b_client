@@ -17,9 +17,7 @@ module CzechPostB2bClient
 
         @parcel_codes = %w[RR123456789E RR123456789F RR123456789G]
 
-        CzechPostB2bClient.configure do |config|
-          config.contract_id = @contract_id
-        end
+        setup_configuration(contract_id: @contract_id)
       end
 
       def expected_xml

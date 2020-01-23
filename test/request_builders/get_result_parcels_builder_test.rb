@@ -17,9 +17,7 @@ module CzechPostB2bClient
 
         @transaction_id = '1C6921F2-0153-4000-E000-21F00AA06329'
 
-        CzechPostB2bClient.configure do |config|
-          config.contract_id = @contract_id
-        end
+        setup_configuration(contract_id: @contract_id)
       end
 
       def expected_xml
