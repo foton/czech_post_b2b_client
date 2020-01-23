@@ -7,6 +7,7 @@ require 'czech_post_b2b_client/configuration'
 require 'czech_post_b2b_client/printing_templates'
 require 'czech_post_b2b_client/request_builders'
 require 'czech_post_b2b_client/response_parsers'
+require 'czech_post_b2b_client/services'
 
 module CzechPostB2bClient
   class Error < StandardError; end

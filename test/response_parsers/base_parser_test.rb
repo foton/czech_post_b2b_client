@@ -9,7 +9,7 @@ module CzechPostB2bClient
         skip
       end
 
-      def process_b2b_errors
+      def test_process_b2b_errors
         skip
       end
     end
