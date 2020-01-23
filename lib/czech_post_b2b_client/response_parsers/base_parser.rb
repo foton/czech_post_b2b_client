@@ -34,15 +34,15 @@ module CzechPostB2bClient
       end
 
       def response_service_data
-        b2b_sync_response_hash.dig('serviceData')
+        b2b_response_hash.dig('serviceData')
       end
 
       def response_header
-        b2b_sync_response_hash.dig('header')
+        b2b_response_hash.dig('header')
       end
 
-      def b2b_sync_response_hash
-        response_hash.dig('b2bSyncResponse')
+      def b2b_response_hash
+        response_hash.dig('b2bSyncResponse') || response_hash.dig('b2bASyncResponse')
       end
 
       def request_data
