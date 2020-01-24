@@ -24,13 +24,14 @@ module CzechPostB2bClient
                      request_id: '42' },
           response: { created_at: Time.parse('2016-02-25T08:30:03.678Z') }
         }
+        setup_configuration
       end
 
       def test_it_calls_api_when_data_are_ok
         CzechPostB2bClient::RequestBuilders::SendParcelsBuilder.stub(:call, builder_mock) do
           CzechPostB2bClient::Services::ApiCaller.stub(:call, api_caller_mock) do
             CzechPostB2bClient::ResponseParsers::SendParcelsParser.stub(:call, parser_mock) do
-              @service = CzechPostB2bClient::Services::ParcelsSender.call(sending_data: sending_data, parcels: parcels)
+              @service = CzechPostB2bClient::Services::ParcelsSender.call(sending_data: sending_data, parcels: parcels_to_send)
             end
           end
         end
@@ -42,7 +43,6 @@ module CzechPostB2bClient
         assert service.success?
         assert_equal @processing_end_expected_at, service.result.processing_end_expected_at
         assert_equal @transaction_id, service.result.transaction_id
-
       end
 
       def test_process_b2b_errors
@@ -53,8 +53,7 @@ module CzechPostB2bClient
         @builder_mock ||= begin
           fake = Minitest::Mock.new
           fake.expect(:call, fake_successful_service(fake_request_builder_result)) do |common_data: , parcels:|
-            puts("builder_mock.call")
-            true # verify arguments
+            common_data == expected_common_data && parcels == parcels_to_send
           end
           fake
         end
@@ -63,12 +62,7 @@ module CzechPostB2bClient
       def api_caller_mock
         @api_caller_mock ||= begin
           fake = Minitest::Mock.new
-          #fake.expect(:call, fake_response_parser_result, [send_parcels_endpoint_url, fake_request_builder_result])
-          fake.expect(:call, fake_successful_service(fake_api_caller_result)) do |endpoint_url, request_xml|
-            puts("api_caller_mock.call")
-            puts("#{send_parcels_endpoint_url} == #{endpoint_url} && #{fake_request_builder_result} == #{request_xml}")
-            send_parcels_endpoint_url == endpoint_url && fake_request_builder_result == request_xml
-          end
+          fake.expect(:call, fake_successful_service(fake_api_caller_result),[send_parcels_endpoint_url, fake_request_builder_result])
           fake
         end
       end
@@ -76,11 +70,7 @@ module CzechPostB2bClient
       def parser_mock
         @parser_mock ||= begin
           fake = Minitest::Mock.new
-          #fake.expect(:call, fake_response_parser_result, [fake_response_parser_result])
-          fake.expect(:call, fake_successful_service(fake_response_parser_result)) do |response_xml|
-            puts("parser_mock.call")
-            fake_api_caller_result.xml == response_xml
-          end
+          fake.expect(:call, fake_successful_service(fake_response_parser_result),[fake_api_caller_result.xml])
           fake
         end
       end
@@ -90,13 +80,26 @@ module CzechPostB2bClient
       end
 
       def sending_data
-        {}
+        sd = full_common_data.dup
+        sd.delete(:contract_id) # taken from config
+        sd.delete(:customer_id) # taken from config
+        sd.delete(:sending_post_office_code) # taken from config
+        sd
       end
 
-      def parcels
-        []
+      def data_from_config
+        { contract_id: configuration.contract_id,
+          customer_id: configuration.customer_id,
+          sending_post_office_code: configuration.sending_post_office_code }
       end
 
+      def expected_common_data
+        data_from_config.merge(sending_data)
+      end
+
+      def parcels_to_send
+        [1, 2] # ne need for real parcels here
+      end
 
       def send_parcels_endpoint_url
         'https://b2b.postaonline.cz/services/POLService/v1/sendParcels'

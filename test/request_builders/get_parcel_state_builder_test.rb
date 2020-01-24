@@ -56,6 +56,8 @@ module CzechPostB2bClient
 
           assert builder.success?
           assert_equal expected_xml.gsub(">#{@request_id}</", '>1</'), builder.result
+
+          skip 'TODO: it increases such id for next requests; do not allow to overide it(?) '
         end
       end
 

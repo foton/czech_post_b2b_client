@@ -3,10 +3,11 @@
 module CzechPostB2bClient
   module Services
     class ParcelsSender < SteppedService::Base
-
+      attr_reader :sending_data, :parcels
 
       def initialize(sending_data:, parcels:)
-
+        @sending_data = sending_data
+        @parcels = parcels
       end
 
       def steps
@@ -18,7 +19,7 @@ module CzechPostB2bClient
       attr_accessor :request_xml, :response_xml
 
       def build_request
-        builder = request_builder_class.call(common_data: {}, parcels: [])
+        builder = request_builder_class.call(common_data: common_data, parcels: parcels)
         self.request_xml = builder.result if builder.success?
       end
 
@@ -38,6 +39,22 @@ module CzechPostB2bClient
 
       def response_parser_class
         CzechPostB2bClient::ResponseParsers::SendParcelsParser
+      end
+
+      def common_data
+        data_from_config.merge(sending_data)
+      end
+
+      def data_from_config
+        {
+          contract_id: configuration.contract_id,
+          customer_id: configuration.customer_id,
+          sending_post_office_code: configuration.sending_post_office_code,
+        }
+      end
+
+      def configuration
+        CzechPostB2bClient.configuration
       end
 
       def endpoint_url

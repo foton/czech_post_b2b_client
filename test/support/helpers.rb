@@ -15,8 +15,13 @@ def setup_configuration(config_hash = {})
   end
 end
 
+def configuration
+  CzechPostB2bClient.configuration
+end
+
 def full_common_data
   {
+    contract_id: configuration.contract_id,
     customer_id: 'U219',
     parcels_sending_date: Date.new(2016, 02, 12),
     sending_post_office_code: 28_002,
