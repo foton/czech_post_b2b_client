@@ -11,6 +11,7 @@ module CzechPostB2bClient
       end
 
       def test_it_have_successfull_workflow
+        skip
         it_imports_parcels_data
         it_collect_results_of_import
         it_prints_address_sheets
