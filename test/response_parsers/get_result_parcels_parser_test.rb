@@ -68,7 +68,7 @@ module CzechPostB2bClient
       end
 
       def test_it_parses_to_correct_structure
-        parser = CzechPostB2bClient::ResponseParsers::GetResultParcelsParser.call(response_xml)
+        parser = CzechPostB2bClient::ResponseParsers::GetResultParcelsParser.call(xml: response_xml)
         assert parser.success?
         assert_equal expected_struct, parser.result
       end

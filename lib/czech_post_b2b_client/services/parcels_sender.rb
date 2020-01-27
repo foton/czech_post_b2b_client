@@ -2,7 +2,7 @@
 
 module CzechPostB2bClient
   module Services
-    class ParcelsSender < SteppedService::Base
+    class ParcelsSender <  CzechPostB2bClient::Services::Orchestrator
       attr_reader :sending_data, :parcels
 
       def initialize(sending_data:, parcels:)
@@ -19,22 +19,24 @@ module CzechPostB2bClient
       attr_accessor :request_xml, :response_xml
 
       def build_request
-        builder = request_builder_class.call(common_data: common_data, parcels: parcels)
-        self.request_xml = builder.result if builder.success?
+        self.request_xml = result_of_subservice(request_builder: { common_data: common_data, parcels: parcels})
       end
 
       def call_api
-        api_caller = CzechPostB2bClient::Services::ApiCaller.call(endpoint_url, request_xml)
-        self.response_xml = api_caller.result.xml if api_caller.success?
+        self.response_xml = result_of_subservice(api_caller: { uri: endpoint_url, xml: request_xml }).xml
       end
 
       def process_response
-        response_parser = response_parser_class.call(response_xml)
-        @result = build_result_from(response_parser.result) if response_parser.success?
+        response_hash = result_of_subservice(response_parser: { xml: response_xml })
+        @result = build_result_from(response_hash) unless response_hash.nil?
       end
 
       def request_builder_class
         CzechPostB2bClient::RequestBuilders::SendParcelsBuilder
+      end
+
+      def api_caller_class
+        CzechPostB2bClient::Services::ApiCaller
       end
 
       def response_parser_class
@@ -51,10 +53,6 @@ module CzechPostB2bClient
           customer_id: configuration.customer_id,
           sending_post_office_code: configuration.sending_post_office_code,
         }
-      end
-
-      def configuration
-        CzechPostB2bClient.configuration
       end
 
       def endpoint_url

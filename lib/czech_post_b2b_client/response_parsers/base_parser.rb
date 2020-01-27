@@ -5,8 +5,8 @@ require 'ox'
 module CzechPostB2bClient
   module ResponseParsers
     class BaseParser < SteppedService::Base
-      def initialize(response_xml, _other_to_fix)
-        @response_xml = response_xml
+      def initialize(xml:)
+        @response_xml = xml
       end
 
       def steps

@@ -3,9 +3,9 @@
 module CzechPostB2bClient
   module Services
     class ApiCaller < SteppedService::Base
-      def initialize(endpoint_url, request_xml)
-        @endpoint_url = endpoint_url
-        @request_xml = request_xml
+      def initialize(uri: , xml: )
+        @endpoint_uri = :uri
+        @request_xml = :xml
       end
 
       def steps
