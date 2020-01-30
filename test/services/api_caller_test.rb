@@ -45,11 +45,33 @@ require 'test_helper'
 module CzechPostB2bClient
   module Test
     class ApiCallerTest < Minitest::Test
+      def setup
+        setup_configuration
+      end
+
       def test_it_do_the_call
+        send_parcels_endpoint_url = 'https://b2b.postaonline.cz/services/POLService/v1/sendParcels'
+        fake_request_builder_result = '<?xml version="1.0" testing="true" encoding="UTF-8"?>'
+        fake_response_body = '<?xml version="1.0" testing="true" encoding="UTF-8"?><body></body>'
+
+        stub_request(:post, send_parcels_endpoint_url)
+          .with(headers: { 'Accept' => '*/*',
+	                         'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+	                         'User-Agent' => 'Ruby'})
+          .to_return(status: 200, body: fake_response_body, headers: {})
+
+
+        service = CzechPostB2bClient::Services::ApiCaller.call(endpoint_path: '/sendParcels',
+                                                               xml: fake_request_builder_result)
+
+        assert service.success?
+      end
+
+      def test_it_can_handle_b2b_errors
         skip
       end
 
-      def test_it_can_handle_errors
+      def test_it_can_handle_connection_errors
         skip
       end
     end

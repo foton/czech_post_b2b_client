@@ -30,7 +30,7 @@ module CzechPostB2bClient
       def test_it_calls_api_when_data_are_ok
         builder = builder_mock(expected_args: { common_data: expected_common_data, parcels: parcels_to_send },
                                returns: fake_successful_service(fake_request_builder_result))
-        api_caller = api_caller_mock(expected_args: { uri: send_parcels_endpoint_url, xml: fake_request_builder_result },
+        api_caller = api_caller_mock(expected_args: { endpoint_path: endpoint_path, xml: fake_request_builder_result },
                                      returns: fake_successful_service(fake_api_caller_result))
         parser = parser_mock(expected_args: { xml: fake_api_caller_result.xml },
                              returns: fake_successful_service(fake_response_parser_result))
@@ -83,7 +83,7 @@ module CzechPostB2bClient
         expected_errors = { network: ['Down'], b2b: ['unreachable'] }
         builder = builder_mock(expected_args: { common_data: expected_common_data, parcels: parcels_to_send },
                                returns: fake_successful_service(fake_request_builder_result))
-        api_caller = api_caller_mock(expected_args: { uri: send_parcels_endpoint_url, xml: fake_request_builder_result },
+        api_caller = api_caller_mock(expected_args: { endpoint_path: endpoint_path, xml: fake_request_builder_result },
                                      returns: fake_failing_service(expected_errors, fake_api_caller_result))
 
         CzechPostB2bClient::RequestBuilders::SendParcelsBuilder.stub(:call, builder) do
@@ -108,7 +108,7 @@ module CzechPostB2bClient
         expected_errors = { network: ['Down'], b2b: ['unreachable'] }
         builder = builder_mock(expected_args: { common_data: expected_common_data, parcels: parcels_to_send },
                                returns: fake_successful_service(fake_request_builder_result))
-        api_caller = api_caller_mock(expected_args: { uri: send_parcels_endpoint_url, xml: fake_request_builder_result },
+        api_caller = api_caller_mock(expected_args: { endpoint_path: endpoint_path, xml: fake_request_builder_result },
                                      returns: fake_successful_service(fake_api_caller_result))
         parser = parser_mock(expected_args: { xml: fake_api_caller_result.xml },
                              returns: fake_failing_service(expected_errors))
@@ -144,8 +144,8 @@ module CzechPostB2bClient
 
       def api_caller_mock(expected_args:, returns:)
         fake = Minitest::Mock.new
-        fake.expect(:call, returns) do |uri:, xml:|
-          uri == expected_args[:uri] && xml == expected_args[:xml]
+        fake.expect(:call, returns) do |endpoint_path:, xml:|
+          endpoint_path == expected_args[:endpoint_path] && xml == expected_args[:xml]
         end
 
         fake
@@ -200,8 +200,9 @@ module CzechPostB2bClient
         end
       end
 
-      def send_parcels_endpoint_url
-        'https://b2b.postaonline.cz/services/POLService/v1/sendParcels'
+      def endpoint_path
+        # 'https://b2b.postaonline.cz/services/POLService/v1/sendParcels'
+        '/sendParcels'
       end
     end
   end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'logger'
 
 module CzechPostB2bClient
@@ -10,7 +11,8 @@ module CzechPostB2bClient
                   :certificate_password,
                   :namespaces,
                   :language,
-                  :logger
+                  :logger,
+                  :b2b_api_base_uri
 
     def initialize
       # set defaults here
@@ -23,6 +25,7 @@ module CzechPostB2bClient
                       'xmlns:ns2' => 'https://b2b.postaonline.cz/schema/POLServices-v1' }
       @language = :cs
       @logger = defined?(Rails) ? ::Rails.logger : ::Logger.new(STDOUT)
+      @b2b_api_base_uri = 'https://b2b.postaonline.cz/services/POLService/v1'
     end
   end
 end
