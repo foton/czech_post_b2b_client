@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'test_helper'
+# rubocop:disable Style/AsciiComments
 
 # response <B2BFaultMessage>
 # Chybový kód | Detail chyby            | Popis
@@ -38,6 +39,8 @@ require 'test_helper'
 ## https://b2b.postaonline.cz/services/POLService/v1/getParcelsPrinting
 #  získání adresních štítků
 #  - max. 1000000 volání denně
+
+# rubocop:enable Style/AsciiComments
 
 module CzechPostB2bClient
   module Test
