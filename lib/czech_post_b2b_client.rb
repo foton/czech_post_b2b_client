@@ -27,4 +27,8 @@ module CzechPostB2bClient
   def self.root
     File.dirname __dir__
   end
+
+  def self.certs_path
+    File.join(CzechPostB2bClient.root, 'certs')
+  end
 end

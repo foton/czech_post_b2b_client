@@ -56,15 +56,16 @@ module CzechPostB2bClient
 
         stub_request(:post, send_parcels_endpoint_url)
           .with(headers: { 'Accept' => '*/*',
-	                         'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-	                         'User-Agent' => 'Ruby'})
+                           'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                           'User-Agent' => 'Ruby' })
           .to_return(status: 200, body: fake_response_body, headers: {})
-
 
         service = CzechPostB2bClient::Services::ApiCaller.call(endpoint_path: '/sendParcels',
                                                                xml: fake_request_builder_result)
 
         assert service.success?
+        assert_equal 200, service.result.code
+        assert_equal fake_response_body, service.result.xml
       end
 
       def test_it_can_handle_b2b_errors
