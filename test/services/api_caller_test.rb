@@ -45,19 +45,19 @@ require 'test_helper'
 module CzechPostB2bClient
   module Test
     class ApiCallerTest < Minitest::Test
+      attr_reader :send_parcels_endpoint_url, :fake_request_builder_result
+
       def setup
         setup_configuration
+        @send_parcels_endpoint_url = 'https://b2b.postaonline.cz/services/POLService/v1/sendParcels'
+        @fake_request_builder_result = '<?xml version="1.0" testing="true" encoding="UTF-8"?>'
       end
 
       def test_it_do_the_call
-        send_parcels_endpoint_url = 'https://b2b.postaonline.cz/services/POLService/v1/sendParcels'
-        fake_request_builder_result = '<?xml version="1.0" testing="true" encoding="UTF-8"?>'
         fake_response_body = '<?xml version="1.0" testing="true" encoding="UTF-8"?><body></body>'
 
         stub_request(:post, send_parcels_endpoint_url)
-          .with(headers: { 'Accept' => '*/*',
-                           'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-                           'User-Agent' => 'Ruby' })
+          .with(headers: expected_request_headers)
           .to_return(status: 200, body: fake_response_body, headers: {})
 
         service = CzechPostB2bClient::Services::ApiCaller.call(endpoint_path: '/sendParcels',
@@ -69,11 +69,62 @@ module CzechPostB2bClient
       end
 
       def test_it_can_handle_b2b_errors
-        skip
+        error = CzechPostB2bClient::B2BErrors::CustomerRequestsCountOverflowError.new
+        fake_response_body = b2b_fault_response_with_error_code(error.code)
+
+        stub_request(:post, send_parcels_endpoint_url)
+          .with(headers: expected_request_headers)
+          .to_return(status: 200, body: fake_response_body, headers: {}) # I do not know, for now, what :code it actually returns on errors
+
+        service = CzechPostB2bClient::Services::ApiCaller.call(endpoint_path: '/sendParcels',
+                                                               xml: fake_request_builder_result)
+
+        assert service.failure?
+        assert_equal 200, service.result.code
+        assert_equal fake_response_body, service.result.xml
+        assert_includes service.errors[:b2b], error.message
       end
 
       def test_it_can_handle_connection_errors
-        skip
+        CzechPostB2bClient::Services::ApiCaller::KNOWN_CONNECTION_ERRORS.each do |error_class|
+          error_raiser = connection_mock_raising(error_class)
+          expected_err_message = "#{error_class} > #{send_parcels_endpoint_url}"
+
+          service = nil
+          Net::HTTP.stub(:start, error_raiser) do
+            service = CzechPostB2bClient::Services::ApiCaller.call(endpoint_path: '/sendParcels',
+                                                                   xml: fake_request_builder_result)
+          end
+
+          assert service.failure?, "Service should fail for #{error_class}"
+          assert_equal 500, service.result.code, "result.code shloud be 500 for #{error_class}"
+          assert_equal '', service.result.xml, "result.xml shloud be '' for #{error_class}"
+          assert service.errors[:connection].first.include?(expected_err_message)
+        end
+      end
+
+      def b2b_fault_response_with_error_code(error_code)
+        <<~XML
+          <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+          <B2BFaultMessage xmlns="https://raw.githubusercontent.com/foton/czech_post_b2b_client/master/doc/20181023/B2BCommon-v1.1.xsd" >
+            <errorDetail>  Error text </errorDetail>
+            <errorCode>#{error_code}</errorCode>
+          </B2BFaultMessage>
+        XML
+      end
+
+      def expected_request_headers
+        { 'Accept' => '*/*',
+          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'User-Agent' => 'Ruby' }
+      end
+
+      def connection_mock_raising(error_class)
+        fake = Minitest::Mock.new
+        fake.expect(:request, nil) do |_args|
+          raise error_class
+        end
+        fake
       end
     end
   end
