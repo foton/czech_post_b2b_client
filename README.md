@@ -28,7 +28,9 @@ https://b2b.postaonline.cz supports TLS 1.2, 1.1. 1.0
     CzechPostB2bClient.configure do |config|
       config.contract_id = 'contract_id' # from CP signed contract
       config.customer_id = 'customer_id' # from CP signed contract
-      config.certificate_path = 'full_path/to/your/postsignum_certificate'
+      config.certificate_path = 'full_path/to/your/postsignum_certificate.pem'
+      config.private_key_path = 'full_path/to/your/postsignum_certificate_private.key'
+      config.private_key_password = 'czechpost'
       config.contract_id = 'certificate_password'
       config.sending_post_office_code = 12_345 # PSC of post office where parcels will be physically delivered and submitted
     end

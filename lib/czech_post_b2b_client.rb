@@ -23,4 +23,8 @@ module CzechPostB2bClient
   def self.logger
     self.configuration.logger
   end
+
+  def self.root
+    File.dirname __dir__
+  end
 end

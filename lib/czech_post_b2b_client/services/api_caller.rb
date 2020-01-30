@@ -5,15 +5,6 @@ require 'net/http'
 module CzechPostB2bClient
   module Services
     class ApiCaller < SteppedService::Base
-
-      DEFAULT_OPTIONS = {
-        use_ssl: true,
-        verify_mode: OpenSSL::SSL::VERIFY_PEER,
-        keep_alive_timeout: 30,
-        #cert: OpenSSL::X509::Certificate.new(File.read('./client.cert.pem')),
-        #key: OpenSSL::PKey::RSA.new(File.read('./client.key.pem'))
-      }
-
       def initialize(endpoint_path: , xml: )
         @endpoint_path = endpoint_path
         @request_xml = xml
@@ -39,7 +30,7 @@ module CzechPostB2bClient
       end
 
       def https_conn
-        @https_conn ||= Net::HTTP.start(service_uri.host, service_uri.port, DEFAULT_OPTIONS)
+        @https_conn ||= Net::HTTP.start(service_uri.host, service_uri.port, connection_options)
       end
 
       def service_uri
@@ -50,9 +41,46 @@ module CzechPostB2bClient
         {} # {'Content-Type': 'text/json'}
       end
 
+      def connection_options
+        {
+          use_ssl: true,
+          verify_mode: OpenSSL::SSL::VERIFY_PEER,
+          keep_alive_timeout: 30,
+          cert: OpenSSL::X509::Certificate.new(File.read(configuration.certificate_path)),
+          # cert_password: configuration.certificate_password,
+          key: OpenSSL::PKey::RSA.new(File.read(configuration.private_key_path), configuration.private_key_password)
+        }
+      end
+
       def configuration
         CzechPostB2bClient.configuration
       end
     end
   end
 end
+
+# # You can specify custom CA certs. If your production system only connects to
+# # one particular server, you should specify these, and bundle them with your
+# # app, so that you don't depend OS level pre-installed certificates in the
+# # production environment.
+# http = Net::HTTP.new("verysecure.com", 443)
+# http.use_ssl = true
+# http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+
+# store = OpenSSL::X509::Store.new
+# store.set_default_paths # Optional method that will auto-include the system CAs.
+# store.add_cert(OpenSSL::X509::Certificate.new(File.read("/path/to/ca1.crt")))
+# store.add_cert(OpenSSL::X509::Certificate.new(File.read("/path/to/ca2.crt")))
+# store.add_file("/path/to/ca3.crt") # Alternative syntax for adding certs.
+# http.cert_store = store
+
+
+# # Client certificate example. Some servers use this to authorize the connecting
+# # client, i.e. you. The server you connect to gets the certificate you specify,
+# # and they can use it to check who signed the certificate, and use the
+# # certificate fingerprint to identify exactly which certificate you're using.
+# http = Net::HTTP.new("verysecure.com", 443)
+# http.use_ssl = true
+# http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+# http.key = OpenSSL::PKey::RSA.new(File.read("/path/to/client.key"), "optional passphrase argument")
+# http.cert = OpenSSL::X509::Certificate.new(File.read("/path/to/client.crt"))

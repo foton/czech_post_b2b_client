@@ -2,7 +2,7 @@
 
 module CzechPostB2bClient
   module Services
-    class ParcelsSender <  CzechPostB2bClient::Services::Orchestrator
+    class ParcelsSender < CzechPostB2bClient::Services::Orchestrator
       attr_reader :sending_data, :parcels
 
       def initialize(sending_data:, parcels:)
@@ -19,11 +19,11 @@ module CzechPostB2bClient
       attr_accessor :request_xml, :response_xml
 
       def build_request
-        self.request_xml = result_of_subservice(request_builder: { common_data: common_data, parcels: parcels})
+        self.request_xml = result_of_subservice(request_builder: { common_data: common_data, parcels: parcels })
       end
 
       def call_api
-        self.response_xml = result_of_subservice(api_caller: { uri: endpoint_url, xml: request_xml }).xml
+        self.response_xml = result_of_subservice(api_caller: { endpoint_path: endpoint_path, xml: request_xml }).xml
       end
 
       def process_response
@@ -51,12 +51,12 @@ module CzechPostB2bClient
         {
           contract_id: configuration.contract_id,
           customer_id: configuration.customer_id,
-          sending_post_office_code: configuration.sending_post_office_code,
+          sending_post_office_code: configuration.sending_post_office_code
         }
       end
 
-      def endpoint_url
-        'https://b2b.postaonline.cz/services/POLService/v1/sendParcels'
+      def endpoint_path
+        '/sendParcels'
       end
 
       def build_result_from(response_hash)
