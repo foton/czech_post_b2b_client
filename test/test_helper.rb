@@ -13,4 +13,4 @@ Minitest::Reporters.use! [Minitest::Reporters::RakeRerunReporter.new(reporter_op
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 require 'czech_post_b2b_client'
 require_relative './support/helpers'
-require_relative './support/orchestrator_service_testing_base'
+require_relative './support/communicator_service_testing_base'

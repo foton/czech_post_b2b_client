@@ -2,7 +2,7 @@
 
 module CzechPostB2bClient
   module Services
-    class ParcelsSender < CzechPostB2bClient::Services::Orchestrator
+    class ParcelsSender < CzechPostB2bClient::Services::Communicator
       attr_reader :sending_data, :parcels
 
       def initialize(sending_data:, parcels:)
@@ -10,25 +10,10 @@ module CzechPostB2bClient
         @parcels = parcels
       end
 
-      def steps
-        %i[build_request call_api process_response]
-      end
-
       private
 
-      attr_accessor :request_xml, :response_xml
-
-      def build_request
-        self.request_xml = result_of_subservice(request_builder: { common_data: common_data, parcels: parcels })
-      end
-
-      def call_api
-        self.response_xml = result_of_subservice(api_caller: { endpoint_path: endpoint_path, xml: request_xml }).xml
-      end
-
-      def process_response
-        response_hash = result_of_subservice(response_parser: { xml: response_xml })
-        @result = build_result_from(response_hash) unless response_hash.nil?
+      def request_builder_args
+        { common_data: common_data, parcels: parcels }
       end
 
       def request_builder_class

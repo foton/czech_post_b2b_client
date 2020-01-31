@@ -43,16 +43,16 @@ module CzechPostB2bClient
         return if parcels.empty?
 
         rq_fields = [
-          %i[params record_id],
+          %i[params parcel_id],
           %i[params parcel_code_prefix]
         ]
         parcels.each_with_index do |parcel_data, index|
-          parcel_id = parcel_data.dig(:params, :record_id)
+          parcel_id = parcel_data.dig(:params, :parcel_id)
           rq_fields.each do |key_chain|
             value = parcel_data.dig(*key_chain)
 
             if value.nil? || value == ''
-              errors.add(:parcels, "Missing value for key { :#{key_chain.join(' => :')} } for #{index + 1}. parcel (record_id: '#{parcel_id}')!")
+              errors.add(:parcels, "Missing value for key { :#{key_chain.join(' => :')} } for #{index + 1}. parcel (parcel_id: '#{parcel_id}')!")
             end
           end
         end
@@ -132,7 +132,7 @@ module CzechPostB2bClient
         params = parcel_data[:params]
         cod = parcel_data[:cash_on_delivery] || {}
         new_element('ns2:doParcelParams').tap do |parcel_params|
-          add_element_to(parcel_params, 'ns2:recordID', value: params[:record_id]) # Unikatni ID zaznamu
+          add_element_to(parcel_params, 'ns2:recordID', value: params[:parcel_id]) # Unikatni ID zaznamu
           add_element_to(parcel_params, 'ns2:parcelCode', value: params[:parcel_code]) # Nepovinne: ID zasilky
           add_element_to(parcel_params, 'ns2:prefixParcelCode', value: params[:parcel_code_prefix]) # Typ zasilky (prefix)
           add_element_to(parcel_params, 'ns2:weight', value: params[:weight_in_kg]) # Nepovinne: Hmotnost

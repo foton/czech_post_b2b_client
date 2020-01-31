@@ -4,7 +4,7 @@ require 'test_helper'
 
 module CzechPostB2bClient
   module Test
-    module OrchestratorServiceTestingBase
+    module CommunicatorServiceTestingBase
       # these have to be set in `setup`
       attr_reader :endpoint_path, :builder_service_class, :parser_service_class,
                   :tested_service_class, :tested_service_args,

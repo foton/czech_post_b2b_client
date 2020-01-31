@@ -102,7 +102,7 @@ end
 
 def full_parcel_data_params
   {
-    record_id: 'my_id', # REQUIRED; purpose? something like custom_id ?
+    parcel_id: 'my_id', # REQUIRED; purpose? something like custom_id ?
     parcel_code: '123456789W', # (will be assigned by CzechPost if not presnt?), string13
     parcel_code_prefix: 'RR', # # REQUIRED; string 2; something like `parcel_type`?
     weight_in_kg: 12_345.678, # hopefuly in KG
@@ -130,7 +130,7 @@ end
 
 def short_parcel_data
   {
-    params: full_parcel_data_params.select { |k, _v| %i[record_id parcel_code_prefix].include?(k) },
+    params: full_parcel_data_params.select { |k, _v| %i[parcel_id parcel_code_prefix].include?(k) },
     addressee: short_addressee_data
   }
 end

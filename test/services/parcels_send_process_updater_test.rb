@@ -5,6 +5,8 @@ require 'test_helper'
 module CzechPostB2bClient
   module Test
     class ParcelsSendProcessUpdaterTest < Minitest::Test
+      include CzechPostB2bClient::Test::CommunicatorServiceTestingBase
+
       attr_reader :transaction_id, :expected_parcels_hash
 
       def setup
@@ -23,12 +25,10 @@ module CzechPostB2bClient
         @builder_service_class = CzechPostB2bClient::RequestBuilders::GetResultParcelsBuilder
         @parser_service_class = CzechPostB2bClient::ResponseParsers::GetResultParcelsParser
         @builder_expected_args = { transaction_id: transaction_id }
-        @builder_expected_errors = { parcels: ['Too many'], common_data: ['Missing :parcels_sending_date value', 'xxx'] }
-        @fake_response_parser_result = fake_response_parser_result_shared_part.merge({ parcels: @expected_parcels_hash})
+        @builder_expected_errors = { parcels: ['Too many'],
+                                     common_data: ['Missing :parcels_sending_date value', 'xxx'] }
+        @fake_response_parser_result = fake_response_parser_result_shared_part.merge(parcels: @expected_parcels_hash)
       end
-
-      include CzechPostB2bClient::Test::OrchestratorServiceTestingBase
-
 
       def builder_mock(expected_args:, returns:)
         fake = Minitest::Mock.new

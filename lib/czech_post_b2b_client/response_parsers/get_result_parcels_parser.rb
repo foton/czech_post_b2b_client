@@ -10,7 +10,7 @@ module CzechPostB2bClient
 
       def parcels_data_hash
         response_parcel_hashes.each_with_object({}) do |rp_hash, result|
-          result[parcel_record_id_from(rp_hash)] = parcel_data_from(rp_hash)
+          result[parcel_parcel_id_from(rp_hash)] = parcel_data_from(rp_hash)
         end
       end
 
@@ -18,7 +18,7 @@ module CzechPostB2bClient
         response_service_data.dig('getResultParcelsResponse').dig('doParcelParamResult')
       end
 
-      def parcel_record_id_from(rp_hash)
+      def parcel_parcel_id_from(rp_hash)
         rp_hash['recordNumber'].to_s
       end
 

@@ -5,7 +5,7 @@ require 'test_helper'
 module CzechPostB2bClient
   module Test
     class ParcelsSenderTest < Minitest::Test
-      include CzechPostB2bClient::Test::OrchestratorServiceTestingBase
+      include CzechPostB2bClient::Test::CommunicatorServiceTestingBase
 
       attr_reader :transaction_id, :processing_end_expected_at
 

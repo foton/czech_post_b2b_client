@@ -53,8 +53,8 @@ module CzechPostB2bClient
               margin_in_mm: { top: 2, left: 1 },
               position_order: 3 },
             state: { code: 0, text: 'OK' },
-            pdf_content: 'very big pdf extracted from base64 string' },
-
+            pdf_content: 'very big pdf extracted from base64 string'
+          },
           request: { created_at: Time.parse('2016-03-12T10:00:34.573Z'),
                      contract_id: '25195667001',
                      request_id: '42' },

@@ -75,17 +75,17 @@ module CzechPostB2bClient
 
       def test_it_checks_for_required_parcels_params
         parcel_hashes = [
-          { params: { record_id: 'package_ok', parcel_code_prefix: 'XY' } },
-          { params: { record_id: 'package_no_prefix' } },
-          { params: { record_id: '', parcel_code_prefix: 'XY' } }
+          { params: { parcel_id: 'package_ok', parcel_code_prefix: 'XY' } },
+          { params: { parcel_id: 'package_no_prefix' } },
+          { params: { parcel_id: '', parcel_code_prefix: 'XY' } }
         ]
 
         builder = builder_class.call(common_data: short_common_data, parcels: parcel_hashes)
 
         assert builder.failed?
         expected_errors = [
-          "Missing value for key { :params => :parcel_code_prefix } for 2. parcel (record_id: 'package_no_prefix')!",
-          "Missing value for key { :params => :record_id } for 3. parcel (record_id: '')!"
+          "Missing value for key { :params => :parcel_code_prefix } for 2. parcel (parcel_id: 'package_no_prefix')!",
+          "Missing value for key { :params => :parcel_id } for 3. parcel (parcel_id: '')!"
         ]
         assert_equal expected_errors, builder.errors[:parcels]
       end
@@ -101,12 +101,12 @@ module CzechPostB2bClient
       end
 
       def minimal_parcel_data_for_id(id)
-        { params: { record_id: id, parcel_code_prefix: 'RA' } }
+        { params: { parcel_id: id, parcel_code_prefix: 'RA' } }
       end
 
       def short_parcel_data2
         {
-          params: { record_id: 'my_id2', parcel_code_prefix: 'RA' },
+          params: { parcel_id: 'my_id2', parcel_code_prefix: 'RA' },
           addressee: {
             email: 'kaja.skoc@email.cz',
             address: {
