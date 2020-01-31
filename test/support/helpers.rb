@@ -100,7 +100,6 @@ def full_parcel_data
   }
 end
 
-
 def full_parcel_data_params
   {
     record_id: 'my_id', # REQUIRED; purpose? something like custom_id ?

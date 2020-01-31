@@ -72,11 +72,6 @@ module CzechPostB2bClient
 
         assert service.failure?
         assert_equal full_messages_from(expected_errors), service.errors[:request_builder]
-
-
-        # builder error
-        # api call error
-        # parser error
       end
 
       def test_it_handle_api_caller_errors
@@ -104,8 +99,7 @@ module CzechPostB2bClient
       end
 
       def test_it_handle_parser_errors
-        skip
-        expected_errors = { network: ['Down'], b2b: ['unreachable'] }
+        expected_errors = { xml: ['Response XML can not be parsed'] }
         builder = builder_mock(expected_args: { common_data: expected_common_data, parcels: parcels_to_send },
                                returns: fake_successful_service(fake_request_builder_result))
         api_caller = api_caller_mock(expected_args: { endpoint_path: endpoint_path, xml: fake_request_builder_result },
@@ -124,14 +118,10 @@ module CzechPostB2bClient
         end
 
         assert_mock builder
+        assert_mock api_caller
 
         assert service.failure?
-        assert_equal full_messages_from(expected_errors), service.errors[:api_caller]
-      end
-
-      def test_process_b2b_errors
-        skip
-        # should be transformed into api caller error
+        assert_equal full_messages_from(expected_errors), service.errors[:response_parser]
       end
 
       def builder_mock(expected_args:, returns:)
@@ -191,7 +181,7 @@ module CzechPostB2bClient
       end
 
       def parcels_to_send
-        [1, 2] # ne need for real parcels here
+        [1, 2] # no need for real parcels here
       end
 
       def full_messages_from(err_hash)
