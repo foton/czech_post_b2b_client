@@ -29,7 +29,8 @@ module CzechPostB2bClient
                 </PO:doParcelHeaderResult>
 
                 <PO:doParcelParamResult>
-                  <PO:recordNumber>12345</PO:recordNumber> <!-- unique ID of record, string -->
+                  <!-- my guess: sendParcels.doParcelData.doParcelParams.recordID == recordNumber -->
+                  <PO:recordNumber>12345</PO:recordNumber> <!-- unique ID of record, string,-->
                   <PO:parcelCode>DR1010101010B</PO:parcelCode>
                   <PO:doParcelStateResponse>   <!-- according to XSD, there is unlimited count of this! -->
                     <PO:responseCode>1</PO:responseCode>
@@ -80,15 +81,15 @@ module CzechPostB2bClient
 
       def expected_parcels_hash # rubocop:disable Metrics/MethodLength
         {
-          'DR1010101010B' => {
+          '12345' => {
+            parcel_code: 'DR1010101010B',
             state_code: 1,
             state_text: 'OK',
-            record_id: 12345
           },
-          'DR1010101011B' => {
+          '12346' => {
+            parcel_code: 'DR1010101011B',
             state_code: 1,
             state_text: 'OK',
-            record_id: 12346
           }
         }
       end

@@ -32,7 +32,6 @@ module CzechPostB2bClient
       end
 
       def valid_get_stats_response_xml
-        # response for GetStatsParser
         <<~XML
           <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
           <v1:b2bSyncResponse xmlns:v1="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:v1_1="https://b2b.postaonline.cz/schema/POLServices-v1">
