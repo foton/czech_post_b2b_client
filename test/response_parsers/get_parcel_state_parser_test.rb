@@ -4,7 +4,7 @@ require 'test_helper'
 
 module CzechPostB2bClient
   module Test
-    class GetParcelsPrintingParserTest < Minitest::Test
+    class GetParcelStateParserTest < Minitest::Test
       def response_xml
         <<~XML
           <?xml version="1.0" encoding="UTF-8"?>
@@ -185,7 +185,6 @@ module CzechPostB2bClient
           'BA0146149139X' => {
             parcel_type: 'BA',
             weight_in_kg: 0.686,  # hopefully it is in KG
-            cod_amount: 0.0,
             cash_on_delivery: { amount: 0.0, currency_iso_code: '' },
             pieces: 1,
             deposited_until: nil,

@@ -22,8 +22,7 @@ module CzechPostB2bClient
         {
           parcel_type: rp_hash['parcelType'].to_s,
           weight_in_kg: rp_hash['weight'].nil? ? nil : rp_hash['weight'].to_f,  # hopefully it is in KG
-          cash_on_delivery_amount: (rp_hash['amount'] || 0).to_f,
-          cash_on_delivery_currency: rp_hash['currency'].to_s,
+          cash_on_delivery: { amount: (rp_hash['amount'] || 0).to_f, currency_iso_code: rp_hash['currency'].to_s },
           pieces: (rp_hash['quantityParcel'] || 1).to_i,
           deposited_until: rp_hash['depositTo'].nil? ? nil : Date.parse(rp_hash['depositTo']),
           deposited_for_days: rp_hash['timeDeposit'].nil? ? nil : rp_hash['timeDeposit'].to_i,
