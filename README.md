@@ -41,11 +41,14 @@ https://b2b.postaonline.cz supports TLS 1.2, 1.1. 1.0
   You have to know which parcel type (according to CP) you sending.
 
   1) Pack your parcel(s)
-  2) Call `ParcelsSender.call(sender_data, parcels)` , this will return expected time to ask for results and `transmission_id`.
-  3) When such time passed ask for results by calling `ParcelsSendProcessUpdater.call(transmission_id)`. You can get error `Processing is not yet finished` or parcels have assigned `code` and `sending_state` (matching parcels by `id`)
-  4) Print address sheets of parcels(s) by calling `AddressSheetsGenerator.call(parcels)`
+  2) Call `ParcelsSender.call(sender_data, parcels)`, this will return expected time to ask for results and `transmission_id`.
+     `parcels` is now array of complicated hashes; each parcel must have `parcel_id` key.
+  3) When such time passed ask for results by calling `ParcelsSendProcessUpdater.call(transmission_id)`. You can get error `Processing is not yet finished` or hash based on `parcel_id` keys.
+   eg. :`{ 'parcel_id1' => {parcel_code: 'RA12345687', status_code: '1', state_text: 'OK' }, }`.
+  4) Print address sheets of parcels(s) by calling `AddressSheetsGenerator.call(parcel_codes)`.
+   eg. : `parcel_codes = %w[RA123456789 RR123456789F RR123456789G] # beware of parcel_id!`
 
-  5) Repeat steps 1-4 untill You deside to deliver packages to post office.
+  5) Repeat steps 1-4 untill You decide to deliver packages to post office.
 
   6) Close your parcels submission by `ParcelsSubmissionCloser.call`.
   7) They will await You at post office with warm welcome (hopefully).

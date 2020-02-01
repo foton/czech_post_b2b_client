@@ -24,7 +24,7 @@ module CzechPostB2bClient
           builder = builder_class.call(common_data: full_common_data, parcels: full_parcels_data, request_id: @request_id)
 
           assert builder.success?, "Should be successful, but have errors #{builder.errors}"
-          assert_equal expected_full_xml, builder.result
+          assert_equal expected_not_closing_xml, builder.result
         end
       end
 
@@ -41,15 +41,22 @@ module CzechPostB2bClient
         Time.stub(:now, @build_time) do
           builder = builder_class.call(common_data: short_common_data, parcels: short_parcels_data)
 
-          assert builder.success?
+          assert builder.success?, "Should be successful, but have errors #{builder.errors}"
           assert_equal expected_short_xml.gsub(">#{@request_id}</", '>1</'), builder.result
         end
       end
 
-      def test_it_allows_zero_parcels
+      def test_it_allows_no_parcels
         builder = builder_class.call(common_data: short_common_data, parcels: [])
 
-        assert builder.success?
+        assert builder.success?, "Should be successful, but have errors #{builder.errors}"
+      end
+
+      def test_it_handles_submission_closing_tag
+        builder = builder_class.call(common_data: short_common_data.merge(close_requests_batch: true), parcels: [])
+
+        assert builder.success?, "Should be successful, but have errors #{builder.errors}"
+        assert builder.result.include?('<ns2:transmissionEnd>true</ns2:transmissionEnd>')
       end
 
       def test_it_allows_max_1000_parcels
@@ -121,7 +128,7 @@ module CzechPostB2bClient
         }
       end
 
-      def expected_full_xml
+      def expected_not_closing_xml
         <<~XML
           <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
           <b2bRequest xmlns="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:ns2="https://b2b.postaonline.cz/schema/POLServices-v1">
