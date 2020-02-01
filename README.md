@@ -42,17 +42,45 @@ https://b2b.postaonline.cz supports TLS 1.2, 1.1. 1.0
 
   1) Pack your parcel(s)
   2) Call `ParcelsSender.call(sender_data, parcels)`, this will return expected time to ask for results and `transmission_id`.
+
      `parcels` is now array of complicated hashes; each parcel must have `parcel_id` key.
-  3) When such time passed ask for results by calling `ParcelsSendProcessUpdater.call(transmission_id)`. You can get error `Processing is not yet finished` or hash based on `parcel_id` keys.
-   eg. :`{ 'parcel_id1' => {parcel_code: 'RA12345687', status_code: '1', state_text: 'OK' }, }`.
+  3) When such time passed ask for results by calling `ParcelsSendProcessUpdater.call(transmission_id)`.
+
+     You can get error `Processing is not yet finished` or hash based on `parcel_id` keys.
+     Eg. :
+     ```
+     { 'parcel_id1' => {parcel_code: 'RA12345687', status_code: '1', state_text: 'OK' }, }
+     ```
   4) Print address sheets of parcels(s) by calling `AddressSheetsGenerator.call(parcel_codes)`.
-   eg. : `parcel_codes = %w[RA123456789 RR123456789F RR123456789G] # beware of parcel_id!`
+     Eg. :
+     ```
+     parcel_codes = %w[RA123456789 RR123456789F RR123456789G] # beware of parcel_id!
+     ```
 
   5) Repeat steps 1-4 untill You decide to deliver packages to post office.
 
   6) Close your parcels submission by `ParcelsSubmissionCloser.call`.
   7) They will await You at post office with warm welcome (hopefully).
-  8) You can check current status of delivering by `DeliveringInspector.call(parcels)`, which will update `parcel.current_state`, `parcel.last_state_change` and `parcel.state_changes`.
+  8) You can check current status of delivering by `DeliveringInspector.call(parcels)`, which will return hash based on `parcel_code` keys.
+     Eg. :
+     ```
+     { 'RA12345687' => { current_state: { id: '91',
+                                           date: Date.parse('2015-09-04'),
+                                           text: 'Dodání zásilky.',
+                                           post_code: '25756',
+                                           post_name: 'Neveklov'},
+                         deposited_until: Date.new(2015, 9, 2),
+                         deposited_for_days: 15,
+                         all_states: [
+                           { id: '21', date: Date.parse('2015-09-02'), text: 'Podání zásilky.', post_code: '26701', post_name: 'Králův Dvůr u Berouna' },
+                           { id: '-F', date: Date.parse('2015-09-03'), text: 'Vstup zásilky na SPU.', post_code: '22200', post_name: 'SPU Praha 022' },
+                           { id: '-I', date: Date.parse('2015-09-03'), text: 'Výstup zásilky z SPU.', post_code: '22200', post_name: 'SPU Praha 022' },
+                           { id: '-B', date: Date.parse('2015-09-03'), text: 'Přeprava zásilky k dodací poště.', post_code: nil, post_name: nil },
+                           { id: '51', date: Date.parse('2015-09-04'), text: 'Příprava zásilky k doručení.', post_code: '25607', post_name: 'Depo Benešov 70' },
+                           { id: '53', date: Date.parse('2015-09-04'), text: 'Doručování zásilky.', post_code: '25756', post_name: 'Neveklov' },
+                           { id: '91', date: Date.parse('2015-09-04'), text: 'Dodání zásilky.', post_code: '25756', post_name: 'Neveklov' }
+                         ]}
+     ```
   9) And You can always ask for statistics! Use `PeriodStatisticator.call(from: date_from, to: date_to)`.
 
   ### Example usage
