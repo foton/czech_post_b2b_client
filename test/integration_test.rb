@@ -2,26 +2,32 @@
 
 require 'test_helper'
 
-
 module CzechPostB2bClient
   module Test
     class IntegrationTest < Minitest::Test
       attr_accessor :processing_end_time, :transaction_id, :parcels
-      attr_reader :expected_processing_end_time, :expected_transaction_id
+      attr_reader :expected_processing_end_time,
+                  :expected_transaction_id,
+                  :parcel_1of2_expected_code,
+                  :parcel_2of2_expected_code,
+                  :parcel_3_expected_code
 
       def setup
         setup_configuration
         @parcels = [parcel_1of2, parcel_2of2, parcel_3]
         @expected_processing_end_time = (Time.now + 4) # + 4 seconds
         @expected_transaction_id = 'string50'
+        @parcel_1of2_expected_code = 'BA1010101010B'
+        @parcel_2of2_expected_code = 'BA1010101011B'
+        @parcel_3_expected_code = 'RR1010101012B'
 
         stub_api_calls
       end
 
       def test_it_have_successfull_workflow
         it_imports_parcels_data
-        skip
         it_collect_results_of_import
+        skip
         it_prints_address_sheets # and stick it on right parcels
         it_closes_submission_batch
         # here comes the human part: these parcels to post office
@@ -44,12 +50,19 @@ module CzechPostB2bClient
 
       def it_collect_results_of_import
         wait_until(processing_end_time)
-        inspector_service = CzechPostB2bClient::Services::ParcelsSendProcessUpdater.call(transaction_id)
+        inspector_service = CzechPostB2bClient::Services::ParcelsSendProcessUpdater.call(transaction_id: transaction_id)
         unless inspector_service.success?
           wait_until(Time.zone.now + 60)
-          inspector_service = CzechPostB2bClient::Services::ParcelsSendProcessUpdater.call(transaction_id)
+          inspector_service = CzechPostB2bClient::Services::ParcelsSendProcessUpdater.call(transaction_id: transaction_id)
         end
-        update_parcels_data_with(inspector_service.result) # TODO: parcels have assigned `code` and `sending_status`
+
+        assert inspector_service.success?
+
+        update_parcels_data_with(inspector_service.result.parcels_hash) # TODO: parcels have assigned `code` and `sending_status`
+
+        assert_equal parcel_1of2_expected_code, parcel_1of2[:parcel_code]
+        assert_equal parcel_2of2_expected_code, parcel_2of2[:parcel_code]
+        assert_equal parcel_3_expected_code, parcel_3[:parcel_code]
       end
 
       def it_prints_address_sheets
@@ -124,13 +137,12 @@ module CzechPostB2bClient
       end
 
       def stub_api_calls
-
         stub_request(:post, 'https://b2b.postaonline.cz/services/POLService/v1/sendParcels')
           .to_return(status: 200, body: send_parcels_response_xml, headers: {})
 
-        # TODO
-        # sendParcels
-        # getResultParcels
+        stub_request(:post, "https://b2b.postaonline.cz/services/POLService/v1/getResultParcels")
+          .to_return(status: 200, body: get_result_parcels_response_xml, headers: {})
+
         # getParcelsPrinting
         # getParcelState
         # getStats
@@ -141,6 +153,17 @@ module CzechPostB2bClient
         sd.delete(:customer_id) # taken from config
         sd.delete(:sending_post_office_code) # taken from config
         sd
+      end
+
+      def wait_until(time)
+        # this is just usage example
+        # no need to wait in tests
+      end
+
+      def update_parcels_data_with(updated_parcels_hash)
+        parcels.each do |parcel|
+          parcel[:parcel_code] = updated_parcels_hash[parcel[:params][:parcel_id]][:parcel_code]
+        end
       end
 
       def send_parcels_response_xml
@@ -158,6 +181,197 @@ module CzechPostB2bClient
               </v1:b2bRequestHeader>
             </v1:header>
           </v1:b2bASyncResponse>
+        XML
+      end
+
+      def get_result_parcels_response_xml
+        <<~XML
+          <?xml version="1.0" encoding="UTF-8"?>
+          <p:b2bSyncResponse xmlns:p="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:PO="https://b2b.postaonline.cz/schema/POLServices-v1">
+            <p:header>
+              <p:timeStamp>2016-02-18T16:00:34.913Z</p:timeStamp>
+              <p:b2bRequestHeader>
+                <p:idExtTransaction>64</p:idExtTransaction>
+                <p:timeStamp>2016-03-12T10:00:34.573Z</p:timeStamp>
+                <p:idContract>25195667001</p:idContract>
+              </p:b2bRequestHeader>
+            </p:header>
+            <p:serviceData>
+              <PO:getResultParcelsResponse>
+                <PO:doParcelHeaderResult>
+                  <PO:doParcelStateResponse>  <!-- I do not understand meaning of this -->
+                    <PO:responseCode>1</PO:responseCode>
+                    <PO:responseText>OK</PO:responseText>
+                  </PO:doParcelStateResponse>
+                </PO:doParcelHeaderResult>
+
+                <PO:doParcelParamResult>
+                  <!-- my guess: sendParcels.doParcelData.doParcelParams.recordID == recordNumber -->
+                  <PO:recordNumber>#{parcel_1of2[:params][:parcel_id]}</PO:recordNumber> <!-- unique ID of record, string,-->
+                  <PO:parcelCode>#{parcel_1of2_expected_code}</PO:parcelCode>
+                  <PO:doParcelStateResponse>   <!-- according to XSD, there is unlimited count of this! -->
+                    <PO:responseCode>1</PO:responseCode>
+                    <PO:responseText>OK</PO:responseText>
+                  </PO:doParcelStateResponse>
+                </PO:doParcelParamResult>
+
+                <PO:doParcelParamResult>
+                   <!-- I am not yet sure if, packages of one parcels shares same code -->
+                  <PO:recordNumber>#{parcel_2of2[:params][:parcel_id]}</PO:recordNumber>
+                  <PO:parcelCode>#{parcel_2of2_expected_code}</PO:parcelCode>
+                  <PO:doParcelStateResponse>
+                    <PO:responseCode>1</PO:responseCode>
+                    <PO:responseText>OK</PO:responseText>
+                  </PO:doParcelStateResponse>
+                </PO:doParcelParamResult>
+
+                <PO:doParcelParamResult>
+                  <PO:recordNumber>#{parcel_3[:params][:parcel_id]}</PO:recordNumber>
+                  <PO:parcelCode>#{parcel_3_expected_code}</PO:parcelCode>
+                  <PO:doParcelStateResponse>
+                    <PO:responseCode>1</PO:responseCode>
+                    <PO:responseText>OK</PO:responseText>
+                  </PO:doParcelStateResponse>
+                </PO:doParcelParamResult>
+
+              </PO:getResultParcelsResponse>
+            </p:serviceData>
+          </p:b2bSyncResponse>
+        XML
+      end
+
+      def get_parcel_state_response_xml
+        <<~XML
+          <?xml version="1.0" encoding="UTF-8"?>
+          <v1:b2bSyncResponse xmlns:v1="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:v1_1="https://b2b.postaonline.cz/schema/POLServices-v1">
+            <v1:header>
+              <v1:timeStamp>2016-02-18T16:00:34.913Z</v1:timeStamp>
+              <v1:b2bRequestHeader>
+                <v1:idExtTransaction>64</v1:idExtTransaction>
+                <v1:timeStamp>2016-03-12T10:00:34.573Z</v1:timeStamp>
+                <v1:idContract>25195667001</v1:idContract>
+              </v1:b2bRequestHeader>
+            </v1:header>
+            <v1:serviceData>
+              <v1_1:getParcelStateResponse>
+                <v1_1:parcel>
+                  <v1_1:idParcel>BA0109964075X</v1_1:idParcel>
+                  <v1_1:parcelType>BA</v1_1:parcelType> <!-- string, what is allowed here?! -->
+                  <v1_1:states>
+                    <v1_1:state>
+                      <v1_1:id>21</v1_1:id> <!-- string, what is allowed here?! -->
+                      <v1_1:date>2015-09-02</v1_1:date>
+                      <v1_1:text>Podání zásilky.</v1_1:text>
+                      <v1_1:postCode>26701</v1_1:postCode> <!-- PSC kde stav nastal -->
+                      <v1_1:name>Králův Dvůr u Berouna</v1_1:name> <!-- nazev provozovny kde stav nastal -->
+                    </v1_1:state>
+                    <v1_1:state>
+                      <v1_1:id>-F</v1_1:id>
+                      <v1_1:date>2015-09-03</v1_1:date>
+                      <v1_1:text>Vstup zásilky na SPU.</v1_1:text>
+                      <v1_1:postCode>22200</v1_1:postCode>
+                      <v1_1:name>SPU Praha 022</v1_1:name>
+                    </v1_1:state>
+                    <v1_1:state>
+                      <v1_1:id>-I</v1_1:id>
+                      <v1_1:date>2015-09-03</v1_1:date>
+                      <v1_1:text>Výstup zásilky z SPU.</v1_1:text>
+                      <v1_1:postCode>22200</v1_1:postCode>
+                      <v1_1:name>SPU Praha 022</v1_1:name>
+                    </v1_1:state>
+                    <v1_1:state>
+                      <v1_1:id>-B</v1_1:id>
+                      <v1_1:date>2015-09-03</v1_1:date>
+                      <v1_1:text>Přeprava zásilky k dodací poště.</v1_1:text>
+                    </v1_1:state>
+                    <v1_1:state>
+                      <v1_1:id>51</v1_1:id>
+                      <v1_1:date>2015-09-04</v1_1:date>
+                      <v1_1:text>Příprava zásilky k doručení.</v1_1:text>
+                      <v1_1:postCode>25607</v1_1:postCode>
+                      <v1_1:name>Depo Benešov 70</v1_1:name>
+                    </v1_1:state>
+                    <v1_1:state>
+                      <v1_1:id>53</v1_1:id>
+                      <v1_1:date>2015-09-04</v1_1:date>
+                      <v1_1:text>Doručování zásilky.</v1_1:text>
+                      <v1_1:postCode>25756</v1_1:postCode>
+                      <v1_1:name>Neveklov</v1_1:name>
+                    </v1_1:state>
+                    <v1_1:state>
+                      <v1_1:id>91</v1_1:id>
+                      <v1_1:date>2015-09-04</v1_1:date>
+                      <v1_1:text>Dodání zásilky.</v1_1:text>
+                      <v1_1:postCode>25756</v1_1:postCode>
+                      <v1_1:name>Neveklov</v1_1:name>
+                    </v1_1:state>
+                  </v1_1:states>
+                </v1_1:parcel>
+                <v1_1:parcel>
+                  <v1_1:idParcel>BA0146149139X</v1_1:idParcel>
+                  <v1_1:parcelType>BA</v1_1:parcelType>
+                  <v1_1:weight>0.686</v1_1:weight>
+                  <v1_1:amount>0</v1_1:amount>
+                  <v1_1:currency></v1_1:currency>
+                  <v1_1:timeDeposit>15</v1_1:timeDeposit>
+                  <v1_1:states>
+                    <v1_1:state>
+                      <v1_1:id>21</v1_1:id>
+                      <v1_1:date>2015-08-18</v1_1:date>
+                      <v1_1:text>Podání zásilky.</v1_1:text>
+                      <v1_1:postCode>53703</v1_1:postCode>
+                      <v1_1:name>Chrudim 3</v1_1:name>
+                    </v1_1:state>
+                    <v1_1:state>
+                      <v1_1:id>-F</v1_1:id>
+                      <v1_1:date>2015-08-18</v1_1:date>
+                      <v1_1:text>Vstup zásilky na SPU.</v1_1:text>
+                      <v1_1:postCode>53020</v1_1:postCode>
+                      <v1_1:name>SPU Pardubice 02</v1_1:name>
+                    </v1_1:state>
+                    <v1_1:state>
+                      <v1_1:id>-I</v1_1:id>
+                      <v1_1:date>2015-08-19</v1_1:date>
+                      <v1_1:text>Výstup zásilky z SPU.</v1_1:text>
+                      <v1_1:postCode>22200</v1_1:postCode>
+                      <v1_1:name>SPU Praha 022</v1_1:name>
+                    </v1_1:state>
+                    <v1_1:state>
+                      <v1_1:id>-B</v1_1:id>
+                      <v1_1:date>2015-08-19</v1_1:date>
+                      <v1_1:text>Přeprava zásilky k dodací poště.</v1_1:text>
+                    </v1_1:state>
+                    <v1_1:state>
+                      <v1_1:id>51</v1_1:id>
+                      <v1_1:date>2015-08-20</v1_1:date>
+                      <v1_1:text>Příprava zásilky k doručení.</v1_1:text>
+                      <v1_1:postCode>25607</v1_1:postCode>
+                      <v1_1:name>Depo Benešov 70</v1_1:name>
+                    </v1_1:state>
+                    <v1_1:state>
+                      <v1_1:id>53</v1_1:id>
+                      <v1_1:date>2015-08-20</v1_1:date>
+                      <v1_1:text>Doručování zásilky.</v1_1:text>
+                      <v1_1:postCode>25756</v1_1:postCode>
+                      <v1_1:name>Neveklov</v1_1:name>
+                    </v1_1:state>
+                    <v1_1:state>
+                      <v1_1:id>43</v1_1:id>
+                      <v1_1:date>2015-08-20</v1_1:date>
+                      <v1_1:text>E-mail odesílateli - dodání zásilky.</v1_1:text>
+                    </v1_1:state>
+                    <v1_1:state>
+                      <v1_1:id>91</v1_1:id>
+                      <v1_1:date>2015-08-20</v1_1:date>
+                      <v1_1:text>Dodání zásilky.</v1_1:text>
+                      <v1_1:postCode>25756</v1_1:postCode>
+                      <v1_1:name>Neveklov</v1_1:name>
+                    </v1_1:state>
+                  </v1_1:states>
+                </v1_1:parcel>
+                </v1_1:getParcelStateResponse>
+              </v1:serviceData>
+          </v1:b2bSyncResponse>
         XML
       end
     end
