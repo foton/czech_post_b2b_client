@@ -10,7 +10,8 @@ module CzechPostB2bClient
                   :expected_transaction_id,
                   :parcel_1of2_expected_code,
                   :parcel_2of2_expected_code,
-                  :parcel_3_expected_code
+                  :parcel_3_expected_code,
+                  :parcel_codes
 
       def setup
         setup_configuration
@@ -20,6 +21,7 @@ module CzechPostB2bClient
         @parcel_1of2_expected_code = 'BA1010101010B'
         @parcel_2of2_expected_code = 'BA1010101011B'
         @parcel_3_expected_code = 'RR1010101012B'
+        @parcel_codes = [@parcel_1of2_expected_code, @parcel_2of2_expected_code, @parcel_3_expected_code]
 
         stub_api_calls
       end
@@ -27,8 +29,8 @@ module CzechPostB2bClient
       def test_it_have_successfull_workflow
         it_imports_parcels_data
         it_collect_results_of_import
-        skip
         it_prints_address_sheets # and stick it on right parcels
+        skip
         it_closes_submission_batch
         # here comes the human part: these parcels to post office
         it_checks_delivery_statuses
@@ -66,7 +68,14 @@ module CzechPostB2bClient
       end
 
       def it_prints_address_sheets
-        pdf_service = CzechPostB2bClient::Services::AddressSheetsGenerator.call(parcels, format: '4x2')
+        options = {
+          customer_id: configuration.customer_id,  # required
+          contract_number: configuration.contract_id, # not required
+          template_id: 24, # 'obálka 3 - B4'   : not required
+          margin_in_mm: { top: 5, left: 3 }, # required
+        }
+
+        pdf_service = CzechPostB2bClient::Services::AddressSheetsGenerator.call(parcel_codes: parcel_codes, options: options )
 
         assert pdf_service.success?
 
@@ -143,6 +152,9 @@ module CzechPostB2bClient
         stub_request(:post, "https://b2b.postaonline.cz/services/POLService/v1/getResultParcels")
           .to_return(status: 200, body: get_result_parcels_response_xml, headers: {})
 
+        stub_request(:post, "https://b2b.postaonline.cz/services/POLService/v1/getParcelsPrinting")
+          .to_return(status: 200, body: get_parcels_printing_response_xml, headers: {})
+
         # getParcelsPrinting
         # getParcelState
         # getStats
@@ -158,6 +170,10 @@ module CzechPostB2bClient
       def wait_until(time)
         # this is just usage example
         # no need to wait in tests
+      end
+
+      def save_as_pdf(pdf_content)
+        # do printing or saving here
       end
 
       def update_parcels_data_with(updated_parcels_hash)
@@ -237,6 +253,44 @@ module CzechPostB2bClient
               </PO:getResultParcelsResponse>
             </p:serviceData>
           </p:b2bSyncResponse>
+        XML
+      end
+
+      def get_parcels_printing_response_xml
+        <<~XML
+          <?xml version="1.0" encoding="UTF-8"?>
+          <b2bSyncResponse xmlns="https://b2b.postaonline.cz/schema/B2BCommon-v1"
+            xmlns:ns2="https://b2b.postaonline.cz/schema/POLServices-v1">
+            <header>
+              <timeStamp>2016-02-18T16:00:34.913Z</timeStamp>
+              <b2bRequestHeader>
+                <idExtTransaction>42</idExtTransaction>
+                <timeStamp>2016-03-12T10:00:34.573Z</timeStamp>
+                <idContract>25195667001</idContract>
+              </b2bRequestHeader>
+            </header>
+            <serviceData>
+              <ns2:getParcelsPrintingResponse>
+                <ns2:doPrintingHeaderResult>
+                  <ns2:doPrintingHeader>
+                    <ns2:customerID>#{configuration.customer_id}</ns2:customerID>
+                    <ns2:contractNumber>#{configuration.contract_id}</ns2:contractNumber>
+                    <ns2:idForm>24</ns2:idForm>
+                    <ns2:shiftHorizontal>3</ns2:shiftHorizontal>
+                    <ns2:shiftVertical>5</ns2:shiftVertical>
+                    <ns2:position>1</ns2:position>
+                  </ns2:doPrintingHeader>
+                  <ns2:doPrintingStateResponse>
+                    <ns2:responseCode>0</ns2:responseCode>
+                    <ns2:responseText>OK</ns2:responseText>
+                  </ns2:doPrintingStateResponse>
+                </ns2:doPrintingHeaderResult>
+                <ns2:doPrintingDataResult>
+                  <ns2:file>dmVyeSBiaWcgcGRmIGV4dHJhY3RlZCBmcm9tIGJhc2U2NCBzdHJpbmc=</ns2:file>
+                </ns2:doPrintingDataResult>
+              </ns2:getParcelsPrintingResponse>
+            </serviceData>
+          </b2bSyncResponse>
         XML
       end
 
