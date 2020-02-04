@@ -3,7 +3,7 @@
 module CzechPostB2bClient
   module Services
     class DeliveringInspector < CzechPostB2bClient::Services::Communicator
-      attr_reader :parcel_codes, :options
+      attr_reader :parcel_codes
 
       def initialize(parcel_codes:)
         @parcel_codes = parcel_codes

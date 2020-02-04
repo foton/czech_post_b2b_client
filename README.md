@@ -81,7 +81,7 @@ https://b2b.postaonline.cz supports TLS 1.2, 1.1. 1.0
                            { id: '91', date: Date.parse('2015-09-04'), text: 'Dodání zásilky.', post_code: '25756', post_name: 'Neveklov' }
                          ]}
      ```
-  9) And You can always ask for statistics! Use `PeriodStatisticator.call(from: date_from, to: date_to)`.
+  9) And You can always ask for statistics! Use `TimePeriodStatisticator.call(from: date_from, to: date_to)`.
 
   ### Example usage
   ```

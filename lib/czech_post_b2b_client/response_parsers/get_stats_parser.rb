@@ -7,7 +7,7 @@ module CzechPostB2bClient
         super
         @result[:imports] = { requested: imports.all,
                               with_errors: imports.err,
-                              sucessfull: imports.ok,
+                              successful: imports.ok,
                               imported_parcels: imports.parcels }
       end
 

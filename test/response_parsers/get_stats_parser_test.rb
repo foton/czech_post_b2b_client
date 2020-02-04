@@ -31,7 +31,7 @@ module CzechPostB2bClient
 
       def expected_struct
         {
-          imports: { requested: 16, with_errors: 13, sucessfull: 3, imported_parcels: 43 },
+          imports: { requested: 16, with_errors: 13, successful: 3, imported_parcels: 43 },
           request: { created_at: Time.parse('2014-03-12T12:33:34.573Z'),
                      contract_id: '25195667001',
                      request_id: '42' },
