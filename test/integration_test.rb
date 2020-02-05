@@ -11,7 +11,8 @@ module CzechPostB2bClient
                   :parcel_1of2_expected_code,
                   :parcel_2of2_expected_code,
                   :parcel_3_expected_code,
-                  :parcel_codes
+                  :parcel_codes,
+                  :expected_first_state_change_of_parcel_1of2
 
       def setup
         setup_configuration
@@ -22,6 +23,11 @@ module CzechPostB2bClient
         @parcel_2of2_expected_code = 'BA1010101011B'
         @parcel_3_expected_code = 'RR1010101012B'
         @parcel_codes = [@parcel_1of2_expected_code, @parcel_2of2_expected_code, @parcel_3_expected_code]
+        @expected_first_state_change_of_parcel_1of2 = { id: '21',
+                                                        date: Date.new(2015, 9, 2),
+                                                        text: 'Podání zásilky.',
+                                                        post_code: '26701',
+                                                        post_name: 'Králův Dvůr u Berouna' }
 
         stub_api_calls
       end
@@ -30,10 +36,10 @@ module CzechPostB2bClient
         it_imports_parcels_data
         it_collect_results_of_import
         it_prints_address_sheets # and stick it on right parcels
-        skip
         it_closes_submission_batch
         # here comes the human part: these parcels to post office
         it_checks_delivery_statuses
+        skip
         it_knows_statistics
       end
 
@@ -41,7 +47,7 @@ module CzechPostB2bClient
         # post informations about parcels to Czech Post
         sender_service = CzechPostB2bClient::Services::ParcelsSender.call(sending_data: sending_data, parcels: parcels)
 
-        assert sender_service.success?, "It failed with errors: #{sender_service.errors}"
+        assert sender_service.success?, "ParcelSender failed with errors: #{sender_service.errors}"
 
         @processing_end_time = sender_service.result.processing_end_expected_at
         @transaction_id = sender_service.result.transaction_id
@@ -58,7 +64,7 @@ module CzechPostB2bClient
           inspector_service = CzechPostB2bClient::Services::ParcelsSendProcessUpdater.call(transaction_id: transaction_id)
         end
 
-        assert inspector_service.success?
+        assert inspector_service.success?, "ParcelsSendProcessUpdater failed with errors: #{inspector_service.errors}"
 
         update_parcels_data_with(inspector_service.result.parcels_hash) # TODO: parcels have assigned `code` and `sending_status`
 
@@ -69,15 +75,15 @@ module CzechPostB2bClient
 
       def it_prints_address_sheets
         options = {
-          customer_id: configuration.customer_id,  # required
+          customer_id: configuration.customer_id, # required
           contract_number: configuration.contract_id, # not required
-          template_id: 24, # 'obálka 3 - B4'   : not required
-          margin_in_mm: { top: 5, left: 3 }, # required
+          template_id: 24, # 'obalka 3 - B4'   : not required
+          margin_in_mm: { top: 5, left: 3 } # required
         }
 
         pdf_service = CzechPostB2bClient::Services::AddressSheetsGenerator.call(parcel_codes: parcel_codes, options: options )
 
-        assert pdf_service.success?
+        assert pdf_service.success?, "AddressSheetGenerator failed with errors: #{pdf_service.errors}"
 
         pdf_file_content = pdf_service.result
         save_as_pdf(pdf_file_content)
@@ -85,26 +91,30 @@ module CzechPostB2bClient
 
       def it_closes_submission_batch
         # close submission before delivering parcels to post office
-        raise 'Not closed!' unless CzechPostB2bClient::Services::ParcelsSubmissionCloser.call.success?
+        closer_service = CzechPostB2bClient::Services::ParcelsSubmissionCloser.call(sending_data: sending_data)
+        assert closer_service.success?, "ParcelsSubmissionCloser failed with errors: #{closer_service.errors}"
       end
 
       def it_checks_delivery_statuses
-        refute parcel_1of2.delivered?
-        refute parcel_2of2.delivered?
-        refute parcel_3.delivered?
+        refute parcel_1of2[:delivered]
+        refute parcel_2of2[:delivered]
+        refute parcel_3[:delivered]
 
-        deliver_inspector = CzechPostB2bClient::Services::DeliveringInspector.call(parcels)
+        delivering_inspector = CzechPostB2bClient::Services::DeliveringInspector.call(parcel_codes: parcel_codes)
 
-        assert deliver_inspector.success?
+        assert delivering_inspector.success?, "DeliveringInspector failed with errors: #{delivering_inspector.errors}"
 
         # will update `parcel.current_state`, `parcel.last_state_change` and `parcel.state_changes`.
-        assert parcel_1of2.delivered?
-        assert parcel_2of2.delivered?
-        refute parcel_3.delivered?
+        update_parcels_states_with(delivering_inspector.result)
 
-        assert_equal 3, parcel1.state_changes.size
-        assert_equal :delivered, parcel1.state_changes.to_state
-        assert_equal p1_deliver_time, parcel1.state_changes.changed_at
+        assert parcel_1of2[:delivered]
+        assert parcel_2of2[:delivered]
+        refute parcel_3[:delivered]
+
+        assert_equal 7, parcel_1of2[:state_changes].size
+        assert_equal '91', parcel_1of2[:current_state][:id] # delivered
+        assert_equal expected_first_state_change_of_parcel_1of2, parcel_1of2[:state_changes].first
+
       end
 
       def it_knows_statistics
@@ -155,8 +165,11 @@ module CzechPostB2bClient
         stub_request(:post, "https://b2b.postaonline.cz/services/POLService/v1/getParcelsPrinting")
           .to_return(status: 200, body: get_parcels_printing_response_xml, headers: {})
 
-        # getParcelsPrinting
-        # getParcelState
+        # ParcelsSubmissionCloser uses same stub as ParcelSender (it actualy call the same service URL)
+
+        stub_request(:post, "https://b2b.postaonline.cz/services/POLService/v1/getParcelState")
+          .to_return(status: 200, body: get_parcel_state_response_xml, headers: {})
+
         # getStats
       end
 
@@ -179,6 +192,17 @@ module CzechPostB2bClient
       def update_parcels_data_with(updated_parcels_hash)
         parcels.each do |parcel|
           parcel[:parcel_code] = updated_parcels_hash[parcel[:params][:parcel_id]][:parcel_code]
+        end
+      end
+
+      def update_parcels_states_with(states_hash)
+        parcels.each do |parcel|
+          parcel_hash = states_hash[parcel[:parcel_code]]
+          next if parcel_hash.nil?
+
+          parcel[:current_state] = parcel_hash[:current_state]
+          parcel[:state_changes] = parcel_hash[:all_states]
+          parcel[:delivered] = parcel_hash[:current_state][:id] == '91'
         end
       end
 
@@ -309,7 +333,7 @@ module CzechPostB2bClient
             <v1:serviceData>
               <v1_1:getParcelStateResponse>
                 <v1_1:parcel>
-                  <v1_1:idParcel>BA0109964075X</v1_1:idParcel>
+                  <v1_1:idParcel>#{parcel_1of2_expected_code}</v1_1:idParcel>
                   <v1_1:parcelType>BA</v1_1:parcelType> <!-- string, what is allowed here?! -->
                   <v1_1:states>
                     <v1_1:state>
@@ -362,7 +386,7 @@ module CzechPostB2bClient
                   </v1_1:states>
                 </v1_1:parcel>
                 <v1_1:parcel>
-                  <v1_1:idParcel>BA0146149139X</v1_1:idParcel>
+                  <v1_1:idParcel>#{parcel_2of2_expected_code}</v1_1:idParcel>
                   <v1_1:parcelType>BA</v1_1:parcelType>
                   <v1_1:weight>0.686</v1_1:weight>
                   <v1_1:amount>0</v1_1:amount>
@@ -423,8 +447,32 @@ module CzechPostB2bClient
                     </v1_1:state>
                   </v1_1:states>
                 </v1_1:parcel>
-                </v1_1:getParcelStateResponse>
-              </v1:serviceData>
+                <v1_1:parcel>
+                  <v1_1:idParcel>#{parcel_3_expected_code}</v1_1:idParcel>
+                  <v1_1:parcelType>RR</v1_1:parcelType>
+                  <v1_1:weight>0.086</v1_1:weight>
+                  <v1_1:amount>0</v1_1:amount>
+                  <v1_1:currency></v1_1:currency>
+                  <v1_1:timeDeposit>15</v1_1:timeDeposit>
+                  <v1_1:states>
+                    <v1_1:state>
+                      <v1_1:id>21</v1_1:id>
+                      <v1_1:date>2015-08-18</v1_1:date>
+                      <v1_1:text>Podání zásilky.</v1_1:text>
+                      <v1_1:postCode>53703</v1_1:postCode>
+                      <v1_1:name>Chrudim 3</v1_1:name>
+                    </v1_1:state>
+                    <v1_1:state>
+                      <v1_1:id>-F</v1_1:id>
+                      <v1_1:date>2015-08-18</v1_1:date>
+                      <v1_1:text>Vstup zásilky na SPU.</v1_1:text>
+                      <v1_1:postCode>53020</v1_1:postCode>
+                      <v1_1:name>SPU Pardubice 02</v1_1:name>
+                    </v1_1:state>
+                  </v1_1:states>
+                </v1_1:parcel>
+              </v1_1:getParcelStateResponse>
+            </v1:serviceData>
           </v1:b2bSyncResponse>
         XML
       end
