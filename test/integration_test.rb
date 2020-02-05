@@ -39,7 +39,6 @@ module CzechPostB2bClient
         it_closes_submission_batch
         # here comes the human part: these parcels to post office
         it_checks_delivery_statuses
-        skip
         it_knows_statistics
       end
 
@@ -114,13 +113,17 @@ module CzechPostB2bClient
         assert_equal 7, parcel_1of2[:state_changes].size
         assert_equal '91', parcel_1of2[:current_state][:id] # delivered
         assert_equal expected_first_state_change_of_parcel_1of2, parcel_1of2[:state_changes].first
-
       end
 
       def it_knows_statistics
-        statisticator = CzechPostB2bClient::Services::TimePeriodStatisticator.call(from: date_from, to: date_to)
-        expected_stats = { imports_ok: 1, imports_failed: 0, parcels_processed: 2 }
-        assert_equal expected_stats, statisticator.result
+        statisticator = CzechPostB2bClient::Services::TimePeriodStatisticator.call(from_date: Date.new(2019, 10, 23),
+                                                                                   to_date: Date.new(2020, 2, 2))
+        stats = statisticator.result
+
+        assert_equal 16, stats.requests.total
+        assert_equal 13, stats.requests.with_errors
+        assert_equal 3, stats.requests.successful
+        assert_equal 43, stats.imported_parcels
       end
 
       private
@@ -159,18 +162,19 @@ module CzechPostB2bClient
         stub_request(:post, 'https://b2b.postaonline.cz/services/POLService/v1/sendParcels')
           .to_return(status: 200, body: send_parcels_response_xml, headers: {})
 
-        stub_request(:post, "https://b2b.postaonline.cz/services/POLService/v1/getResultParcels")
+        stub_request(:post, 'https://b2b.postaonline.cz/services/POLService/v1/getResultParcels')
           .to_return(status: 200, body: get_result_parcels_response_xml, headers: {})
 
-        stub_request(:post, "https://b2b.postaonline.cz/services/POLService/v1/getParcelsPrinting")
+        stub_request(:post, 'https://b2b.postaonline.cz/services/POLService/v1/getParcelsPrinting')
           .to_return(status: 200, body: get_parcels_printing_response_xml, headers: {})
 
         # ParcelsSubmissionCloser uses same stub as ParcelSender (it actualy call the same service URL)
 
-        stub_request(:post, "https://b2b.postaonline.cz/services/POLService/v1/getParcelState")
+        stub_request(:post, 'https://b2b.postaonline.cz/services/POLService/v1/getParcelState')
           .to_return(status: 200, body: get_parcel_state_response_xml, headers: {})
 
-        # getStats
+        stub_request(:post, "https://b2b.postaonline.cz/services/POLService/v1/getStats")
+          .to_return(status: 200, body: get_stats_response_xml, headers: {})
       end
 
       def sending_data
@@ -476,6 +480,31 @@ module CzechPostB2bClient
           </v1:b2bSyncResponse>
         XML
       end
+
+      def get_stats_response_xml
+        <<~XML
+          <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+          <v1:b2bSyncResponse xmlns:v1="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:v1_1="https://b2b.postaonline.cz/schema/POLServices-v1">
+            <v1:header>
+              <v1:timeStamp>2016-02-25T08:30:03.678Z</v1:timeStamp>
+              <v1:b2bRequestHeader>
+                <v1:idExtTransaction>42</v1:idExtTransaction>
+                <v1:timeStamp>2014-03-12T12:33:34.573Z</v1:timeStamp>
+                <v1:idContract>25195667001</v1:idContract>
+              </v1:b2bRequestHeader>
+            </v1:header>
+            <v1:serviceData>
+              <v1_1:getStatsResponse>
+                <v1_1:importAll>16</v1_1:importAll>
+                <v1_1:importErr>13</v1_1:importErr>
+                <v1_1:importOk>3</v1_1:importOk>
+                <v1_1:parcels>43</v1_1:parcels>
+              </v1_1:getStatsResponse>
+            </v1:serviceData>
+          </v1:b2bSyncResponse>
+        XML
+      end
+
     end
   end
 end
