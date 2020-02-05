@@ -1,5 +1,5 @@
 # CzechPostB2bClient
-Accessing B2B API of Czech Post for bulk processing of packages ("B2B - WS PodáníOnline").
+Accessing B2B API of Czech Post for bulk processing of parcels ("B2B - WS PodáníOnline").
 
 There are these supported operations on API:
 - *sendParcels* - stores data of parcels for async processing [HTTP POST - async response]
@@ -17,10 +17,26 @@ There are these supported operations on API:
 6) Improve your guesstimation of delivery time by working with historical data collected through *getStats*.
 
 
-## Instalation
+## Installation
 ### Registration at Czech Post
 Get  "komerční certifikát PostSignum" ( 1month testing version can be obtained at http://www.postsignum.cz/testovaci_certifikat.html).
 https://b2b.postaonline.cz supports TLS 1.2, 1.1. 1.0
+
+### Gem installation
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'czech_post_b2b_client'
+```
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install czech_post_b2b_client
 
 ### Setting up gem
    Set up your `contract_id`, `customer_id` (both from CP signed contract), `certificate_path` and `certificate_password` in configuration:
@@ -30,38 +46,44 @@ https://b2b.postaonline.cz supports TLS 1.2, 1.1. 1.0
       config.customer_id = 'customer_id' # from CP signed contract
       config.certificate_path = 'full_path/to/your/postsignum_certificate.pem'
       config.private_key_path = 'full_path/to/your/postsignum_certificate_private.key'
-      config.private_key_password = 'czechpost'
-      config.contract_id = 'certificate_password'
+      config.private_key_password = 'your_password'
       config.sending_post_office_code = 12_345 # PSC of post office where parcels will be physically delivered and submitted
     end
    ```
    Because PostSignum Certificate Authority is not trusted by default, correct certificate chain is in `certs/` folder. If You have problem with them, create and issue. Maybe they are outdated now.
 
 ## Usage
-  You have to know which parcel type (according to CP) you sending.
+  You have to know which parcel type (according to CP) you sending! Eg. 'BA' or 'RR'.
 
   1) Pack your parcel(s)
-  2) Call `ParcelsSender.call(sender_data, parcels)`, this will return expected time to ask for results and `transmission_id`.
+  2) Call `ParcelsSender.call(sending_data: sender_data, parcels: parcels)`, this will return expected time to ask for results and `transmission_id`.
 
-     `parcels` is now array of complicated hashes; each parcel must have `parcel_id` key.
-  3) When such time passed ask for results by calling `ParcelsSendProcessUpdater.call(transmission_id)`.
+     For now, `parcels` is array of complicated hashes; each parcel must have `parcel_id` key (your ID of parcel).
+  3) When such expected time pass, ask for results by calling `ParcelsSendProcessUpdater.call(transmission_id: transmission_id)`.
 
      You can get error `Processing is not yet finished` or hash based on `parcel_id` keys.
      Eg. :
      ```
      { 'parcel_id1' => {parcel_code: 'RA12345687', status_code: '1', state_text: 'OK' }, }
      ```
-  4) Print address sheets of parcels(s) by calling `AddressSheetsGenerator.call(parcel_codes)`.
+     `parcel_code` is CzechPost ID of parcel and is used in following calls.
+  4) Print address sheets of parcels(s) by calling `AddressSheetsGenerator.call(parcel_codes: parcel_codes, options: options )`.
      Eg. :
      ```
      parcel_codes = %w[RA123456789 RR123456789F RR123456789G] # beware of parcel_id!
+     options = {
+          customer_id: configuration.customer_id, # required
+          contract_number: configuration.contract_id, # not required
+          template_id: 24, # 'obalka 3 - B4'   : not required !? , see `lib/czech_post_b2b_client/printing_templates.rb` for templates
+          margin_in_mm: { top: 5, left: 3 } # required
+        }
      ```
 
-  5) Repeat steps 1-4 untill You decide to deliver packages to post office.
+  5) Repeat steps 1-4 until You decide to deliver packages to post office.
 
-  6) Close your parcels submission by `ParcelsSubmissionCloser.call`.
-  7) They will await You at post office with warm welcome (hopefully).
-  8) You can check current status of delivering by `DeliveringInspector.call(parcels)`, which will return hash based on `parcel_code` keys.
+  6) Close your parcels submission by `ParcelsSubmissionCloser.call(sending_data: sender_data)`.
+  7) _They will await You at post office with warm welcome (hopefully). Parcels which are not delivered within 60 days are removed from CzechPost systems for free :-)_
+  8) You can check current status of delivering by `DeliveringInspector.call(parcel_codes: parcel_codes)`, which will return hash based on `parcel_code` keys.
      Eg. :
      ```
      { 'RA12345687' => { current_state: { id: '91',
@@ -81,51 +103,11 @@ https://b2b.postaonline.cz supports TLS 1.2, 1.1. 1.0
                            { id: '91', date: Date.parse('2015-09-04'), text: 'Dodání zásilky.', post_code: '25756', post_name: 'Neveklov' }
                          ]}
      ```
-  9) And You can always ask for statistics! Use `TimePeriodStatisticator.call(from: date_from, to: date_to)`.
+  9) And You can always ask for statistics! Use `TimePeriodStatisticator.call(from_date: date_from, to_date: date_to)`.
 
   ### Example usage
-  ```
-  sender_adress =  CzechPostB2bClient::Address(first_name:, last_name:)
-  sender_data =  CzechPostB2bClient::SenderData(address: sender_adress)
-  ...
-  ``
 
-
-
-
-
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/czech_post_b2b_client`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
-
-## Installation
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'czech_post_b2b_client'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install czech_post_b2b_client
-
-## Usage
-
-### Configuration ###
-You have to add Your `contract_id` and path to certificate to configuration
-```
-CzechPostB2bClient.configure do |config|
-  config.contract_id = '123456'
-  config.path_from_root_to_certificate = './post_cert.crt'
-  config.language = :cs
-end
-```
+  See `test/integration_test.rb` for almost production usage. HTTP calls to B2B services are blocked and responses from them are stubbed.
 
 ## Development
 
