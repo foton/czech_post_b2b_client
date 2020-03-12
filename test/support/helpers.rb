@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+def deep_copy(obj)
+  Marshal.load(Marshal.dump(obj))
+end
+
+
 def setup_configuration(config_hash = {})
   CzechPostB2bClient.configure do |config|
     config.contract_id = 'contract_id' # from CP signed contract

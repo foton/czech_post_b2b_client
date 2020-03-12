@@ -130,9 +130,9 @@ module CzechPostB2bClient
 
       def parcel_1of2
         @parcel_1of2 ||= {
+          addressee: full_addressee_data,
           params: { parcel_id: 'package_1',
                     parcel_code_prefix: 'BA',
-                    adressee: full_addressee_data,
                     weight_in_kg: 12_345.678,
                     parcel_order: 1,
                     parcels_count: 2 }
@@ -141,9 +141,9 @@ module CzechPostB2bClient
 
       def parcel_2of2
         @parcel_2of2 ||= {
+          addressee: full_addressee_data,
           params: { parcel_id: 'package_2',
                     parcel_code_prefix: 'BA',
-                    adressee: full_addressee_data,
                     weight_in_kg: 345.678,
                     parcel_order: 2,
                     parcels_count: 2 }
@@ -152,9 +152,9 @@ module CzechPostB2bClient
 
       def parcel_3
         @parcel_3 ||= {
+          addressee: short_addressee_data,
           params: { parcel_id: 'package_3',
-                    parcel_code_prefix: 'RR',
-                    adressee: short_addressee_data }
+                    parcel_code_prefix: 'RR' }
           }
       end
 

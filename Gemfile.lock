@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    czech_post_b2b_client (0.1.0)
+    czech_post_b2b_client (0.8.0)
       ox (~> 2.11)
 
 GEM
@@ -61,15 +61,15 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler
+  bundler (~> 1.0)
   czech_post_b2b_client!
   minitest (~> 5.0)
-  minitest-reporters
-  pry-byebug
-  rake
-  rubocop
-  rubocop-minitest
-  webmock
+  minitest-reporters (~> 1.0)
+  pry-byebug (~> 3.0)
+  rake (~> 13.0)
+  rubocop (~> 0)
+  rubocop-minitest (~> 0)
+  webmock (~> 3.0)
 
 BUNDLED WITH
    1.17.3

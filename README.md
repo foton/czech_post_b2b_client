@@ -43,7 +43,7 @@ Or install it yourself as:
    ```
     CzechPostB2bClient.configure do |config|
       config.contract_id = 'contract_id' # from CP signed contract
-      config.customer_id = 'customer_id' # from CP signed contract
+      config.customer_id = 'customer_id' # from CP signed contract, also visible at https://www.postaonline.cz/podanionline/PrednastaveniUdajuZasilky.action
       config.certificate_path = 'full_path/to/your/postsignum_certificate.pem'
       config.private_key_path = 'full_path/to/your/postsignum_certificate_private.key'
       config.private_key_password = 'your_password'
@@ -108,6 +108,39 @@ Or install it yourself as:
   ### Example usage
 
   See `test/integration_test.rb` for almost production usage. HTTP calls to B2B services are blocked and responses from them are stubbed.
+
+  Simple test for corrents setup is
+  ```
+  require 'czech_post_b2b_client'
+
+  def setup_configuration(config_hash = {})
+    certs_path = File.join(__dir__, 'certs') # folder `./certs` relative to this file
+
+    CzechPostB2bClient.configure do |config|
+      config.contract_id = '12345678' # from CP signed contract
+      config.customer_id = 'Lxxxx' # from CP signed contract
+      config.certificate_path = File.join(certs_path, 'your_cert_signed_by_postsignum.pem')
+      config.private_key_password = nil # or password ( in plain text (Yayks!) or in ENV variable)
+      config.private_key_path = File.join(certs_path, 'your_private.key')
+      config.sending_post_office_code = 12_000 # PSC of post office where parcels will be physically delivered and submitted
+
+      config_hash.each_pair do |k, v|
+        config.send("#{k}=",v)
+      end
+    end
+  end
+
+  setup_configuration
+
+  srv = CzechPostB2bClient::Services::TimePeriodStatisticator.call(from_date: Date.today - 3, to_date: Date.today )
+  puts(srv.result)
+```
+and ouptut should be
+```
+ # some debug REQUEST and RESPONSE messages plus
+
+#<OpenStruct requests=#<OpenStruct total=0, with_errors=0, successful=0>, imported_parcels=0>
+```
 
 ## Development
 

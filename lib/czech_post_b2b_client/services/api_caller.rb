@@ -34,7 +34,7 @@ module CzechPostB2bClient
       def call_api
         request = Net::HTTP::Post.new service_uri.request_uri, headers
         request.body = request_xml
-
+        CzechPostB2bClient.logger.debug("CzechPost B2B REQUEST: #{request} to #{service_uri.request_uri} with body:\n#{request.body}")
         begin
           self.response = https_conn.request(request)
         rescue *KNOWN_CONNECTION_ERRORS => e
@@ -43,7 +43,9 @@ module CzechPostB2bClient
       end
 
       def handle_response
-        @result = OpenStruct.new(code: response.code.to_i, xml: response.body)
+        CzechPostB2bClient.logger.debug("CzechPost B2B RESPONSE: #{response} with body:\n#{response.body}")
+
+        @result = ::OpenStruct.new(code: response.code.to_i, xml: response.body)
         return unless b2b_error?
 
         errors.add(:b2b, b2b_error_text)

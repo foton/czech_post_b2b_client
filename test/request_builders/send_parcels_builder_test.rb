@@ -81,18 +81,37 @@ module CzechPostB2bClient
       end
 
       def test_it_checks_for_required_parcels_params
-        parcel_hashes = [
-          { params: { parcel_id: 'package_ok', parcel_code_prefix: 'XY' } },
-          { params: { parcel_id: 'package_no_prefix' } },
-          { params: { parcel_id: '', parcel_code_prefix: 'XY' } }
-        ]
+        parcel_hashes = deep_copy(short_parcels_data)
+        parcel_hashes[0][:params].merge!({ parcel_id: 'package_no_prefix', parcel_code_prefix: ''})
+        parcel_hashes[1][:params].merge!({ parcel_id: '', parcel_code_prefix: 'XY'})
 
         builder = builder_class.call(common_data: short_common_data, parcels: parcel_hashes)
 
         assert builder.failed?
         expected_errors = [
-          "Missing value for key { :params => :parcel_code_prefix } for 2. parcel (parcel_id: 'package_no_prefix')!",
-          "Missing value for key { :params => :parcel_id } for 3. parcel (parcel_id: '')!"
+          "Missing value for key { :params => :parcel_code_prefix } for 1. parcel (parcel_id: 'package_no_prefix')!",
+          "Missing value for key { :params => :parcel_id } for 2. parcel (parcel_id: '')!"
+        ]
+        assert_equal expected_errors, builder.errors[:parcels]
+      end
+
+      def test_it_checks_for_required_parcels_address
+        parcel_hashes = deep_copy(short_parcels_data)
+        parcel_hashes[0].delete(:addressee)
+        parcel_hashes[1][:addressee][:address].merge!({ first_name: "", last_name: "", street: nil })
+
+        builder = builder_class.call(common_data: short_common_data, parcels: parcel_hashes)
+
+        assert builder.failed?
+        expected_errors = [
+          "Missing value for key { :addressee => :address => :last_name } for 1. parcel (parcel_id: 'my_id')!",
+          "Missing value for key { :addressee => :address => :street } for 1. parcel (parcel_id: 'my_id')!",
+          "Missing value for key { :addressee => :address => :house_number } for 1. parcel (parcel_id: 'my_id')!",
+          "Missing value for key { :addressee => :address => :city } for 1. parcel (parcel_id: 'my_id')!",
+          "Missing value for key { :addressee => :address => :post_code } for 1. parcel (parcel_id: 'my_id')!",
+
+          "Missing value for key { :addressee => :address => :last_name } for 2. parcel (parcel_id: 'my_id2')!",
+          "Missing value for key { :addressee => :address => :street } for 2. parcel (parcel_id: 'my_id2')!"
         ]
         assert_equal expected_errors, builder.errors[:parcels]
       end
@@ -108,7 +127,10 @@ module CzechPostB2bClient
       end
 
       def minimal_parcel_data_for_id(id)
-        { params: { parcel_id: id, parcel_code_prefix: 'RA' } }
+        {
+          params: { parcel_id: id, parcel_code_prefix: 'RA' },
+          addressee: { address: { last_name: 'Skočdopole', street: 'Krátká', house_number: 5, city: 'Kotěhůlky', post_code: 77_777 } }
+        }
       end
 
       def short_parcel_data2

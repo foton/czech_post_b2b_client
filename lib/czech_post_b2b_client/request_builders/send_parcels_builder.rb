@@ -44,7 +44,12 @@ module CzechPostB2bClient
 
         rq_fields = [
           %i[params parcel_id],
-          %i[params parcel_code_prefix]
+          %i[params parcel_code_prefix],
+          %i[addressee address last_name],
+          %i[addressee address street],
+          %i[addressee address house_number],
+          %i[addressee address city],
+          %i[addressee address post_code]
         ]
         parcels.each_with_index do |parcel_data, index|
           parcel_id = parcel_data.dig(:params, :parcel_id)

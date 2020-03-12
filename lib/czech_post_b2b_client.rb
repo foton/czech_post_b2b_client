@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+require 'ostruct'
 require 'stepped_service'
 
 require 'czech_post_b2b_client/version'
