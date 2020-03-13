@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<v1:b2bASyncResponse xmlns:v1="https://b2b.postaonline.cz/schema/B2BCommon-v1"
+  xmlns:v1_1="https://b2b.postaonline.cz/schema/POLServices-v1">
+  <v1:header>
+    <v1:idTransaction>D4647E8A-0170-4000-E000-62A80AA06329</v1:idTransaction>    <!-- ID z B2B, které unikátní, k použití v getResultParcels -->
+    <v1:timeStamp>2016-02-25T08:30:03.678Z</v1:timeStamp>
+    <v1:timeStampProcessing>2016-02-25T09:30:03.678Z</v1:timeStampProcessing>    <!-- Předpokládaný čas zpracování backendem -->
+    <v1:b2bRequestHeader>
+      <v1:idExtTransaction>42</v1:idExtTransaction>
+      <v1:timeStamp>2014-03-12T12:33:34.573Z</v1:timeStamp>
+      <v1:idContract>25195667001</v1:idContract>
+    </v1:b2bRequestHeader>
+  </v1:header>
+</v1:b2bASyncResponse>

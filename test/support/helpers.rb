@@ -207,3 +207,15 @@ def full_parcel_data_custom_delaration
     ]
   }
 end
+
+def fixture_response_xml(filename)
+  File.read(File.join(fixtures_dir, 'known_responses', filename))
+end
+
+def fixture_request_xml(filename)
+  File.read(File.join(fixtures_dir, 'expected_requests', filename))
+end
+
+def fixtures_dir
+  File.join(CzechPostB2bClient.root, 'test', 'fixtures')
+end

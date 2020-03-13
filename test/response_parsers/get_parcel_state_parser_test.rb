@@ -5,147 +5,16 @@ require 'test_helper'
 module CzechPostB2bClient
   module Test
     class GetParcelStateParserTest < Minitest::Test
-      def response_xml
-        <<~XML
-          <?xml version="1.0" encoding="UTF-8"?>
-          <v1:b2bSyncResponse xmlns:v1="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:v1_1="https://b2b.postaonline.cz/schema/POLServices-v1">
-            <v1:header>
-              <v1:timeStamp>2016-02-18T16:00:34.913Z</v1:timeStamp>
-              <v1:b2bRequestHeader>
-                <v1:idExtTransaction>64</v1:idExtTransaction>
-                <v1:timeStamp>2016-03-12T10:00:34.573Z</v1:timeStamp>
-                <v1:idContract>25195667001</v1:idContract>
-              </v1:b2bRequestHeader>
-            </v1:header>
-            <v1:serviceData>
-              <v1_1:getParcelStateResponse>
-                <v1_1:parcel>
-                  <v1_1:idParcel>BA0109964075X</v1_1:idParcel>
-                  <v1_1:parcelType>BA</v1_1:parcelType> <!-- string, what is allowed here?! -->
-                  <v1_1:weight>0.690</v1_1:weight>
-                  <v1_1:amount>111.5</v1_1:amount> <!-- castka dobirky -->
-                  <v1_1:currency>CZK</v1_1:currency> <!-- mena dobirky -->
-                  <v1_1:quantityParcel>2</v1_1:quantityParcel> <!-- pocet kusu -->
-                  <v1_1:depositTo>2015-09-02</v1_1:depositTo> <!-- datum ulozeni do -->
-                  <v1_1:timeDeposit>15</v1_1:timeDeposit>     <!-- ulozni doba (asi dny) -->
-                  <v1_1:countryOfOrigin>Banánistán</v1_1:countryOfOrigin> <!-- string, what is allowed here?! -->
-                  <v1_1:countryOfDestination>Banánistán</v1_1:countryOfDestination> <!-- string, what is allowed here?! -->
-                  <v1_1:states>
-                    <v1_1:state>
-                      <v1_1:id>21</v1_1:id> <!-- string, what is allowed here?! -->
-                      <v1_1:date>2015-09-02</v1_1:date>
-                      <v1_1:text>Podání zásilky.</v1_1:text>
-                      <v1_1:postCode>26701</v1_1:postCode> <!-- PSC kde stav nastal -->
-                      <v1_1:name>Králův Dvůr u Berouna</v1_1:name> <!-- nazev provozovny kde stav nastal -->
-                    </v1_1:state>
-                    <v1_1:state>
-                      <v1_1:id>-F</v1_1:id>
-                      <v1_1:date>2015-09-03</v1_1:date>
-                      <v1_1:text>Vstup zásilky na SPU.</v1_1:text>
-                      <v1_1:postCode>22200</v1_1:postCode>
-                      <v1_1:name>SPU Praha 022</v1_1:name>
-                    </v1_1:state>
-                    <v1_1:state>
-                      <v1_1:id>-I</v1_1:id>
-                      <v1_1:date>2015-09-03</v1_1:date>
-                      <v1_1:text>Výstup zásilky z SPU.</v1_1:text>
-                      <v1_1:postCode>22200</v1_1:postCode>
-                      <v1_1:name>SPU Praha 022</v1_1:name>
-                    </v1_1:state>
-                    <v1_1:state>
-                      <v1_1:id>-B</v1_1:id>
-                      <v1_1:date>2015-09-03</v1_1:date>
-                      <v1_1:text>Přeprava zásilky k dodací poště.</v1_1:text>
-                    </v1_1:state>
-                    <v1_1:state>
-                      <v1_1:id>51</v1_1:id>
-                      <v1_1:date>2015-09-04</v1_1:date>
-                      <v1_1:text>Příprava zásilky k doručení.</v1_1:text>
-                      <v1_1:postCode>25607</v1_1:postCode>
-                      <v1_1:name>Depo Benešov 70</v1_1:name>
-                    </v1_1:state>
-                    <v1_1:state>
-                      <v1_1:id>53</v1_1:id>
-                      <v1_1:date>2015-09-04</v1_1:date>
-                      <v1_1:text>Doručování zásilky.</v1_1:text>
-                      <v1_1:postCode>25756</v1_1:postCode>
-                      <v1_1:name>Neveklov</v1_1:name>
-                    </v1_1:state>
-                    <v1_1:state>
-                      <v1_1:id>91</v1_1:id>
-                      <v1_1:date>2015-09-04</v1_1:date>
-                      <v1_1:text>Dodání zásilky.</v1_1:text>
-                      <v1_1:postCode>25756</v1_1:postCode>
-                      <v1_1:name>Neveklov</v1_1:name>
-                    </v1_1:state>
-                  </v1_1:states>
-                </v1_1:parcel>
-                <v1_1:parcel>
-                  <v1_1:idParcel>BA0146149139X</v1_1:idParcel>
-                  <v1_1:parcelType>BA</v1_1:parcelType>
-                  <v1_1:weight>0.686</v1_1:weight>
-                  <v1_1:amount>0</v1_1:amount>
-                  <v1_1:currency></v1_1:currency>
-                  <v1_1:timeDeposit>15</v1_1:timeDeposit>
-                  <v1_1:states>
-                    <v1_1:state>
-                      <v1_1:id>21</v1_1:id>
-                      <v1_1:date>2015-08-18</v1_1:date>
-                      <v1_1:text>Podání zásilky.</v1_1:text>
-                      <v1_1:postCode>53703</v1_1:postCode>
-                      <v1_1:name>Chrudim 3</v1_1:name>
-                    </v1_1:state>
-                    <v1_1:state>
-                      <v1_1:id>-F</v1_1:id>
-                      <v1_1:date>2015-08-18</v1_1:date>
-                      <v1_1:text>Vstup zásilky na SPU.</v1_1:text>
-                      <v1_1:postCode>53020</v1_1:postCode>
-                      <v1_1:name>SPU Pardubice 02</v1_1:name>
-                    </v1_1:state>
-                    <v1_1:state>
-                      <v1_1:id>-I</v1_1:id>
-                      <v1_1:date>2015-08-19</v1_1:date>
-                      <v1_1:text>Výstup zásilky z SPU.</v1_1:text>
-                      <v1_1:postCode>22200</v1_1:postCode>
-                      <v1_1:name>SPU Praha 022</v1_1:name>
-                    </v1_1:state>
-                    <v1_1:state>
-                      <v1_1:id>-B</v1_1:id>
-                      <v1_1:date>2015-08-19</v1_1:date>
-                      <v1_1:text>Přeprava zásilky k dodací poště.</v1_1:text>
-                    </v1_1:state>
-                    <v1_1:state>
-                      <v1_1:id>51</v1_1:id>
-                      <v1_1:date>2015-08-20</v1_1:date>
-                      <v1_1:text>Příprava zásilky k doručení.</v1_1:text>
-                      <v1_1:postCode>25607</v1_1:postCode>
-                      <v1_1:name>Depo Benešov 70</v1_1:name>
-                    </v1_1:state>
-                    <v1_1:state>
-                      <v1_1:id>53</v1_1:id>
-                      <v1_1:date>2015-08-20</v1_1:date>
-                      <v1_1:text>Doručování zásilky.</v1_1:text>
-                      <v1_1:postCode>25756</v1_1:postCode>
-                      <v1_1:name>Neveklov</v1_1:name>
-                    </v1_1:state>
-                    <v1_1:state>
-                      <v1_1:id>43</v1_1:id>
-                      <v1_1:date>2015-08-20</v1_1:date>
-                      <v1_1:text>E-mail odesílateli - dodání zásilky.</v1_1:text>
-                    </v1_1:state>
-                    <v1_1:state>
-                      <v1_1:id>91</v1_1:id>
-                      <v1_1:date>2015-08-20</v1_1:date>
-                      <v1_1:text>Dodání zásilky.</v1_1:text>
-                      <v1_1:postCode>25756</v1_1:postCode>
-                      <v1_1:name>Neveklov</v1_1:name>
-                    </v1_1:state>
-                  </v1_1:states>
-                </v1_1:parcel>
-                </v1_1:getParcelStateResponse>
-              </v1:serviceData>
-          </v1:b2bSyncResponse>
-        XML
+
+      def test_it_parses_to_correct_structure
+        parser = CzechPostB2bClient::ResponseParsers::GetParcelStateParser.call(xml: fixture_response_xml('getParcelState_ok.xml'))
+        assert parser.success?
+        assert_equal expected_struct, parser.result
+      end
+
+      def test_it_handle_parcels_out_of_evidence
+        # it seems, that data are stored for 1 year at Czech Post
+        skip
       end
 
       def expected_struct
@@ -156,17 +25,6 @@ module CzechPostB2bClient
                      request_id: '64' },
           response: { created_at: Time.parse('2016-02-18T16:00:34.913Z') }
         }
-      end
-
-      def test_it_parses_to_correct_structure
-        parser = CzechPostB2bClient::ResponseParsers::GetParcelStateParser.call(xml: response_xml)
-        assert parser.success?
-        assert_equal expected_struct, parser.result
-      end
-
-      def test_it_handle_parcels_out_of_evidence
-        # it seems, that data are stored for 1 year at Czech Post
-        skip
       end
 
       def expected_parcels_hash # rubocop:disable Metrics/MethodLength

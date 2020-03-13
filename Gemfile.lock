@@ -67,8 +67,8 @@ DEPENDENCIES
   minitest-reporters (~> 1.0)
   pry-byebug (~> 3.0)
   rake (~> 13.0)
-  rubocop (~> 0)
-  rubocop-minitest (~> 0)
+  rubocop (~> 0.80)
+  rubocop-minitest (~> 0.6)
   webmock (~> 3.0)
 
 BUNDLED WITH

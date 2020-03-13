@@ -32,27 +32,7 @@ module CzechPostB2bClient
       end
 
       def valid_get_stats_response_xml
-        <<~XML
-          <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-          <v1:b2bSyncResponse xmlns:v1="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:v1_1="https://b2b.postaonline.cz/schema/POLServices-v1">
-            <v1:header>
-              <v1:timeStamp>2016-02-25T08:30:03.678Z</v1:timeStamp>
-              <v1:b2bRequestHeader>
-                <v1:idExtTransaction>42</v1:idExtTransaction>
-                <v1:timeStamp>2014-03-12T12:33:34.573Z</v1:timeStamp>
-                <v1:idContract>25195667001</v1:idContract>
-              </v1:b2bRequestHeader>
-            </v1:header>
-            <v1:serviceData>
-              <v1_1:getStatsResponse>
-                <v1_1:importAll>16</v1_1:importAll>
-                <v1_1:importErr>13</v1_1:importErr>
-                <v1_1:importOk>3</v1_1:importOk>
-                <v1_1:parcels>43</v1_1:parcels>
-              </v1_1:getStatsResponse>
-            </v1:serviceData>
-          </v1:b2bSyncResponse>
-        XML
+        fixture_response_xml('getStats_ok.xml')
       end
     end
   end

@@ -4,58 +4,21 @@ require 'test_helper'
 
 module CzechPostB2bClient
   module Test
-    class GetParcelsPrintingParserTest < Minitest::Test
-      def response_xml
-        <<~XML
-          <?xml version="1.0" encoding="UTF-8"?>
-          <p:b2bSyncResponse xmlns:p="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:PO="https://b2b.postaonline.cz/schema/POLServices-v1">
-            <p:header>
-              <p:timeStamp>2016-02-18T16:00:34.913Z</p:timeStamp>
-              <p:b2bRequestHeader>
-                <p:idExtTransaction>64</p:idExtTransaction>
-                <p:timeStamp>2016-03-12T10:00:34.573Z</p:timeStamp>
-                <p:idContract>25195667001</p:idContract>
-              </p:b2bRequestHeader>
-            </p:header>
-            <p:serviceData>
-            <!-- documentation example completely missing previous part ! -->
-            <!-- <p:doExtensions xsi:type="p:doExtensions" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:PO="https://b2b.postaonline.cz/schema/POLServices-v1" xmlns:p="https://b2b.postaonline.cz/schema/B2BCommon-v1"> -->
-              <PO:getResultParcelsResponse>
-                <PO:doParcelHeaderResult>
-                  <PO:doParcelStateResponse>  <!-- I do not understand meaning of this -->
-                    <PO:responseCode>1</PO:responseCode>
-                    <PO:responseText>OK</PO:responseText>
-                  </PO:doParcelStateResponse>
-                </PO:doParcelHeaderResult>
+    class GetResultParcelsParserTest < Minitest::Test
+      def test_it_parses_ok_response_to_correct_structure
+        parser = CzechPostB2bClient::ResponseParsers::GetResultParcelsParser.call(xml: fixture_response_xml('getResultParcels_all_ok.xml'))
+        assert parser.success?
+        assert_equal expected_struct, parser.result
+      end
 
-                <PO:doParcelParamResult>
-                  <!-- my guess: sendParcels.doParcelData.doParcelParams.recordID == recordNumber -->
-                  <PO:recordNumber>12345</PO:recordNumber> <!-- unique ID of record, string,-->
-                  <PO:parcelCode>DR1010101010B</PO:parcelCode>
-                  <PO:doParcelStateResponse>   <!-- according to XSD, there is unlimited count of this! -->
-                    <PO:responseCode>1</PO:responseCode>
-                    <PO:responseText>OK</PO:responseText>
-                  </PO:doParcelStateResponse>
-                  <PO:doParcelStateResponse>
-                    <PO:responseCode>666</PO:responseCode> <!-- result can be 1-999, thats all I know for now-->
-                    <PO:responseText>Documentation from hell</PO:responseText>
-                  </PO:doParcelStateResponse>
-                </PO:doParcelParamResult>
+      def test_it_handle_parcels_out_of_evidence
+        # it seems, that data are stored for 1 year at Czech Post
+        skip
+      end
 
-                <PO:doParcelParamResult>
-                  <PO:recordNumber>12346</PO:recordNumber>
-                  <PO:parcelCode>DR1010101011B</PO:parcelCode>
-                  <PO:doParcelStateResponse>
-                    <PO:responseCode>1</PO:responseCode>
-                    <PO:responseText>OK</PO:responseText>
-                  </PO:doParcelStateResponse>
-                </PO:doParcelParamResult>
-
-              </PO:getResultParcelsResponse>
-            <!-- </p:doExtensions> -->
-            </p:serviceData>
-          </p:b2bSyncResponse>
-        XML
+      def test_it_handles_errors_in_response
+        skip
+        parser = CzechPostB2bClient::ResponseParsers::GetResultParcelsParser.call(xml: fixture_response_xml('getResultParcels_with_errors.xml'))
       end
 
       def expected_struct
@@ -66,17 +29,6 @@ module CzechPostB2bClient
                      request_id: '64' },
           response: { created_at: Time.parse('2016-02-18T16:00:34.913Z') }
         }
-      end
-
-      def test_it_parses_to_correct_structure
-        parser = CzechPostB2bClient::ResponseParsers::GetResultParcelsParser.call(xml: response_xml)
-        assert parser.success?
-        assert_equal expected_struct, parser.result
-      end
-
-      def test_it_handle_parcels_out_of_evidence
-        # it seems, that data are stored for 1 year at Czech Post
-        skip
       end
 
       def expected_parcels_hash # rubocop:disable Metrics/MethodLength

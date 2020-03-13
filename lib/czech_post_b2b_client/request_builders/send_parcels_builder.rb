@@ -85,7 +85,7 @@ module CzechPostB2bClient
           add_element_to(parcel_header, cache_on_delivery_bank)
           add_element_to(parcel_header, sender_contacts)
           add_element_to(parcel_header, 'ns2:senderCustCardNum', value: sender_data[:custom_card_number]) # Nepovinne: cislo zakaznicke karty odesilatele
-          add_element_to(parcel_header, 'ns2:locationNumber', value: common_data[:sending_post_office_location_number]) # Nepovinne: cislo podaciho mista
+          add_element_to(parcel_header, 'ns2:locationNumber', value: common_data[:sending_post_office_location_number]) # Nepovinne: cislo podaciho mista (z nastaveni v Podani Online)
         end
       end
 
