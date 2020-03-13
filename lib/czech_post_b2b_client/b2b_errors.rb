@@ -15,6 +15,10 @@
 
 # rubocop:enable Style/AsciiComments
 
+# B2B errors, which can be returned in response `B2BFaultMessage`
+#
+# Do not miss `CzechPostB2bClient::B2BErrors.all_error_classes` and `CzechPostB2bClient::B2BErrors.new_by_code`,
+# they have to be at end of module to work properly
 module CzechPostB2bClient
   class Error < StandardError; end
 
