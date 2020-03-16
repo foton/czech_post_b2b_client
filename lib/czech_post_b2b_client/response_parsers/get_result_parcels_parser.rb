@@ -5,6 +5,7 @@ module CzechPostB2bClient
     class GetResultParcelsParser < BaseParser
       def build_result
         super
+        @result[:response].merge!(state_hash_from(response_state_response))
         @result[:parcels] = parcels_data_hash
       end
 
@@ -12,6 +13,10 @@ module CzechPostB2bClient
         response_parcel_hashes.each_with_object({}) do |rp_hash, result|
           result[parcel_parcel_id_from(rp_hash)] = parcel_data_from(rp_hash)
         end
+      end
+
+      def response_state_response
+        response_service_data.dig('getResultParcelsResponse').dig('doParcelHeaderResult').dig('doParcelStateResponse')
       end
 
       def response_parcel_hashes
@@ -23,13 +28,7 @@ module CzechPostB2bClient
       end
 
       def parcel_data_from(rp_hash)
-        state_hash = rp_hash['doParcelStateResponse'] || { 'responseCode' => '999', 'responseText' => 'Unknown' }
-        state_hash = state_hash.first if state_hash.is_a?(Array) # more <doParcelStateResponse> elements
-        {
-          parcel_code: rp_hash['parcelCode'],
-          state_code: state_hash['responseCode'].to_i,
-          state_text: state_hash['responseText'].to_s,
-        }
+        state_hash_from(rp_hash.dig('doParcelStateResponse')).merge({ parcel_code: rp_hash['parcelCode'] })
       end
     end
   end

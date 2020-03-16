@@ -30,13 +30,11 @@ module CzechPostB2bClient
         @parser_service_class = CzechPostB2bClient::ResponseParsers::GetParcelsPrintingParser
         @builder_expected_args = { parcel_codes: @parcel_codes, options: @options }
         @builder_expected_errors = { parcel_codes: ['No codes'] }
-        @fake_response_parser_result = {
-          printings: {
-            options: @options,
-            state: { code: 0, text: 'OK' },
-            pdf_content: @expected_pdf_content
-          }
-        }.merge(fake_response_parser_result_shared_part)
+        @fake_response_parser_result = fake_response_parser_result_shared_part.merge({ printings: {
+                                                                                         options: @options,
+                                                                                         pdf_content: @expected_pdf_content
+                                                                                       }})
+        @fake_response_parser_result[:response].merge!(state_code: 1, state_text: 'OK')
       end
 
       def builder_mock(expected_args:, returns:)
@@ -48,7 +46,7 @@ module CzechPostB2bClient
       end
 
       def succesful_call_asserts(tested_service)
-        assert_equal 0, tested_service.result.state_code
+        assert_equal 1, tested_service.result.state_code
         assert_equal 'OK', tested_service.result.state_text
         assert_equal expected_pdf_content, tested_service.result.pdf_content
       end

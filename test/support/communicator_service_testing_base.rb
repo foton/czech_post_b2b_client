@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'test_helper'
-
 module CzechPostB2bClient
   module Test
     module CommunicatorServiceTestingBase

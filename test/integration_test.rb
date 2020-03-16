@@ -309,7 +309,7 @@ module CzechPostB2bClient
                     <ns2:position>1</ns2:position>
                   </ns2:doPrintingHeader>
                   <ns2:doPrintingStateResponse>
-                    <ns2:responseCode>0</ns2:responseCode>
+                    <ns2:responseCode>1</ns2:responseCode>
                     <ns2:responseText>OK</ns2:responseText>
                   </ns2:doPrintingStateResponse>
                 </ns2:doPrintingHeaderResult>

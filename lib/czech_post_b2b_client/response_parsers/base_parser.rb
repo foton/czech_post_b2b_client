@@ -60,6 +60,13 @@ module CzechPostB2bClient
                        id_contract: b2b_request_hash.dig('idContract').to_s)
       end
 
+      def state_hash_from(hash)
+        state_hash = hash || { 'responseCode' => '999', 'responseText' => 'Unknown' }
+        state_hash = state_hash.first if state_hash.is_a?(Array) # more <doParcelStateResponse> elements
+
+        { state_code: state_hash['responseCode'].to_i, state_text: state_hash['responseText'].to_s}
+      end
+
       def handle_parsing_error(error)
         @result = { parser_error: error.message, xml: response_xml }
         errors.add(:xml, "XML can not be parsed! Is it valid XML? #{error.class} > #{error.message}")

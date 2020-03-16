@@ -95,7 +95,10 @@ module CzechPostB2bClient
     module_function :all_error_classes
 
     def new_by_code(code)
-      all_error_classes.detect { |k| k.code == code }&.new
+      klass = all_error_classes.detect { |k| k.code == code }
+      raise "B2BError with code: #{code} is unknown!" unless klass
+
+      klass.new
     end
     module_function :new_by_code
   end

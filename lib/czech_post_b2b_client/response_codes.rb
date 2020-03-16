@@ -5,15 +5,16 @@
 module CzechPostB2bClient
   module ResponseCodes
     class BaseCode
-          @code = 'undefined'
-      @message = 'Unspecified B2B response code, is it listed in /doc/.../ResponseCodes.ods'
+        @code = 'undefined'
+        @text = '_NONE_'
+        @decription = 'Unspecified B2B response code, is it listed in /doc/.../ResponseCodes.ods'
 
       def self.code
         @code
       end
 
       def self.text
-        @message
+        @text
       end
 
       def self.description
@@ -21,19 +22,23 @@ module CzechPostB2bClient
       end
 
       def self.error?
-            @type == :error
+        @type == :error
       end
 
       def self.info?
-            @type == :info
+        @type == :info
       end
 
       def self.type
         @type
       end
 
+      def self.to_s
+        "ResponseCode[#{code} #{text}] #{description}"
+      end
+
       # forwarding instance methods to class
-      %i[code text description error? info?].each do |mth|
+      %i[code text description error? info? to_s].each do |mth|
         define_method mth do
           self.class.send(mth)
         end
@@ -1883,7 +1888,10 @@ module CzechPostB2bClient
     module_function :all_code_classes
 
     def new_by_code(code)
-      all_code_classes.detect { |k| k.code == code }&.new
+      klass = all_code_classes.detect { |k| k.code == code }
+      raise "ResponseCode with code: #{code}  is unknown!" unless klass
+
+      klass.new
     end
 
     module_function :new_by_code

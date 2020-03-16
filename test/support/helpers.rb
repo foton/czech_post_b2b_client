@@ -9,9 +9,9 @@ def setup_configuration(config_hash = {})
   CzechPostB2bClient.configure do |config|
     config.contract_id = 'contract_id' # from CP signed contract
     config.customer_id = 'customer_id' # from CP signed contract
-    config.certificate_path = File.join(CzechPostB2bClient.certs_path, 'demo_client_PEM.crt')
+    config.certificate_path = File.join(fixtures_dir, 'certs', 'demo_client.pem')
     config.private_key_password = 'czechpost'
-    config.private_key_path = File.join(CzechPostB2bClient.certs_path, 'demo_privatekey.key')
+    config.private_key_path = File.join(fixtures_dir, 'certs', 'demo_private.key')
     config.sending_post_office_code = 12_345 # PSC of post office where parcels will be physically delivered and submitted
     #config.logger = Logger.new(STDOUT)
 

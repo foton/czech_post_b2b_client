@@ -9,6 +9,10 @@ module CzechPostB2bClient
         @transaction_id = transaction_id
       end
 
+      def steps
+        super + %i[check_for_state_errors]
+      end
+
       private
 
       def request_builder_args
@@ -32,7 +36,28 @@ module CzechPostB2bClient
       end
 
       def build_result_from(response_hash)
-        OpenStruct.new(parcels_hash: response_hash[:parcels])
+        OpenStruct.new(parcels_hash: response_hash[:parcels],
+                       state_text: response_hash.dig(:response, :state_text),
+                       state_code: response_hash.dig(:response, :state_code))
+      end
+
+      def check_for_state_errors
+        return if result.state_code == CzechPostB2bClient::ResponseCodes::Ok.code
+
+        r_code = CzechPostB2bClient::ResponseCodes.new_by_code(result.state_code)
+        errors.add(:response_state, r_code.to_s)
+
+        collect_parcel_errors
+
+        fail! unless r_code.info?
+      end
+
+      def collect_parcel_errors
+        result.parcels_hash.each_pair do |parcel_id, parcel_hash|
+          next if parcel_hash[:state_code] == CzechPostB2bClient::ResponseCodes::Ok.code
+
+          errors.add(:parcels, "Parcel[#{parcel_id}] => #{CzechPostB2bClient::ResponseCodes.new_by_code(parcel_hash[:state_code])}")
+        end
       end
     end
   end

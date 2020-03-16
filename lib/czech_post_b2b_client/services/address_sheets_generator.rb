@@ -10,6 +10,10 @@ module CzechPostB2bClient
         @options = options
       end
 
+      def steps
+        super + %i[check_for_state_errors]
+      end
+
       private
 
       def request_builder_args
@@ -34,8 +38,18 @@ module CzechPostB2bClient
 
       def build_result_from(response_hash)
         OpenStruct.new(pdf_content: response_hash.dig(:printings, :pdf_content),
-                       state_text: response_hash.dig(:printings, :state, :text),
-                       state_code: response_hash.dig(:printings, :state, :code))
+                       state_text: response_hash.dig(:response, :state_text),
+                       state_code: response_hash.dig(:response, :state_code))
+      end
+
+      def check_for_state_errors
+        return if result.state_code == CzechPostB2bClient::ResponseCodes::Ok.code
+        binding.pry
+        r_code = CzechPostB2bClient::ResponseCodes.new_by_code(result.state_code)
+
+        errors.add(:response_state, r_code.to_s)
+
+        fail! unless r_code.info?
       end
     end
   end

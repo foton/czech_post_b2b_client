@@ -6,8 +6,8 @@ module CzechPostB2bClient
     class GetParcelsPrintingParser < BaseParser
       def build_result
         super
+        @result[:response].merge!(state_hash_from(printing_response_header_result.dig('doPrintingStateResponse')))
         @result[:printings] = { options: options_hash,
-                                state: state_hash,
                                 pdf_content: pdf_content }
       end
 
@@ -21,12 +21,6 @@ module CzechPostB2bClient
                           left: options_response.dig('shiftHorizontal').to_i },
           position_order: options_response.dig('position').to_i
         }
-      end
-
-      def state_hash
-        state_response = printing_response_header_result.dig('doPrintingStateResponse')
-        { code: state_response.dig('responseCode').to_i,
-          text: state_response.dig('responseText') }
       end
 
       def pdf_content

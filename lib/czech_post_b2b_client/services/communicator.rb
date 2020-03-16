@@ -9,7 +9,7 @@ module CzechPostB2bClient
 
       private
 
-      attr_accessor :request_xml, :response_xml
+      attr_accessor :request_xml, :response_xml, :response_hash
 
       def build_request
         self.request_xml = result_of_subservice(request_builder: request_builder_args)
@@ -20,7 +20,7 @@ module CzechPostB2bClient
       end
 
       def process_response
-        response_hash = result_of_subservice(response_parser: { xml: response_xml })
+        self.response_hash = result_of_subservice(response_parser: { xml: response_xml })
         @result = build_result_from(response_hash) unless response_hash.nil?
       end
     end
