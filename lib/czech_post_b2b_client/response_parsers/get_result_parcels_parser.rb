@@ -21,7 +21,7 @@ module CzechPostB2bClient
       end
 
       def response_parcel_hashes
-        response_service_data.dig('getResultParcelsResponse').dig('doParcelParamResult')
+        [response_service_data.dig('getResultParcelsResponse').dig('doParcelParamResult')].flatten # to always get array of hash(es)
       end
 
       def parcel_parcel_id_from(rp_hash)

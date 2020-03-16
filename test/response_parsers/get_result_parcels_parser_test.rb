@@ -22,8 +22,6 @@ module CzechPostB2bClient
         assert_equal expected_failed_batch_struct, parser.result
       end
 
-
-
       def expected_ok_struct
         {
           request: { created_at: Time.parse('2016-03-12T10:00:34.573Z'),
