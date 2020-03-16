@@ -22,14 +22,16 @@ module CzechPostB2bClient
         assert_equal expected_failed_batch_struct, parser.result
       end
 
+
+
       def expected_ok_struct
         {
           request: { created_at: Time.parse('2016-03-12T10:00:34.573Z'),
                      contract_id: '25195667001',
                      request_id: '64' },
-          response: { created_at: Time.parse('2016-02-18T16:00:34.913Z'), state_code: 1, state_text: 'OK' },
-          parcels: { '12345' =>  { parcel_code: 'DR1010101010B', state_code: 1, state_text: 'OK' },
-                     '12346' => { parcel_code: 'DR1010101011B', state_code: 1, state_text: 'OK' } }
+          response: { created_at: Time.parse('2016-02-18T16:00:34.913Z'), state: { code: 1, text: 'OK' } },
+          parcels: { '12345' =>  { parcel_code: 'DR1010101010B', states: [{ code: 1, text: 'OK'}] },
+                     '12346' => { parcel_code: 'DR1010101011B', states: [{ code: 1, text: 'OK'}] } }
         }
       end
 
@@ -38,10 +40,10 @@ module CzechPostB2bClient
           request: { created_at: Time.parse('2020-03-13T14:55:20.000Z'),
                      contract_id: '25195667001',
                      request_id: '1' },
-          response: { created_at: Time.parse('2020-03-13T14:57:12.000Z'), state_code: 19, state_text: 'BATCH_INVALID' },
-          parcels: {'package_1' => { parcel_code: nil, state_code: 104, state_text: 'INVALID_WEIGHT' },
-                    'package_2' => { parcel_code: nil, state_code: 104, state_text: 'INVALID_WEIGHT' },
-                    'package_3' => { parcel_code: nil, state_code: 310, state_text: 'INVALID_PREFIX' } }
+          response: { created_at: Time.parse('2020-03-13T14:57:12.000Z'), state: { code: 19, text: 'BATCH_INVALID' } },
+          parcels: {'package_1' => { parcel_code: nil, states: [{ code: 104, text: 'INVALID_WEIGHT' }, { code: 261, text: 'MISSING_SIZE_CATEGORY' }] },
+                    'package_2' => { parcel_code: nil, states: [{ code: 104, text: 'INVALID_WEIGHT' }, { code: 261, text: 'MISSING_SIZE_CATEGORY' }] },
+                    'package_3' => { parcel_code: nil, states: [{ code: 310, text: 'INVALID_PREFIX'}] } }
         }
       end
     end

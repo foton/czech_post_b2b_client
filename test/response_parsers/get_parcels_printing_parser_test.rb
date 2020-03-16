@@ -34,7 +34,7 @@ module CzechPostB2bClient
           request: { created_at: Time.parse('2016-03-12T10:00:34.573Z'),
                      contract_id: '25195667001',
                      request_id: '42' },
-          response: { created_at: Time.parse('2016-02-18T16:00:34.913Z'), state_code: 0, state_text: 'OK' }
+          response: { created_at: Time.parse('2016-02-18T16:00:34.913Z'), state: { code: 0, text: 'OK' } }
         }
       end
 
@@ -52,7 +52,7 @@ module CzechPostB2bClient
           request: { created_at: Time.parse('2016-03-12T10:00:34.573Z'),
                      contract_id: '25195667001',
                      request_id: '42' },
-          response: { created_at: Time.parse('2016-02-18T16:00:34.913Z'), state_code: 100, state_text: 'INVALID_PARCEL_CODE' }
+          response: { created_at: Time.parse('2016-02-18T16:00:34.913Z'), state: { code: 100, text: 'INVALID_PARCEL_CODE' } }
         }
       end
     end

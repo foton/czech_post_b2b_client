@@ -14,8 +14,8 @@ module CzechPostB2bClient
 
         @transaction_id = 'transaction1'
         @expected_parcels_hash = {
-          '1' => { parcel_code: 'RA12354678', state_code: 1, state_text: 'OK' },
-          'second' => { parcel_code: 'RA12354679', state_code: 1, state_text: 'OK' }
+          '1' => { parcel_code: 'RA12354678', states: [{ code: 1, text: 'OK' }] },
+          'second' => { parcel_code: 'RA12354679', states: [{ code: 1, text: 'OK' }] }
         }
         @endpoint_path = '/getResultParcels' # 'https://b2b.postaonline.cz/services/POLService/v1/getResultParcels'
 
@@ -27,8 +27,8 @@ module CzechPostB2bClient
         @builder_expected_args = { transaction_id: transaction_id }
         @builder_expected_errors = { parcels: ['Too many'],
                                      common_data: ['Missing :parcels_sending_date value', 'xxx'] }
-        @fake_response_parser_result = fake_response_parser_result_shared_part.merge(parcels: @expected_parcels_hash,
-                                                                                     response: { state_code: 1, state_text: 'OK'})
+        @fake_response_parser_result = fake_response_parser_result_shared_part.merge(parcels: @expected_parcels_hash)
+        @fake_response_parser_result[:response].merge!(state: { code: 1, text: 'OK'})
       end
 
       def builder_mock(expected_args:, returns:)
@@ -45,16 +45,17 @@ module CzechPostB2bClient
 
       def test_it_fails_with_errors_in_response_data
         expected_parcels_hash_with_errors = {
-          '1' => { parcel_code: 'RA12354678', state_code: 1, state_text: 'OK' },
-          'second' => { parcel_code: 'RA12354679', state_code: 261, state_text: 'MISSING_SIZE_CATEGORY' },
-          'parcel_3' => { parcel_code: 'RA12354679', state_code: 104, state_text: 'INVALID_WEIGHT' }
+          '1' => { parcel_code: 'RA12354678', states: [{ code: 1, text: 'OK' }]},
+          'second' => { parcel_code: nil, states: [{ code: 104, text: 'INVALID_WEIGHT' }, { code: 261, text: 'MISSING_SIZE_CATEGORY' }] },
+          'parcel_3' => { parcel_code: nil, states: [{ code: 310, text: 'INVALID_PREFIX' }] }
         }
         fake_response_parser_result_with_errors = fake_response_parser_result_shared_part.merge(parcels: expected_parcels_hash_with_errors)
-        fake_response_parser_result_with_errors[:response].merge!({ state_code: 19, state_text: 'BATCH_INVALID'})
+        fake_response_parser_result_with_errors[:response].merge!(state: { code: 19, text: 'BATCH_INVALID' })
 
         response_state_expected_errors = [CzechPostB2bClient::ResponseCodes::new_by_code(19).to_s]
-        parcels_errors = ["Parcel[second] => #{CzechPostB2bClient::ResponseCodes::new_by_code(261).to_s}",
-                          "Parcel[parcel_3] => #{CzechPostB2bClient::ResponseCodes::new_by_code(104).to_s}"]
+        parcels_errors = ["Parcel[second] => #{CzechPostB2bClient::ResponseCodes::new_by_code(104).to_s}",
+                          "Parcel[second] => #{CzechPostB2bClient::ResponseCodes::new_by_code(261).to_s}",
+                          "Parcel[parcel_3] => #{CzechPostB2bClient::ResponseCodes::new_by_code(310).to_s}"]
 
         builder = builder_mock(expected_args: builder_expected_args,
                                returns: fake_successful_service(fake_request_builder_result))

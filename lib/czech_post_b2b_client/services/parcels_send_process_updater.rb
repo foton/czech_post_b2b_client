@@ -37,8 +37,8 @@ module CzechPostB2bClient
 
       def build_result_from(response_hash)
         OpenStruct.new(parcels_hash: response_hash[:parcels],
-                       state_text: response_hash.dig(:response, :state_text),
-                       state_code: response_hash.dig(:response, :state_code))
+                       state_text: response_hash.dig(:response, :state, :text),
+                       state_code: response_hash.dig(:response, :state, :code))
       end
 
       def check_for_state_errors
@@ -54,9 +54,16 @@ module CzechPostB2bClient
 
       def collect_parcel_errors
         result.parcels_hash.each_pair do |parcel_id, parcel_hash|
-          next if parcel_hash[:state_code] == CzechPostB2bClient::ResponseCodes::Ok.code
+          add_errors_for_failed_states(parcel_id, parcel_hash[:states])
+        end
+      end
 
-          errors.add(:parcels, "Parcel[#{parcel_id}] => #{CzechPostB2bClient::ResponseCodes.new_by_code(parcel_hash[:state_code])}")
+      def add_errors_for_failed_states(parcel_id, response_states)
+        response_states.each do |response_state|
+          response_code = response_state[:code]
+          next if  response_code == CzechPostB2bClient::ResponseCodes::Ok.code
+
+          errors.add(:parcels, "Parcel[#{parcel_id}] => #{CzechPostB2bClient::ResponseCodes.new_by_code(response_code)}")
         end
       end
     end

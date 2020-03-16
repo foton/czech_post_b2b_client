@@ -34,7 +34,7 @@ module CzechPostB2bClient
                                                                                          options: @options,
                                                                                          pdf_content: @expected_pdf_content
                                                                                        }})
-        @fake_response_parser_result[:response].merge!(state_code: 1, state_text: 'OK')
+        @fake_response_parser_result[:response].merge!(state: { code: 1, text: 'OK' })
       end
 
       def builder_mock(expected_args:, returns:)

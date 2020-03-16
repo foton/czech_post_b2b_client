@@ -38,8 +38,8 @@ module CzechPostB2bClient
 
       def build_result_from(response_hash)
         OpenStruct.new(pdf_content: response_hash.dig(:printings, :pdf_content),
-                       state_text: response_hash.dig(:response, :state_text),
-                       state_code: response_hash.dig(:response, :state_code))
+                       state_text: response_hash.dig(:response, :state, :text),
+                       state_code: response_hash.dig(:response, :state, :code))
       end
 
       def check_for_state_errors

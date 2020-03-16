@@ -64,7 +64,7 @@ module CzechPostB2bClient
         state_hash = hash || { 'responseCode' => '999', 'responseText' => 'Unknown' }
         state_hash = state_hash.first if state_hash.is_a?(Array) # more <doParcelStateResponse> elements
 
-        { state_code: state_hash['responseCode'].to_i, state_text: state_hash['responseText'].to_s}
+        { code: state_hash['responseCode'].to_i, text: state_hash['responseText'].to_s}
       end
 
       def handle_parsing_error(error)
