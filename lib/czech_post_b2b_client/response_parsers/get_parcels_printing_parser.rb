@@ -25,6 +25,8 @@ module CzechPostB2bClient
 
       def pdf_content
         pdf_content_encoded = printing_response.dig('doPrintingDataResult', 'file')
+        return nil if pdf_content_encoded.nil?
+
         ::Base64.decode64(pdf_content_encoded)
       end
 

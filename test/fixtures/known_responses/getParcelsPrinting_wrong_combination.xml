@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<v1:b2bSyncResponse xmlns:v1="https://b2b.postaonline.cz/schema/B2BCommon-v1"
+  xmlns:v1_1="https://b2b.postaonline.cz/schema/POLServices-v1">
+  <v1:header>
+    <v1:timeStamp>2020-03-17T09:58:05.529Z</v1:timeStamp>
+    <v1:b2bRequestHeader>
+      <v1:idExtTransaction>1</v1:idExtTransaction>
+      <v1:timeStamp>2020-03-17T08:58:02.874Z</v1:timeStamp>
+      <v1:idContract>25195667001</v1:idContract>
+    </v1:b2bRequestHeader>
+  </v1:header>
+  <v1:serviceData>
+    <v1_1:getParcelsPrintingResponse>
+      <v1_1:doPrintingHeaderResult>
+        <v1_1:doPrintingHeader>
+          <v1_1:customerID>L03053</v1_1:customerID>
+          <v1_1:contractNumber>25195667001</v1_1:contractNumber>
+          <v1_1:idForm>73</v1_1:idForm>
+          <v1_1:shiftHorizontal>3</v1_1:shiftHorizontal>
+          <v1_1:shiftVertical>5</v1_1:shiftVertical>
+        </v1_1:doPrintingHeader>
+        <v1_1:doPrintingStateResponse>
+          <v1_1:responseCode>378</v1_1:responseCode>
+          <v1_1:responseText>INVALID_PREFIX_COMBINATION</v1_1:responseText>
+        </v1_1:doPrintingStateResponse>
+      </v1_1:doPrintingHeaderResult>
+      <v1_1:doPrintingDataResult>
+        <v1_1:file></v1_1:file>
+      </v1_1:doPrintingDataResult>
+    </v1_1:getParcelsPrintingResponse>
+  </v1:serviceData>
+</v1:b2bSyncResponse>

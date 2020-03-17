@@ -50,6 +50,36 @@ module CzechPostB2bClient
         assert_equal 'OK', tested_service.result.state_text
         assert_equal expected_pdf_content, tested_service.result.pdf_content
       end
+
+      def test_it_fails_with_errors_in_response_data
+        fake_response_parser_result_with_errors = fake_response_parser_result_shared_part.merge({})
+        fake_response_parser_result_with_errors[:response].merge!(state: { code: 378, text: 'INVALID_PREFIX_COMBINATION' })
+        response_state_expected_errors = [CzechPostB2bClient::ResponseCodes::new_by_code(378).to_s]
+
+        builder = builder_mock(expected_args: builder_expected_args,
+                              returns: fake_successful_service(fake_request_builder_result))
+        api_caller = api_caller_mock(expected_args: { endpoint_path: endpoint_path, xml: fake_request_builder_result },
+                                    returns: fake_successful_service(fake_api_caller_result))
+        # parser just pass errors hash, but call/parsing is successful
+        parser = parser_mock(expected_args: { xml: fake_api_caller_result.xml },
+                            returns: fake_successful_service(fake_response_parser_result_with_errors))
+
+        builder_service_class.stub(:call, builder) do
+          api_caller_service_class.stub(:call, api_caller) do
+            parser_service_class.stub(:call, parser) do
+
+              @service = tested_service_class.call(tested_service_args)
+
+            end
+          end
+        end
+        assert_mock builder
+        assert_mock api_caller
+        assert_mock parser
+
+        assert service.failure?
+        assert_equal response_state_expected_errors, service.errors[:response_state]
+      end
     end
   end
 end

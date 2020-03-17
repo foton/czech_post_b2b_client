@@ -44,9 +44,8 @@ module CzechPostB2bClient
 
       def check_for_state_errors
         return if result.state_code == CzechPostB2bClient::ResponseCodes::Ok.code
-        binding.pry
-        r_code = CzechPostB2bClient::ResponseCodes.new_by_code(result.state_code)
 
+        r_code = CzechPostB2bClient::ResponseCodes.new_by_code(result.state_code)
         errors.add(:response_state, r_code.to_s)
 
         fail! unless r_code.info?
