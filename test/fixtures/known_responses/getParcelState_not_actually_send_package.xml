@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<v1:b2bSyncResponse xmlns:v1="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:v1_1="https://b2b.postaonline.cz/schema/POLServices-v1">
+  <v1:header>
+    <v1:timeStamp>2020-03-17T09:58:06.379Z</v1:timeStamp>
+    <v1:b2bRequestHeader>
+      <v1:idExtTransaction>63</v1:idExtTransaction>
+      <v1:timeStamp>2020-03-17T08:58:05.898Z</v1:timeStamp>
+      <v1:idContract>25195667001</v1:idContract>
+    </v1:b2bRequestHeader>
+  </v1:header>
+  <v1:serviceData><v1_1:getParcelStateResponse><v1_1:parcel>
+        <v1_1:idParcel>BA0305100114L</v1_1:idParcel>
+        <v1_1:parcelType>BA</v1_1:parcelType>
+        <v1_1:weight>0</v1_1:weight>
+        <v1_1:amount>0</v1_1:amount>
+        <v1_1:currency></v1_1:currency>
+        <v1_1:timeDeposit>15</v1_1:timeDeposit>
+        <v1_1:states><v1_1:state>
+            <v1_1:id>-3</v1_1:id>
+            <v1_1:date>2020-03-17</v1_1:date>
+            <v1_1:text>Zásilka tohoto podacího čísla není v evidenci.</v1_1:text>
+          </v1_1:state></v1_1:states>
+      </v1_1:parcel></v1_1:getParcelStateResponse></v1:serviceData>
+</v1:b2bSyncResponse>

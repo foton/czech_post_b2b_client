@@ -15,7 +15,7 @@ module CzechPostB2bClient
       end
 
       def response_parcel_hashes
-        response_service_data.dig('getParcelStateResponse').dig('parcel')
+        [response_service_data.dig('getParcelStateResponse').dig('parcel')].flatten.compact # to always get array of hash(es)
       end
 
       def parcel_data_from(rp_hash)
@@ -33,8 +33,7 @@ module CzechPostB2bClient
       end
 
       def states_array_from(rp_hash)
-        rp_states = rp_hash.dig('states').dig('state')
-        return [] if rp_states.nil?
+        rp_states = [rp_hash.dig('states').dig('state')].flatten.compact # to always get (empty?) array of hash(es)
 
         rp_states.collect do |rp_state_hash|
           { id: rp_state_hash['id'].to_s,

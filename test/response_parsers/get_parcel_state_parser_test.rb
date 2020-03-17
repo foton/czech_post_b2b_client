@@ -14,7 +14,9 @@ module CzechPostB2bClient
 
       def test_it_handle_parcels_out_of_evidence
         # it seems, that data are stored for 1 year at Czech Post
-        skip
+        parser = CzechPostB2bClient::ResponseParsers::GetParcelStateParser.call(xml: fixture_response_xml('getParcelState_not_actually_send_package.xml'))
+        assert parser.success?
+        assert_equal expected_out_of_evidence_struct, parser.result
       end
 
       def expected_struct
@@ -24,6 +26,28 @@ module CzechPostB2bClient
                      contract_id: '25195667001',
                      request_id: '64' },
           response: { created_at: Time.parse('2016-02-18T16:00:34.913Z') }
+        }
+      end
+
+      def expected_out_of_evidence_struct
+        { parcels: { 'BA0305100114L' => {
+                        parcel_type: 'BA',
+                        weight_in_kg: 0.0,
+                        cash_on_delivery: { amount: 0.0, currency_iso_code: '' },
+                        pieces: 1,
+                        deposited_until: nil,
+                        deposited_for_days: 15,
+                        country_of_origin: '',
+                        country_of_destination: '',
+                        states: [{ id: '-3',
+                                   date:  Date.new(2020,3,17),
+                                   text: 'Zásilka tohoto podacího čísla není v evidenci.',
+                                   post_code: nil,
+                                   post_name: nil }] }},
+          request: { created_at: Time.parse('2020-03-17T08:58:05.898Z'),
+                     contract_id: '25195667001',
+                     request_id: '63' },
+          response: { created_at: Time.parse('2020-03-17T09:58:06.379Z') }
         }
       end
 

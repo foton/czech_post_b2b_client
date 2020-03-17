@@ -95,7 +95,7 @@ module CzechPostB2bClient
       end
 
       def b2b_error_text
-        error_match = result.xml.match(%r{<errorCode>(\d+)</errorCode>})
+        error_match = result.xml.match(%r{<(?:\w+\:)?errorCode>(\d+)</(?:\w+\:)?errorCode>}) # errorCode tag with stripped out namespace
         return 'error code not found in XML' unless error_match
 
         error_code = error_match[1].to_i

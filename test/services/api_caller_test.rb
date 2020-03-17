@@ -104,12 +104,14 @@ module CzechPostB2bClient
       end
 
       def b2b_fault_response_with_error_code(error_code)
+        # <v1:B2BFaultMessage xmlns:v1="https://b2b.postaonline.cz/schema/B2BCommon-v1">
+
         <<~XML
-          <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-          <B2BFaultMessage xmlns="https://raw.githubusercontent.com/foton/czech_post_b2b_client/master/doc/20181023/B2BCommon-v1.1.xsd" >
-            <errorDetail>  Error text </errorDetail>
-            <errorCode>#{error_code}</errorCode>
-          </B2BFaultMessage>
+          <?xml version="1.0" encoding="UTF-8"?>
+          <v1:B2BFaultMessage xmlns:v1="https://raw.githubusercontent.com/foton/czech_post_b2b_client/master/doc/20181023/B2BCommon-v1.1.xsd">
+            <v1:errorDetail>  Error text </v1:errorDetail>
+            <v1:errorCode>#{error_code}</v1:errorCode>
+          </v1:B2BFaultMessage>
         XML
       end
 

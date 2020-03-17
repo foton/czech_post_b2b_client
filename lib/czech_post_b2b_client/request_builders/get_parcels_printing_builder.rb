@@ -12,8 +12,7 @@ module CzechPostB2bClient
       end
 
       def self.allowed_printing_template_classes
-        base_class = CzechPostB2bClient::PrintingTemplate::Base
-        @allowed_printing_template_classes ||= ObjectSpace.each_object(base_class.singleton_class).to_a - [base_class]
+        @allowed_printing_template_classes ||= CzechPostB2bClient::PrintingTemplates.all_template_classes
       end
 
       private
