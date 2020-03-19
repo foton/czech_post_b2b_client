@@ -24,18 +24,18 @@ module CzechPostB2bClient
       end
 
       def pdf_content
-        pdf_content_encoded = printing_response.dig('doPrintingDataResult', 'file')
+        pdf_content_encoded = response_root_node.dig('doPrintingDataResult', 'file')
         return nil if pdf_content_encoded.nil?
 
         ::Base64.decode64(pdf_content_encoded)
       end
 
-      def printing_response
-        response_service_data.dig('getParcelsPrintingResponse')
+      def response_root_node_name
+        'getParcelsPrintingResponse'
       end
 
       def printing_response_header_result
-        printing_response.dig('doPrintingHeaderResult')
+        response_root_node.dig('doPrintingHeaderResult')
       end
     end
   end

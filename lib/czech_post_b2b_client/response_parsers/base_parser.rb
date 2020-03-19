@@ -49,6 +49,13 @@ module CzechPostB2bClient
         b2b_response_hash.dig('header')
       end
 
+      def response_root_node
+        return response_service_data.dig(response_root_node_name) if response_service_data.keys.include?(response_root_node_name)
+
+        errors.add(:xml, "Cannot find `#{response_root_node_name}` in `serviceData` node.")
+        fail_on_structure_parsing
+      end
+
       def b2b_response_hash
         response_hash.dig('b2bSyncResponse') || response_hash.dig('b2bASyncResponse')
       end
@@ -76,6 +83,10 @@ module CzechPostB2bClient
       def handle_result_building_error(error)
         @result = { result_builder_error: error.message + ' at line: ' + error.backtrace.first,
                     response_hash: response_hash }
+        fail_on_structure_parsing
+      end
+
+      def fail_on_structure_parsing
         errors.add(:xml, 'Parsed XML can not be converted to result hash. Is it correct response for this parser?')
         fail!
       end

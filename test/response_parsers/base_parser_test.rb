@@ -9,12 +9,13 @@ module CzechPostB2bClient
         parser = CzechPostB2bClient::ResponseParsers::GetResultParcelsParser.call(xml: valid_get_stats_response_xml)
 
         assert parser.failed?
-        assert_equal ['Parsed XML can not be converted to result hash. Is it correct response for this parser?'],
+        assert_equal ["Cannot find `getResultParcelsResponse` in `serviceData` node.",
+                      'Parsed XML can not be converted to result hash. Is it correct response for this parser?'],
                      parser.errors[:xml]
 
         assert_equal '16', parser.result[:response_hash].dig('b2bSyncResponse', 'serviceData', 'getStatsResponse', 'importAll')
-        assert parser.result[:result_builder_error].include?("undefined method `dig' for nil:NilClass")
-        assert parser.result[:result_builder_error].include?(" at line: #{CzechPostB2bClient.root}") # full path to failing line
+        # assert parser.result[:result_builder_error].include?("undefined method `dig' for nil:NilClass")
+        # assert parser.result[:result_builder_error].include?(" at line: #{CzechPostB2bClient.root}") # full path to failing line
       end
 
       def test_recovers_from_bad_response_xml

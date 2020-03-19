@@ -12,11 +12,15 @@ module CzechPostB2bClient
       end
 
       def imports
-        imports_hash = response_service_data.dig('getStatsResponse')
+        imports_hash = response_root_node
         OpenStruct.new(all: imports_hash.dig('importAll').to_i,
                        err: imports_hash.dig('importErr').to_i,
                        ok: imports_hash.dig('importOk').to_i,
                        parcels: imports_hash.dig('parcels').to_i)
+      end
+
+      def response_root_node_name
+        'getStatsResponse'
       end
     end
   end

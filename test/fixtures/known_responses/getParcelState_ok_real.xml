@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<v1:b2bSyncResponse xmlns:v1="https://b2b.postaonline.cz/schema/B2BCommon-v1"
+  xmlns:v1_1="https://b2b.postaonline.cz/schema/POLServices-v1">
+  <v1:header>
+    <v1:timeStamp>2020-03-19T08:53:23.195Z</v1:timeStamp>
+    <v1:b2bRequestHeader>
+      <v1:idExtTransaction>64</v1:idExtTransaction>
+      <v1:timeStamp>2020-03-19T07:53:21.416Z</v1:timeStamp>
+      <v1:idContract>25195667001</v1:idContract>
+    </v1:b2bRequestHeader>
+  </v1:header>
+  <v1:serviceData>
+    <v1_1:getParcelStateResponse>
+      <v1_1:parcel>
+        <v1_1:idParcel>RR442097828CZ</v1_1:idParcel>
+        <v1_1:parcelType>RR</v1_1:parcelType>
+        <v1_1:weight>0.415</v1_1:weight>
+        <v1_1:amount>0</v1_1:amount>
+        <v1_1:currency></v1_1:currency>
+        <v1_1:countryOfOrigin>Česká republika</v1_1:countryOfOrigin>
+        <v1_1:countryOfDestination>Spojené státy americké</v1_1:countryOfDestination>
+        <v1_1:states>
+          <v1_1:state>
+            <v1_1:id>-M</v1_1:id>
+            <v1_1:date>2020-03-12</v1_1:date>
+            <v1_1:text>Obdrženy údaje k zásilce.</v1_1:text>
+          </v1_1:state>
+          <v1_1:state>
+            <v1_1:id>21</v1_1:id>
+            <v1_1:date>2020-03-12</v1_1:date>
+            <v1_1:text>Zásilka převzata do přepravy.</v1_1:text>
+            <v1_1:postCode>14000</v1_1:postCode>
+            <v1_1:name>Praha 4</v1_1:name>
+          </v1_1:state>
+          <v1_1:state>
+            <v1_1:id>C1</v1_1:id>
+            <v1_1:date>2020-03-13</v1_1:date>
+            <v1_1:text>Odeslání zásilky do země určení.</v1_1:text>
+          </v1_1:state>
+        </v1_1:states>
+      </v1_1:parcel>
+      <v1_1:parcel>
+        <v1_1:idParcel>RR442097831CZ</v1_1:idParcel>
+        <v1_1:parcelType>RR</v1_1:parcelType>
+        <v1_1:weight>0.396</v1_1:weight>
+        <v1_1:amount>0</v1_1:amount>
+        <v1_1:currency></v1_1:currency>
+        <v1_1:countryOfOrigin>Česká republika</v1_1:countryOfOrigin>
+        <v1_1:countryOfDestination>Kanada</v1_1:countryOfDestination>
+        <v1_1:states>
+          <v1_1:state>
+            <v1_1:id>-M</v1_1:id>
+            <v1_1:date>2020-03-12</v1_1:date>
+            <v1_1:text>Obdrženy údaje k zásilce.</v1_1:text>
+          </v1_1:state>
+          <v1_1:state>
+            <v1_1:id>21</v1_1:id>
+            <v1_1:date>2020-03-12</v1_1:date>
+            <v1_1:text>Zásilka převzata do přepravy.</v1_1:text>
+            <v1_1:postCode>14000</v1_1:postCode>
+            <v1_1:name>Praha 4</v1_1:name>
+          </v1_1:state>
+          <v1_1:state>
+            <v1_1:id>C1</v1_1:id>
+            <v1_1:date>2020-03-13</v1_1:date>
+            <v1_1:text>Odeslání zásilky do země určení.</v1_1:text>
+          </v1_1:state>
+        </v1_1:states>
+      </v1_1:parcel>
+      <v1_1:parcel>
+        <v1_1:idParcel>RR442097859CZ</v1_1:idParcel>
+        <v1_1:parcelType>RR</v1_1:parcelType>
+        <v1_1:weight>0.079</v1_1:weight>
+        <v1_1:amount>0</v1_1:amount>
+        <v1_1:currency></v1_1:currency>
+        <v1_1:countryOfOrigin>Česká republika</v1_1:countryOfOrigin>
+        <v1_1:countryOfDestination>Spojené státy americké</v1_1:countryOfDestination>
+        <v1_1:states>
+          <v1_1:state>
+            <v1_1:id>-M</v1_1:id>
+            <v1_1:date>2020-03-12</v1_1:date>
+            <v1_1:text>Obdrženy údaje k zásilce.</v1_1:text>
+          </v1_1:state>
+          <v1_1:state>
+            <v1_1:id>21</v1_1:id>
+            <v1_1:date>2020-03-12</v1_1:date>
+            <v1_1:text>Zásilka převzata do přepravy.</v1_1:text>
+            <v1_1:postCode>14000</v1_1:postCode>
+            <v1_1:name>Praha 4</v1_1:name>
+          </v1_1:state>
+          <v1_1:state>
+            <v1_1:id>C1</v1_1:id>
+            <v1_1:date>2020-03-13</v1_1:date>
+            <v1_1:text>Odeslání zásilky do země určení.</v1_1:text>
+          </v1_1:state>
+        </v1_1:states>
+      </v1_1:parcel>
+      <v1_1:parcel>
+        <v1_1:idParcel>RR442120685CZ</v1_1:idParcel>
+        <v1_1:parcelType>RR</v1_1:parcelType>
+        <v1_1:weight>0.096</v1_1:weight>
+        <v1_1:amount>0</v1_1:amount>
+        <v1_1:currency></v1_1:currency>
+        <v1_1:timeDeposit>15</v1_1:timeDeposit>
+        <v1_1:states>
+          <v1_1:state>
+            <v1_1:id>-M</v1_1:id>
+            <v1_1:date>2020-03-17</v1_1:date>
+            <v1_1:text>Obdrženy údaje k zásilce.</v1_1:text>
+          </v1_1:state>
+          <v1_1:state>
+            <v1_1:id>21</v1_1:id>
+            <v1_1:date>2020-03-17</v1_1:date>
+            <v1_1:text>Zásilka převzata do přepravy.</v1_1:text>
+            <v1_1:postCode>14000</v1_1:postCode>
+            <v1_1:name>Praha 4</v1_1:name>
+          </v1_1:state>
+        </v1_1:states>
+      </v1_1:parcel>
+      <v1_1:parcel>
+        <v1_1:idParcel>RR442120699CZ</v1_1:idParcel>
+        <v1_1:parcelType>RR</v1_1:parcelType>
+        <v1_1:weight>0.096</v1_1:weight>
+        <v1_1:amount>0</v1_1:amount>
+        <v1_1:currency></v1_1:currency>
+        <v1_1:timeDeposit>15</v1_1:timeDeposit>
+        <v1_1:states>
+          <v1_1:state>
+            <v1_1:id>-M</v1_1:id>
+            <v1_1:date>2020-03-17</v1_1:date>
+            <v1_1:text>Obdrženy údaje k zásilce.</v1_1:text>
+          </v1_1:state>
+          <v1_1:state>
+            <v1_1:id>21</v1_1:id>
+            <v1_1:date>2020-03-17</v1_1:date>
+            <v1_1:text>Zásilka převzata do přepravy.</v1_1:text>
+            <v1_1:postCode>14000</v1_1:postCode>
+            <v1_1:name>Praha 4</v1_1:name>
+          </v1_1:state>
+          <v1_1:state>
+            <v1_1:id>51</v1_1:id>
+            <v1_1:date>2020-03-19</v1_1:date>
+            <v1_1:text>Příprava zásilky k doručení.</v1_1:text>
+            <v1_1:postCode>14300</v1_1:postCode>
+            <v1_1:name>Praha 412</v1_1:name>
+          </v1_1:state>
+        </v1_1:states>
+      </v1_1:parcel>
+      <v1_1:parcel>
+        <v1_1:idParcel>RR442120711CZ</v1_1:idParcel>
+        <v1_1:parcelType>RR</v1_1:parcelType>
+        <v1_1:weight>0.075</v1_1:weight>
+        <v1_1:amount>0</v1_1:amount>
+        <v1_1:currency></v1_1:currency>
+        <v1_1:timeDeposit>15</v1_1:timeDeposit>
+        <v1_1:states>
+          <v1_1:state>
+            <v1_1:id>-M</v1_1:id>
+            <v1_1:date>2020-03-17</v1_1:date>
+            <v1_1:text>Obdrženy údaje k zásilce.</v1_1:text>
+          </v1_1:state>
+          <v1_1:state>
+            <v1_1:id>21</v1_1:id>
+            <v1_1:date>2020-03-17</v1_1:date>
+            <v1_1:text>Zásilka převzata do přepravy.</v1_1:text>
+            <v1_1:postCode>14000</v1_1:postCode>
+            <v1_1:name>Praha 4</v1_1:name>
+          </v1_1:state>
+          <v1_1:state>
+            <v1_1:id>8V</v1_1:id>
+            <v1_1:date>2020-03-19</v1_1:date>
+            <v1_1:text>Uložení zásilky -  sjednaná výhrada odnášky.</v1_1:text>
+            <v1_1:postCode>54301</v1_1:postCode>
+            <v1_1:name>Vrchlabí 1</v1_1:name>
+          </v1_1:state>
+          <v1_1:state>
+            <v1_1:id>91</v1_1:id>
+            <v1_1:date>2020-03-19</v1_1:date>
+            <v1_1:text>Dodání zásilky.</v1_1:text>
+            <v1_1:postCode>54301</v1_1:postCode>
+            <v1_1:name>Vrchlabí 1</v1_1:name>
+          </v1_1:state>
+        </v1_1:states>
+      </v1_1:parcel>
+      <v1_1:parcel>
+        <v1_1:idParcel>RR442097845CZ</v1_1:idParcel>
+        <v1_1:parcelType>RR</v1_1:parcelType>
+        <v1_1:weight>0.100</v1_1:weight>
+        <v1_1:amount>0</v1_1:amount>
+        <v1_1:currency></v1_1:currency>
+        <v1_1:timeDeposit>15</v1_1:timeDeposit>
+        <v1_1:states>
+          <v1_1:state>
+            <v1_1:id>-M</v1_1:id>
+            <v1_1:date>2020-03-12</v1_1:date>
+            <v1_1:text>Obdrženy údaje k zásilce.</v1_1:text>
+          </v1_1:state>
+          <v1_1:state>
+            <v1_1:id>21</v1_1:id>
+            <v1_1:date>2020-03-12</v1_1:date>
+            <v1_1:text>Zásilka převzata do přepravy.</v1_1:text>
+            <v1_1:postCode>14000</v1_1:postCode>
+            <v1_1:name>Praha 4</v1_1:name>
+          </v1_1:state>
+          <v1_1:state>
+            <v1_1:id>51</v1_1:id>
+            <v1_1:date>2020-03-16</v1_1:date>
+            <v1_1:text>Příprava zásilky k doručení.</v1_1:text>
+            <v1_1:postCode>60012</v1_1:postCode>
+            <v1_1:name>Depo Brno 73</v1_1:name>
+          </v1_1:state>
+          <v1_1:state>
+            <v1_1:id>53</v1_1:id>
+            <v1_1:date>2020-03-16</v1_1:date>
+            <v1_1:text>Doručování zásilky.</v1_1:text>
+            <v1_1:postCode>60012</v1_1:postCode>
+            <v1_1:name>Depo Brno 73</v1_1:name>
+          </v1_1:state>
+          <v1_1:state>
+            <v1_1:id>91</v1_1:id>
+            <v1_1:date>2020-03-16</v1_1:date>
+            <v1_1:text>Dodání zásilky.</v1_1:text>
+            <v1_1:postCode>60012</v1_1:postCode>
+            <v1_1:name>Depo Brno 73</v1_1:name>
+          </v1_1:state>
+        </v1_1:states>
+      </v1_1:parcel>
+      <v1_1:parcel>
+        <v1_1:idParcel>RR442097862CZ</v1_1:idParcel>
+        <v1_1:parcelType>RR</v1_1:parcelType>
+        <v1_1:weight>0.441</v1_1:weight>
+        <v1_1:amount>0</v1_1:amount>
+        <v1_1:currency></v1_1:currency>
+        <v1_1:timeDeposit>15</v1_1:timeDeposit>
+        <v1_1:states>
+          <v1_1:state>
+            <v1_1:id>-M</v1_1:id>
+            <v1_1:date>2020-03-12</v1_1:date>
+            <v1_1:text>Obdrženy údaje k zásilce.</v1_1:text>
+          </v1_1:state>
+          <v1_1:state>
+            <v1_1:id>21</v1_1:id>
+            <v1_1:date>2020-03-12</v1_1:date>
+            <v1_1:text>Zásilka převzata do přepravy.</v1_1:text>
+            <v1_1:postCode>14000</v1_1:postCode>
+            <v1_1:name>Praha 4</v1_1:name>
+          </v1_1:state>
+          <v1_1:state>
+            <v1_1:id>51</v1_1:id>
+            <v1_1:date>2020-03-16</v1_1:date>
+            <v1_1:text>Příprava zásilky k doručení.</v1_1:text>
+            <v1_1:postCode>41800</v1_1:postCode>
+            <v1_1:name>dodejna II Bílina</v1_1:name>
+          </v1_1:state>
+          <v1_1:state>
+            <v1_1:id>53</v1_1:id>
+            <v1_1:date>2020-03-16</v1_1:date>
+            <v1_1:text>Doručování zásilky.</v1_1:text>
+            <v1_1:postCode>41800</v1_1:postCode>
+            <v1_1:name>dodejna II Bílina</v1_1:name>
+          </v1_1:state>
+          <v1_1:state>
+            <v1_1:id>91</v1_1:id>
+            <v1_1:date>2020-03-16</v1_1:date>
+            <v1_1:text>Dodání zásilky.</v1_1:text>
+            <v1_1:postCode>41800</v1_1:postCode>
+            <v1_1:name>dodejna II Bílina</v1_1:name>
+          </v1_1:state>
+        </v1_1:states>
+      </v1_1:parcel>
+    </v1_1:getParcelStateResponse>
+  </v1:serviceData>
+</v1:b2bSyncResponse>

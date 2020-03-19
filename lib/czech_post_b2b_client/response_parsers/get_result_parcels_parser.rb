@@ -16,12 +16,16 @@ module CzechPostB2bClient
         end
       end
 
+      def response_root_node_name
+        'getResultParcelsResponse'
+      end
+
       def response_state_response
-        response_service_data.dig('getResultParcelsResponse').dig('doParcelHeaderResult').dig('doParcelStateResponse')
+        response_root_node.dig('doParcelHeaderResult', 'doParcelStateResponse')
       end
 
       def response_parcel_hashes
-        [response_service_data.dig('getResultParcelsResponse').dig('doParcelParamResult')].flatten.compact # to always get array of hash(es)
+        [response_root_node.dig('doParcelParamResult')].flatten.compact # to always get array of hash(es)
       end
 
       def parcel_parcel_id_from(rp_hash)
