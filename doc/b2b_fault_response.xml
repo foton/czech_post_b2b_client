@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<B2BFaultMessage xmlns="https://raw.githubusercontent.com/foton/czech_post_b2b_client/master/doc/20181023/B2BCommon-v1.1.xsd" >
-  <errorDetail>  Error text </errorDetail>
-  <errorCode>2</errorCode>
-</B2BFaultMessage>

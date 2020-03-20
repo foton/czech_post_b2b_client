@@ -15,7 +15,7 @@ The longterm and hardest part.
 - Ask them for ALL documentation!(I have to ask 3 times to collect enough of it). They like to put files into DOCX file, so click on file icons!
 - You have to obtain "komerční certifikát PostSignum".
 
-Instructions (in czech) are in [`doc/Postup_pro_zavedení_API_služeb_České_pošty.docx`](../doc/Postup_pro_zavedení_API_služeb_České_pošty.docx)
+Instructions (in czech) are in [`documents/Postup_pro_zavedení_API_služeb_České_pošty.docx`](./documents/Postup_pro_zavedení_API_služeb_České_pošty.docx)
 
 ### 2) Preparations on PodaniOnline app
 1) Sign in to [PostaOnline](https://www.postaonline.cz/rap/prihlaseni)
@@ -69,9 +69,9 @@ Or install it yourself as:
    Because PostSignum Certificate Authority is not trusted by default, correct certificate chain is in `certs/` folder. If You have problem with them, create a issue here. Maybe they are outdated now.
 
 ## Usage
-  **You have to know which parcel type (according to CP) you sending!** Eg. 'BA' or 'RR'. See [`doc/parcel_types.md`](../doc/parcel_types.md).
+  **You have to know which parcel type (according to CP) you sending!** Eg. 'BA' or 'RR'. See [`documents/parcel_types.md`](./documents/parcel_types.md).
 
-  **And what services You will use for each parcel**, see [`doc/services_list.md`](../doc/services_list.md) and [`doc/parcels_type_and_services_restrictions.md`](../doc/parcels_type_and_services_restrictions.md).
+  **And what services You will use for each parcel**, see [`documents/services_list.md`](./documents/services_list.md) and [`documents/parcels_type_and_services_restrictions.md`](./documents/parcels_type_and_services_restrictions.md).
 
   Hashes used is srvice calls bellow:
   ```
@@ -175,7 +175,7 @@ Or install it yourself as:
      `parcel_code` is CzechPost ID of parcel and is used in following calls.
 
   4) Print address sheets of parcels(s) by calling `AddressSheetsGenerator.call(parcel_codes: parcel_codes, options: options )`.
-     See [template_classes](../lib/czech_post_b2b_client/printing_templates.rb) for available templates.
+     See [template_classes](./lib/czech_post_b2b_client/printing_templates.rb) for available templates.
      Eg. :
      ```
      parcel_codes = %w[RA123456789 RR123456789F RR123456789G] # beware of parcel_id!
@@ -250,7 +250,7 @@ Or install it yourself as:
 
   See `test/integration_test.rb` for almost production usage. HTTP calls to B2B services are blocked and responses from them are stubbed.
 
-  You can quickly check you setup by altering config and run `ruby try_api_calls.rb` see [`try_api_calls.rb`](../try_api_calls.rb).
+  You can quickly check you setup by altering config and run `ruby try_api_calls.rb` see [`try_api_calls.rb`](./examples/try_api_calls.rb).
 
 ## Troubleshooting
 
