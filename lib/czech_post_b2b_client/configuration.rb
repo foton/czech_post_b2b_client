@@ -7,6 +7,7 @@ module CzechPostB2bClient
     attr_accessor :customer_id,
                   :contract_id,
                   :sending_post_office_code,
+                  :sending_post_office_location_number,
                   :certificate_path,
                   :private_key_password,
                   :private_key_path,
@@ -27,6 +28,7 @@ module CzechPostB2bClient
       @language = :cs
       @logger = defined?(Rails) ? ::Rails.logger : ::Logger.new(STDOUT)
       @b2b_api_base_uri = 'https://b2b.postaonline.cz/services/POLService/v1'
+      @sending_post_office_location_number = 1
     end
   end
 end
