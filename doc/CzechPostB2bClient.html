@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Module: CzechPostB2bClient
+  
+    &mdash; Documentation by YARD 0.9.19
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "CzechPostB2bClient";
+  relpath = '';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="_index.html">Index (C)</a> &raquo;
+    
+    
+    <span class="title">CzechPostB2bClient</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Module: CzechPostB2bClient
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>lib/czech_post_b2b_client/b2b_errors.rb<span class="defines">,<br />
+  lib/czech_post_b2b_client.rb,<br /> lib/czech_post_b2b_client/version.rb,<br /> lib/czech_post_b2b_client/configuration.rb,<br /> lib/czech_post_b2b_client/response_codes.rb,<br /> lib/czech_post_b2b_client/printing_templates.rb,<br /> lib/czech_post_b2b_client/services/api_caller.rb,<br /> lib/czech_post_b2b_client/services/communicator.rb,<br /> lib/czech_post_b2b_client/services/orchestrator.rb,<br /> lib/czech_post_b2b_client/services/parcels_sender.rb,<br /> lib/czech_post_b2b_client/response_parsers/base_parser.rb,<br /> lib/czech_post_b2b_client/request_builders/base_builder.rb,<br /> lib/czech_post_b2b_client/services/delivering_inspector.rb,<br /> lib/czech_post_b2b_client/response_parsers/get_stats_parser.rb,<br /> lib/czech_post_b2b_client/services/address_sheets_generator.rb,<br /> lib/czech_post_b2b_client/request_builders/get_stats_builder.rb,<br /> lib/czech_post_b2b_client/services/parcels_submission_closer.rb,<br /> lib/czech_post_b2b_client/services/time_period_statisticator.rb,<br /> lib/czech_post_b2b_client/response_parsers/send_parcels_parser.rb,<br /> lib/czech_post_b2b_client/request_builders/send_parcels_builder.rb,<br /> lib/czech_post_b2b_client/services/parcels_send_process_updater.rb,<br /> lib/czech_post_b2b_client/response_parsers/get_parcel_state_parser.rb,<br /> lib/czech_post_b2b_client/request_builders/get_parcel_state_builder.rb,<br /> lib/czech_post_b2b_client/response_parsers/get_result_parcels_parser.rb,<br /> lib/czech_post_b2b_client/request_builders/get_result_parcels_builder.rb,<br /> lib/czech_post_b2b_client/response_parsers/get_parcels_printing_parser.rb,<br /> lib/czech_post_b2b_client/request_builders/get_parcels_printing_builder.rb</span>
+</dd>
+  </dl>
+  
+</div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Available printing templates, which can be used in AdressSheetsGenerator
+`<a href=":template_id">options</a>`</p>
+
+<p>Do not miss `CzechPostB2bClient::PrintingTemplate.all_template_classes`
+method, it has to be at end of module to work properly</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
+<p class="children">
+  
+    
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="CzechPostB2bClient/B2BErrors.html" title="CzechPostB2bClient::B2BErrors (module)">B2BErrors</a></span>, <span class='object_link'><a href="CzechPostB2bClient/PrintingTemplates.html" title="CzechPostB2bClient::PrintingTemplates (module)">PrintingTemplates</a></span>, <span class='object_link'><a href="CzechPostB2bClient/RequestBuilders.html" title="CzechPostB2bClient::RequestBuilders (module)">RequestBuilders</a></span>, <span class='object_link'><a href="CzechPostB2bClient/ResponseCodes.html" title="CzechPostB2bClient::ResponseCodes (module)">ResponseCodes</a></span>, <span class='object_link'><a href="CzechPostB2bClient/ResponseParsers.html" title="CzechPostB2bClient::ResponseParsers (module)">ResponseParsers</a></span>, <span class='object_link'><a href="CzechPostB2bClient/Services.html" title="CzechPostB2bClient::Services (module)">Services</a></span>
+    
+  
+    
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="CzechPostB2bClient/Configuration.html" title="CzechPostB2bClient::Configuration (class)">Configuration</a></span>, <span class='object_link'><a href="CzechPostB2bClient/Error.html" title="CzechPostB2bClient::Error (class)">Error</a></span>
+    
+  
+</p>
+
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="VERSION-constant" class="">VERSION =
+          
+        </dt>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>1.0.0</span><span class='tstring_end'>&#39;</span></span></pre></dd>
+      
+    </dl>
+  
+
+
+
+
+  <h2>Class Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#configuration-class_method" title="configuration (class method)">.<strong>configuration</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute configuration.</p>
+</div></span>
+  
+</li>
+
+    
+  </ul>
+
+
+
+
+  
+    <h2>
+      Class Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#certs_path-class_method" title="certs_path (class method)">.<strong>certs_path</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#configure-class_method" title="configure (class method)">.<strong>configure</strong> {|configuration| ... } &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#logger-class_method" title="logger (class method)">.<strong>logger</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#root-class_method" title="root (class method)">.<strong>root</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+  <div id="class_attr_details" class="attr_details">
+    <h2>Class Attribute Details</h2>
+    
+      
+      <span id="configuration=-class_method"></span>
+      <div class="method_details first">
+  <h3 class="signature first" id="configuration-class_method">
+  
+    .<strong>configuration</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the value of attribute configuration</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+18
+19
+20</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/czech_post_b2b_client.rb', line 18</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_configuration'>configuration</span>
+  <span class='ivar'>@configuration</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="certs_path-class_method">
+  
+    .<strong>certs_path</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+34
+35
+36</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/czech_post_b2b_client.rb', line 34</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_certs_path'>certs_path</span>
+  <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="" title="CzechPostB2bClient (module)">CzechPostB2bClient</a></span></span><span class='period'>.</span><span class='id identifier rubyid_root'><span class='object_link'><a href="#root-class_method" title="CzechPostB2bClient.root (method)">root</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>certs</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="configure-class_method">
+  
+    .<strong>configure</strong> {|configuration| ... } &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Yields:</p>
+<ul class="yield">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="#configuration-class_method" title="CzechPostB2bClient.configuration (method)">configuration</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+21
+22
+23
+24</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/czech_post_b2b_client.rb', line 21</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_configure'>configure</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_configuration'>configuration</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="CzechPostB2bClient/Configuration.html" title="CzechPostB2bClient::Configuration (class)">Configuration</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="CzechPostB2bClient/Configuration.html#initialize-instance_method" title="CzechPostB2bClient::Configuration#initialize (method)">new</a></span></span>
+  <span class='kw'>yield</span><span class='lparen'>(</span><span class='id identifier rubyid_configuration'>configuration</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="logger-class_method">
+  
+    .<strong>logger</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+26
+27
+28</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/czech_post_b2b_client.rb', line 26</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_logger'>logger</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_configuration'>configuration</span><span class='period'>.</span><span class='id identifier rubyid_logger'>logger</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="root-class_method">
+  
+    .<strong>root</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+30
+31
+32</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/czech_post_b2b_client.rb', line 30</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_root'><span class='object_link'><a href="top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span>
+  <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_dirname'>dirname</span> <span class='id identifier rubyid___dir__'>__dir__</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      <div id="footer">
+  Generated on Fri Mar 20 17:49:05 2020 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.19 (ruby-2.4.1).
+</div>
+
+    </div>
+  </body>
+</html>

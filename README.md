@@ -73,7 +73,7 @@ Or install it yourself as:
 
   **And what services You will use for each parcel**, see [`documents/services_list.md`](./documents/services_list.md) and [`documents/parcels_type_and_services_restrictions.md`](./documents/parcels_type_and_services_restrictions.md).
 
-  Hashes used is srvice calls bellow:
+  Hashes used is service calls bellow:
   ```
     short_sender_data = { address: {
                             company_name: 'Oriflame',
@@ -140,7 +140,7 @@ Or install it yourself as:
 
   1) Pack your parcel(s)
 
-  2) Call `ParcelsSender.call(sending_data: sender_data, parcels: parcels)`, this will returnstore in `result` `transmission_id` and expected time to ask for results.
+  2) Call `ParcelsSender`, this will store in `result` `transmission_id` and expected time to ask for results.
       ```
         psender = ParcelsSender.call(sending_data: sending_data, parcels: parcels)
 
@@ -154,7 +154,7 @@ Or install it yourself as:
       ```
      For now, `parcels` is array of complicated hashes; each parcel must have `parcel_id` key (your ID of parcel).
 
-  3) When such expected time pass, ask for results by calling `ParcelsSendProcessUpdater.call(transmission_id: transmission_id)`.
+  3) When such expected time pass, ask for results by calling `ParcelsSendProcessUpdater`.
 
      You can get error `Processing is not yet finished` or hash based on `parcel_id` keys.
      Eg. :
@@ -174,7 +174,7 @@ Or install it yourself as:
      ```
      `parcel_code` is CzechPost ID of parcel and is used in following calls.
 
-  4) Print address sheets of parcels(s) by calling `AddressSheetsGenerator.call(parcel_codes: parcel_codes, options: options )`.
+  4) Print address sheets of parcels(s) by calling `AddressSheetsGenerator`.
      See [template_classes](./lib/czech_post_b2b_client/printing_templates.rb) for available templates.
      Eg. :
      ```
@@ -197,13 +197,13 @@ Or install it yourself as:
 
   5) Repeat steps 1-4 until You decide to deliver packages to post office.
 
-  6) Close your parcels submission by `ParcelsSubmissionCloser.call(sending_data: sender_data)`.
+  6) Close your parcels submission with call `ParcelsSubmissionCloser.call(sending_data: sender_data)`.
 
   7) _They will await You at post office with warm welcome (hopefully). Parcels which are not delivered within 60 days are removed from CzechPost systems for free :-)_
 
-  8) You can check current status of delivering by `DeliveringInspector.call(parcel_codes: parcel_codes)`, which will return hash based on `parcel_code` keys.
+  8) You can check current status of delivering with `DeliveringInspector`, which will return hash based on `parcel_code` keys.
      Eg. :
-    ```
+     ```
       delivery_boy = DeliveringInspector.call(parcel_codes: parcel_codes)
 
       if delivery_boy.success?
@@ -230,10 +230,10 @@ Or install it yourself as:
       else
         puts(delivery_boy.errors.full_messages)
       end
-    ```
+      ```
 
   9) And You can always ask for statistics!
-    ```
+      ```
       tps = TimePeriodStatisticator.call(from_date: Date.today - 5, to_date: Date.today)
       if tps.success?
         result = tps.result
@@ -244,7 +244,7 @@ Or install it yourself as:
       else
         puts(tps.errors.full_messages)
       end
-    ```
+      ```
 
 ### Example usage
 
@@ -254,7 +254,7 @@ Or install it yourself as:
 
 ## Troubleshooting
 
-  1) Read all stuff in `doc`, maybe it helps.
+  1) Read all stuff in [`./documents`](./documents/) and [Yard docs](./doc/index.html), maybe it helps.
   2) If You get "handshake protocol failed" You do not have correct setup for certificates. If You get any xml response (see logger in debug mode) certificates are ok.
      You can always try `TimePeriodStatisticator` for that check, it do not need any "before" actions.
   3) Error `UNAUTHORIZED_ROLE_ACCESS` means wrong `customer_id` or You are not yet registered in "PodáníOnline"
@@ -266,7 +266,7 @@ Or install it yourself as:
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `lib/czech_post_b2b_client/version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 

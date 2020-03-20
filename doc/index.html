@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  File: README
+  
+    &mdash; Documentation by YARD 0.9.19
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "README";
+  relpath = '';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: README</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><div id='filecontents'><h1 id="czechpostb2bclient">CzechPostB2bClient</h1>
+<p>Accessing B2B API of Czech Post for bulk processing of parcels (“B2B - WS PodáníOnline”).</p>
+
+<p>There are these supported operations of API:
+- <em>sendParcels</em> - stores data of parcels for async processing [HTTP POST - async response]
+- <em>getResultParcels</em> - return results of such processing [HTTP GET - sync response]
+- <em>getStats</em> - returns statistics of parcels sent in time period [HTTP GET - sync response]
+- <em>getParcelState</em> - returns all known states for listed parcels [HTTP GET - sync response]
+- <em>getParcelsPrinting</em> - returns PDF with address labels/stickers for listed parcels [HTTP GET - sync response]</p>
+
+<h2 id="installation">Installation</h2>
+<p>### 1) Registration at Czech Post (CP)
+The longterm and hardest part.
+- Connect Czech Post representative and make a contract with them.
+- Ask them for ALL documentation!(I have to ask 3 times to collect enough of it). They like to put files into DOCX file, so click on file icons!
+- You have to obtain “komerční certifikát PostSignum”.</p>
+
+<p>Instructions (in czech) are in <a href="./documents/Postup_pro_zavedení_API_služeb_České_pošty.docx"><code>documents/Postup_pro_zavedení_API_služeb_České_pošty.docx</code></a></p>
+
+<h3 id="preparations-on-podanionline-app">2) Preparations on PodaniOnline app</h3>
+<p>1) Sign in to <a href="https://www.postaonline.cz/rap/prihlaseni">PostaOnline</a>
+2) Go to <a href="https://www.postaonline.cz/klientskazona?p_p_id=clientzone_WAR_clientZoneportlet&amp;p_p_lifecycle=0&amp;_clientzone_WAR_clientZoneportlet_action=showPol&amp;_clientzone_WAR_clientZoneportlet_implicitModel=true">“Podání Online”</a>
+3) When You are in, select tab <strong>Nastavení</strong> and menu <strong>Podací místa</strong>
+4) Add <em>Podací místo</em> and write down it’s ID (will be used in <code>sending_post_office_location_number</code>)
+5) Switch tab to <strong>Zásilky</strong> and go to menu <strong>Zásilky =&gt; Přednastavení údajů</strong>
+6) Write down value(s) in <em>Výběr technologického čísla</em> (it will be used as <code>customer_id</code>).</p>
+
+<h3 id="gem-installation">3) Gem installation</h3>
+<p>Add this line to your application’s Gemfile:</p>
+
+<p><code>ruby
+gem 'czech_post_b2b_client'
+</code></p>
+
+<p>And then execute:</p>
+
+<pre class="code ruby"><code class="ruby">$ bundle
+</code></pre>
+
+<p>Or install it yourself as:</p>
+
+<pre class="code ruby"><code class="ruby">$ gem install czech_post_b2b_client
+</code></pre>
+
+<h3 id="setting-up-gem">4) Setting up gem</h3>
+<p>Set up your <code>contract_id</code>, <code>customer_id</code> (both from CP signed contract), <code>certificate_path</code>, <code>private_key_path</code> and <code>private_key_password</code> in configuration:
+   ```
+    CzechPostB2bClient.configure do |config|
+      config.contract_id = ‘contract_id’
+      config.customer_id = ‘customer_id’
+      config.certificate_path = ‘full_path/to/your/postsignum_certificate.pem’
+      config.private_key_path = ‘full_path/to/your/postsignum_private.key’
+      config.private_key_password = ‘your_password or nil’</p>
+
+<pre class="code ruby"><code class="ruby">  # this actually do not work, I have to use `sending_post_office_location_number`. But it is REQUIRED!
+  config.sending_post_office_code = 12_345 # PSC of post office where parcels will be physically delivered and submitted
+
+  # and You can override defaults
+  # config.sending_post_office_location_number =&gt; 1
+  # config.namespaces #XML namespaces
+  # config.language =&gt; :cs # other languages are not supported now
+  # config.logger =&gt; ::Rails.logger or ::Logger.new(STDOUT),
+  # config.b2b_api_base_uri =&gt; &#39;https://b2b.postaonline.cz/services/POLService/v1&#39;
+end    ```
+</code></pre>
+
+<ul>
+  <li><code>contract_id</code> is <em>“ID CČK”</em> (can be found in contract; eg.: <em>“2511327004”</em>)</li>
+  <li><code>customer_id</code> is <em>“Technologické číslo”</em> (can be found in contract; eg.: <em>“U123”</em> or <em>“L03022”</em>; also is visible at <a href="https://www.postaonline.cz/podanionline/PrednastaveniUdajuZasilky.action">PodaníOnline</a></li>
+</ul>
+
+<p>Because PostSignum Certificate Authority is not trusted by default, correct certificate chain is in <code>certs/</code> folder. If You have problem with them, create a issue here. Maybe they are outdated now.</p>
+
+<h2 id="usage">Usage</h2>
+<p><strong>You have to know which parcel type (according to CP) you sending!</strong> Eg. ‘BA’ or ‘RR’. See <a href="./documents/parcel_types.md"><code>documents/parcel_types.md</code></a>.</p>
+
+<p><strong>And what services You will use for each parcel</strong>, see <a href="./documents/services_list.md"><code>documents/services_list.md</code></a> and <a href="./documents/parcels_type_and_services_restrictions.md"><code>documents/parcels_type_and_services_restrictions.md</code></a>.</p>
+
+<p>Hashes used is service calls bellow:
+  ```
+    short_sender_data = { address: {
+                            company_name: ‘Oriflame’,
+                            addition_to_name: ‘perfume’, # optional
+                            street: ‘V olšinách’,
+                            house_number: ‘16’,
+                            city_part: ‘Strašnice’,
+                            city: ‘Praha’,
+                            post_code: 10_000,
+                          },
+                          mobile_phone: ‘+420777888999’,
+                          email: ‘rehor.jan@cpost.cz’ }
+    sending_data = { contract_id: configuration.contract_id,
+                     parcels_sending_date: Date.today,
+                     sending_post_office_location_number: 1,
+                     sender: short_sender_data,
+                     cash_on_delivery: {
+                       address: short_sender_data[:address]
+                       bank_account: ‘123456-1234567890/1234’
+                     } }</p>
+
+<pre class="code ruby"><code class="ruby">short_addressee_data = { address: {
+                          first_name: &#39;Petr&#39;,
+                          last_name: &#39;Foton&#39;,
+                          street: &#39;Fischerova&#39;,
+                          house_number: &#39;686&#39;,
+                          sequence_number: &#39;32&#39;,
+                          city_part: &#39;Nové Sady&#39;,
+                          city: &#39;Olomouc&#39;,
+                          post_code: 77_900
+                        },
+  email: &#39;foton@github.com&#39;,
+  mobile_phone: &#39;+420777888999&#39; }
+
+parcels = [
+  {
+    addressee: short_addressee_data,
+    params: { parcel_id: &#39;package_1of2&#39;,
+              parcel_code_prefix: &#39;BA&#39;,
+              weight_in_kg: 1.0,
+              parcel_order: 1,
+              parcels_count: 2 },
+    services: [70, 7, &#39;S&#39;]
+  },
+  {
+    addressee: short_addressee_data,
+    params: { parcel_id: &#39;package_2of2&#39;,
+              parcel_code_prefix: &#39;BA&#39;,
+              weight_in_kg: 1.6,
+              parcel_order: 2,
+              parcels_count: 2 },
+    services: [70,&#39;S&#39;]
+  },
+  {
+    addressee: short_addressee_data,
+    params: { parcel_id: &#39;package_3&#39;,
+              parcel_code_prefix: &#39;BA&#39;,
+              weight_in_kg: 1.9 },
+    services: [7,&#39;M&#39;]
+  }
+] ```
+</code></pre>
+
+<p>1) Pack your parcel(s)</p>
+
+<p>2) Call <code>ParcelsSender</code>, this will store in <code>result</code> <code>transmission_id</code> and expected time to ask for results.
+      ```
+        psender = ParcelsSender.call(sending_data: sending_data, parcels: parcels)</p>
+
+<pre class="code ruby"><code class="ruby">    if psender.success?
+      result = psender.result
+      processing_end_time_utc = (result.processing_end_expected_at - (60 *60)).utc # API returns time in CET but marked as UTC
+      transaction_id = result.transaction_id
+    else
+      puts psender.errors.full_messages
+    end
+  ```
+ For now, `parcels` is array of complicated hashes; each parcel must have `parcel_id` key (your ID of parcel).
+</code></pre>
+
+<p>3) When such expected time pass, ask for results by calling <code>ParcelsSendProcessUpdater</code>.</p>
+
+<pre class="code ruby"><code class="ruby"> You can get error `Processing is not yet finished` or hash based on `parcel_id` keys.
+ Eg. :
+ ```
+    pudater = ParcelsSendProcessUpdater.call(transmission_id: transmission_id)
+
+    if pupdater.success?
+      update_my_parcels_with(pupdater.result) # =&gt; { &#39;parcel_1of2&#39; =&gt; { parcel_code: &#39;BA12354678&#39;, states: [{ code: 1, text: &#39;OK&#39; }]},
+                                              #      &#39;parcel_2of2&#39; =&gt; { parcel_code: &#39;BA12354679&#39;, states: [{ code: 1, text: &#39;OK&#39; }]},
+                                              #      &#39;parcel_3&#39; =&gt; { parcel_code: &#39;BA12354680&#39;, states: [{ code: 1, text: &#39;OK&#39; }]}
+    else
+      puts psender.errors.full_messages # =&gt; &quot;response_state: ResponseCode[19 BATCH_INVALID] V dávce se vyskytují chybné záznamy&quot;
+                                        #    &quot;parcels: Parcel[parcel_2of2] =&gt; ResponseCode[104 INVALID_WEIGHT] Hmotnost mimo povolený rozsah&quot;
+                                        #    &quot;parcels: Parcel[parcel_2of2] =&gt; ResponseCode[261 MISSING_SIZE_CATEGORY] Neuvedena rozměrová kategorie zásilky&quot;
+                                        #    &quot;parcels: Parcel[parcel_3] =&gt; ResponseCode[310 INVALID_PREFIX] Neplatný typ zásilky&quot;
+    end
+ ```
+ `parcel_code` is CzechPost ID of parcel and is used in following calls.
+</code></pre>
+
+<p>4) Print address sheets of parcels(s) by calling <code>AddressSheetsGenerator</code>.
+     See <a href="./lib/czech_post_b2b_client/printing_templates.rb">template_classes</a> for available templates.
+     Eg. :
+     ```
+     parcel_codes = %w[RA123456789 RR123456789F RR123456789G] # beware of parcel_id!
+     options = {
+          customer_id: configuration.customer_id, # required
+          contract_number: configuration.contract_id, # not required
+          template_id: 24, # ‘obalka 3 - B4’  #
+          margin_in_mm: { top: 5, left: 3 } # required
+        }</p>
+
+<pre class="code ruby"><code class="ruby">  adrprinter = AddressSheetsGenerator.call(parcel_codes: parcel_codes, options: options )
+
+  if adrprinter.success?
+    File.write(&quot;adrsheet.pdf&quot;, adrprinter.result.pdf_content)
+  else
+    puts(adrprinter.errors.full_messages)
+  end
+ ```
+</code></pre>
+
+<p>5) Repeat steps 1-4 until You decide to deliver packages to post office.</p>
+
+<p>6) Close your parcels submission with call <code>ParcelsSubmissionCloser.call(sending_data: sender_data)</code>.</p>
+
+<p>7) <em>They will await You at post office with warm welcome (hopefully). Parcels which are not delivered within 60 days are removed from CzechPost systems for free :-)</em></p>
+
+<p>8) You can check current status of delivering with <code>DeliveringInspector</code>, which will return hash based on <code>parcel_code</code> keys.
+     Eg. :
+     ```
+      delivery_boy = DeliveringInspector.call(parcel_codes: parcel_codes)</p>
+
+<pre class="code ruby"><code class="ruby">  if delivery_boy.success?
+    update_my_parcels_delivery_status_with(delivery_boy.result)
+    # result is like:
+    # { &#39;RA12345687&#39; =&gt; { current_state: { id: &#39;91&#39;,
+                                           date: Date.parse(&#39;2015-09-04&#39;),
+                                           text: &#39;Dodání zásilky.&#39;,
+                                           post_code: &#39;25756&#39;,
+                                           post_name: &#39;Neveklov&#39;},
+                          deposited_until: Date.new(2015, 9, 2),
+                          deposited_for_days: 15,
+                          all_states: [
+                            { id: &#39;21&#39;, date: Date.parse(&#39;2015-09-02&#39;), text: &#39;Podání zásilky.&#39;, post_code: &#39;26701&#39;, post_name: &#39;Králův Dvůr u Berouna&#39; },
+                            { id: &#39;-F&#39;, date: Date.parse(&#39;2015-09-03&#39;), text: &#39;Vstup zásilky na SPU.&#39;, post_code: &#39;22200&#39;, post_name: &#39;SPU Praha 022&#39; },
+                            { id: &#39;-I&#39;, date: Date.parse(&#39;2015-09-03&#39;), text: &#39;Výstup zásilky z SPU.&#39;, post_code: &#39;22200&#39;, post_name: &#39;SPU Praha 022&#39; },
+                            { id: &#39;-B&#39;, date: Date.parse(&#39;2015-09-03&#39;), text: &#39;Přeprava zásilky k dodací poště.&#39;, post_code: nil, post_name: nil },
+                            { id: &#39;51&#39;, date: Date.parse(&#39;2015-09-04&#39;), text: &#39;Příprava zásilky k doručení.&#39;, post_code: &#39;25607&#39;, post_name: &#39;Depo Benešov 70&#39; },
+                            { id: &#39;53&#39;, date: Date.parse(&#39;2015-09-04&#39;), text: &#39;Doručování zásilky.&#39;, post_code: &#39;25756&#39;, post_name: &#39;Neveklov&#39; },
+                            { id: &#39;91&#39;, date: Date.parse(&#39;2015-09-04&#39;), text: &#39;Dodání zásilky.&#39;, post_code: &#39;25756&#39;, post_name: &#39;Neveklov&#39; }
+                          ]},
+        &#39;BA56487125&#39; =&gt; {...}
+      }
+  else
+    puts(delivery_boy.errors.full_messages)
+  end
+  ```
+</code></pre>
+
+<p>9) And You can always ask for statistics!
+      <code>
+      tps = TimePeriodStatisticator.call(from_date: Date.today - 5, to_date: Date.today)
+      if tps.success?
+        result = tps.result
+        result.requests.total # =&gt; 26,
+        result.requests.with_errors # =&gt; 16
+        result.requests.successful # =&gt; 10
+        result.imported_parcels # =&gt; 3
+      else
+        puts(tps.errors.full_messages)
+      end
+     </code></p>
+
+<h3 id="example-usage">Example usage</h3>
+
+<p>See <code>test/integration_test.rb</code> for almost production usage. HTTP calls to B2B services are blocked and responses from them are stubbed.</p>
+
+<p>You can quickly check you setup by altering config and run <code>ruby try_api_calls.rb</code> see <a href="./examples/try_api_calls.rb"><code>try_api_calls.rb</code></a>.</p>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+
+<p>1) Read all stuff in <code>doc</code>, maybe it helps.
+  2) If You get “handshake protocol failed” You do not have correct setup for certificates. If You get any xml response (see logger in debug mode) certificates are ok.
+     You can always try <code>TimePeriodStatisticator</code> for that check, it do not need any “before” actions.
+  3) Error <code>UNAUTHORIZED_ROLE_ACCESS</code> means wrong <code>customer_id</code> or You are not yet registered in “PodáníOnline”
+  4) Error <code>11: INVALID_LOCATION</code> was occuring when only <code>sending_post_office_code</code> was used. Try to use <code>sending_post_office_location_number</code>.
+  5) And last tip <code>261 MISSING_SIZE_CATEGORY</code> -&gt; add correct “size service” to services (eg: ‘S’, ‘M’)
+  6) Compare resulting request XML with examples in <code>test/request_builders</code></p>
+
+<h2 id="development">Development</h2>
+
+<p>After checking out the repo, run <code>bin/setup</code> to install dependencies. Then, run <code>rake test</code> to run the tests. You can also run <code>bin/console</code> for an interactive prompt that will allow you to experiment.</p>
+
+<p>To install this gem onto your local machine, run <code>bundle exec rake install</code>. To release a new version, update the version number in <code>lib/czech_post_b2b_client/version.rb</code>, and then run <code>bundle exec rake release</code>, which will create a git tag for the version, push git commits and tags, and push the <code>.gem</code> file to <a href="https://rubygems.org">rubygems.org</a>.</p>
+
+<h2 id="contributing">Contributing</h2>
+
+<p>Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/czech_post_b2b_client. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the <a href="http://contributor-covenant.org">Contributor Covenant</a> code of conduct.</p>
+
+<h2 id="license">License</h2>
+
+<p>The gem is available as open source under the terms of the <a href="https://opensource.org/licenses/MIT">MIT License</a>.</p>
+
+<h2 id="code-of-conduct">Code of Conduct</h2>
+
+<p>Everyone interacting in the CzechPostB2bClient project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the <a href="https://github.com/[USERNAME]/czech_post_b2b_client/blob/master/CODE_OF_CONDUCT.md">code of conduct</a>.</p>
+</div></div>
+
+      <div id="footer">
+  Generated on Fri Mar 20 17:49:05 2020 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.19 (ruby-2.4.1).
+</div>
+
+    </div>
+  </body>
+</html>

@@ -4,6 +4,8 @@ lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'czech_post_b2b_client/version'
 
+github_uri = 'https://github.com/foton/czech_post_b2b_client'
+
 Gem::Specification.new do |spec|
   spec.name          = 'czech_post_b2b_client'
   spec.version       = CzechPostB2bClient::VERSION
@@ -11,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['foton@centrum.cz']
 
   spec.summary       = 'Accessing B2B API of Czech Post for bulk processing of packages ("B2B - WS PodáníOnline").'
-  spec.homepage      = 'https://github.com/foton/czech_post_b2b_client'
+  spec.homepage      = github_uri
   spec.license       = 'MIT'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
@@ -19,10 +21,10 @@ Gem::Specification.new do |spec|
 
   if spec.respond_to?(:metadata)
     spec.metadata['homepage_uri'] = spec.homepage
-    spec.metadata['source_code_uri'] = 'https://github.com/foton/czech_post_b2b_client'
-    spec.metadata['changelog_uri'] = 'https://github.com/foton/czech_post_b2b_client/blob/master/CHANGELOG.md'
-    spec.metadata['bug_tracker_uri'] = 'https://github.com/foton/czech_post_b2b_client/issues'
-    # spec.metadata['documentation_uri'] = 'https://www.rubydoc.info/gems/czech_post_b2b_client'
+    spec.metadata['source_code_uri'] = github_uri
+    spec.metadata['changelog_uri'] = github_uri + '/blob/master/CHANGELOG.md'
+    spec.metadata['bug_tracker_uri'] = github_uri + '/issues'
+    spec.metadata['documentation_uri'] = github_uri + '/blob/master/doc/index.html'
   else
     msg = "RubyGems 2.0 or newer is required to protect against public "\
           "gem pushes. You can update your rubygems version by running:\n\n"\
