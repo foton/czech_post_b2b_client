@@ -142,7 +142,7 @@ Or install it yourself as:
 
   2) Call `ParcelsSender`, this will store in `result` `transmission_id` and expected time to ask for results.
       ```
-        psender = ParcelsSender.call(sending_data: sending_data, parcels: parcels)
+        psender = CzechPostB2bClient::Services::ParcelsSender.call(sending_data: sending_data, parcels: parcels)
 
         if psender.success?
           result = psender.result
@@ -159,7 +159,7 @@ Or install it yourself as:
      You can get error `Processing is not yet finished` or hash based on `parcel_id` keys.
      Eg. :
      ```
-        pudater = ParcelsSendProcessUpdater.call(transmission_id: transmission_id)
+        pudater = CzechPostB2bClient::Services::ParcelsSendProcessUpdater.call(transmission_id: transmission_id)
 
         if pupdater.success?
           update_my_parcels_with(pupdater.result) # => { 'parcel_1of2' => { parcel_code: 'BA12354678', states: [{ code: 1, text: 'OK' }]},
@@ -186,7 +186,7 @@ Or install it yourself as:
           margin_in_mm: { top: 5, left: 3 } # required
         }
 
-      adrprinter = AddressSheetsGenerator.call(parcel_codes: parcel_codes, options: options )
+      adrprinter = CzechPostB2bClient::Services::AddressSheetsGenerator.call(parcel_codes: parcel_codes, options: options )
 
       if adrprinter.success?
         File.write("adrsheet.pdf", adrprinter.result.pdf_content)
@@ -204,7 +204,7 @@ Or install it yourself as:
   8) You can check current status of delivering with `DeliveringInspector`, which will return hash based on `parcel_code` keys.
      Eg. :
      ```
-      delivery_boy = DeliveringInspector.call(parcel_codes: parcel_codes)
+      delivery_boy = CzechPostB2bClient::Services::DeliveringInspector.call(parcel_codes: parcel_codes)
 
       if delivery_boy.success?
         update_my_parcels_delivery_status_with(delivery_boy.result)
@@ -234,7 +234,7 @@ Or install it yourself as:
 
   9) And You can always ask for statistics!
       ```
-      tps = TimePeriodStatisticator.call(from_date: Date.today - 5, to_date: Date.today)
+      tps = CzechPostB2bClient::Services::TimePeriodStatisticator.call(from_date: Date.today - 5, to_date: Date.today)
       if tps.success?
         result = tps.result
         result.requests.total # => 26,

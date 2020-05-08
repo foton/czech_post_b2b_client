@@ -12,8 +12,6 @@ AllCops:
     - "**/*.jb"
   Exclude:
     - "bin/*"
-Rails:
-  Enabled: false
 Documentation:
   Enabled: false
 Metrics/LineLength:

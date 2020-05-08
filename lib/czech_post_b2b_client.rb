@@ -8,6 +8,7 @@ require 'czech_post_b2b_client/configuration'
 require 'czech_post_b2b_client/b2b_errors'
 require 'czech_post_b2b_client/response_codes'
 require 'czech_post_b2b_client/printing_templates'
+require 'czech_post_b2b_client/post_services'
 
 require 'czech_post_b2b_client/request_builders'
 require 'czech_post_b2b_client/response_parsers'

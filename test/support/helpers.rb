@@ -182,7 +182,7 @@ end
 
 def full_parcel_data_custom_delaration
   {
-    category: 's2', # REQUIRED, kategorie zasilky
+    category: '11', # REQUIRED, kategorie zasilky "91" - dokumenty; "32" - obchodni vzorek; "21" - vracene zbozi; "991" -jine; "11" - obchodni zbozi
     note: 'string30',
     value_currency_iso_code: 'CZK', # REQUIRED, ISO kod meny celni hodnoty
     content_descriptions: [ # 1- 20x; popis obsahu zasilky

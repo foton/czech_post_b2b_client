@@ -1,17 +1,14 @@
 # frozen_string_literal: true
+
 # Available printing templates, which can be used in AdressSheetsGenerator `options[:template_id]`
 #
-# Do not miss `CzechPostB2bClient::PrintingTemplate.all_template_classes` method,
+# Do not miss `CzechPostB2bClient::PrintingTemplates.all_classes` method,
 # it has to be at end of module to work properly
 module CzechPostB2bClient
   module PrintingTemplates
     class Base
       class << self
-        attr_reader :id
-      end
-
-      class << self
-        attr_reader :description
+        attr_reader :id, :description
       end
     end
 
@@ -158,9 +155,9 @@ module CzechPostB2bClient
     end
 
     # has to be at the end, to load all subcasses before
-    def all_template_classes
+    def all_classes
       ObjectSpace.each_object(CzechPostB2bClient::PrintingTemplates::Base.singleton_class)
     end
-    module_function :all_template_classes
+    module_function :all_classes
   end
 end

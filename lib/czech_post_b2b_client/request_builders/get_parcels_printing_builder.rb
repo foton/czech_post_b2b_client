@@ -12,7 +12,7 @@ module CzechPostB2bClient
       end
 
       def self.allowed_printing_template_classes
-        @allowed_printing_template_classes ||= CzechPostB2bClient::PrintingTemplates.all_template_classes
+        @allowed_printing_template_classes ||= CzechPostB2bClient::PrintingTemplates.all_classes
       end
 
       private

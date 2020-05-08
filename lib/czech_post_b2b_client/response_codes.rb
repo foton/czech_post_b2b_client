@@ -1,6 +1,6 @@
 # Codes, which can be returned in response nodes `doParcelStateResponse`
 #
-# Do not miss `CzechPostB2bClient::ResponseCodes.all_code_classes` and `CzechPostB2bClient::ResponseCodes.new_by_code`,
+# Do not miss `CzechPostB2bClient::ResponseCodes.all_classes` and `CzechPostB2bClient::ResponseCodes.new_by_code`,
 # they have to be at end of module to work properly
 module CzechPostB2bClient
   module ResponseCodes
@@ -1881,14 +1881,14 @@ module CzechPostB2bClient
       @type = :info
     end
 
-    def all_code_classes
+    def all_classes
       ObjectSpace.each_object(CzechPostB2bClient::ResponseCodes::BaseCode.singleton_class)
     end
 
-    module_function :all_code_classes
+    module_function :all_classes
 
     def new_by_code(code)
-      klass = all_code_classes.detect { |k| k.code == code }
+      klass = all_classes.detect { |k| k.code == code }
       raise "ResponseCode with code: #{code}  is unknown!" unless klass
 
       klass.new

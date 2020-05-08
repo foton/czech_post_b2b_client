@@ -307,7 +307,7 @@ module CzechPostB2bClient
                     <ns2:adviceNote>string15</ns2:adviceNote>
                   </ns2:doParcelAddressDocument>
                   <ns2:doParcelCustomsDeclaration>
-                    <ns2:category>s2</ns2:category>
+                    <ns2:category>11</ns2:category>
                     <ns2:note>string30</ns2:note>
                     <ns2:customValCur>CZK</ns2:customValCur>
                     <ns2:doParcelCustomsGoods>
