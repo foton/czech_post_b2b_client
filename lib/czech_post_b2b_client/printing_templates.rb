@@ -155,9 +155,8 @@ module CzechPostB2bClient
     end
 
     # has to be at the end, to load all subcasses before
-    def all_classes
+    def self.all_classes
       ObjectSpace.each_object(CzechPostB2bClient::PrintingTemplates::Base.singleton_class)
     end
-    module_function :all_classes
   end
 end

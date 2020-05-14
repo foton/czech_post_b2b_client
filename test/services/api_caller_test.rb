@@ -6,7 +6,8 @@ require 'test_helper'
 # response <B2BFaultMessage>
 # Chybový kód | Detail chyby            | Popis
 # -----------------------------------------------
-#   1  |  UNAUTHORIZED_ROLE_ACCESS      |  Klient nemá definovanou požadovanou roli na službu (neexistuje žádný záznam pro požadovanou službu)
+#   1  |  UNAUTHORIZED_ROLE_ACCESS      |  Klient nemá definovanou požadovanou roli na službu
+#                                       |  (neexistuje žádný záznam pro požadovanou službu)
 #   2  |  UNAUTHORIZED_CONTRACT_ACCES   |  Klient nemá definován ke službě uvedený identifikátor smlouvy
 #   3  |  INTERNAL_ERROR_B2B            |  Interní chyba systému B2B
 #   4  |  INTERNAL_ERROR_DATA           |  Interní chyba aplikace (perzistence)
@@ -20,12 +21,13 @@ require 'test_helper'
 
 ## https://b2b.postaonline.cz/services/POLService/v1/sendParcels
 #  odeslání dat o zásilkách k předzpracování poštou
-#  - V případě, že je podací místo identifikováno prostřednictvím locationNumber, není nutná identifikace odesílatele prostřednictvím doParcelHeader.senderAddress
+#  - V případě, že je podací místo identifikováno prostřednictvím locationNumber,
+#     není nutná identifikace odesílatele prostřednictvím doParcelHeader.senderAddress
 #  - Velikost odesílaných dat maximálně 3MB, max. 15_000 volání denně
 
 ## https://b2b.postaonline.cz/services/POLService/v1/getResultParcels
 #  zjištění výsledku zpracování sendParcels
-#  - Do ukončení zpracování předaných dat (ze SendParcels) vrací chybový kód 10 UNFINISHED_PROCESS  - Zpracování není ještě ukončeno
+#  - Do ukončení zpracování předaných dat (ze SendParcels) vrací chybový kód 10 UNFINISHED_PROCESS
 #  - max. 1_000_000 volání denně
 
 ## https://b2b.postaonline.cz/services/POLService/v1/getStats
@@ -68,13 +70,14 @@ module CzechPostB2bClient
         assert_equal fake_response_body, service.result.xml
       end
 
-      def test_it_can_handle_b2b_errors
+      def test_it_can_handle_b2b_errors # rubocop:disable  Metrics/AbcSize
         error = CzechPostB2bClient::B2BErrors::CustomerRequestsCountOverflowError.new
         fake_response_body = b2b_fault_response_with_error_code(error.code)
 
         stub_request(:post, send_parcels_endpoint_url)
           .with(headers: expected_request_headers)
-          .to_return(status: 200, body: fake_response_body, headers: {}) # I do not know, for now, what :code it actually returns on errors
+          .to_return(status: 200, body: fake_response_body, headers: {})
+        # 200 is my guess for what code is actually returned on errors
 
         service = CzechPostB2bClient::Services::ApiCaller.call(endpoint_path: '/sendParcels',
                                                                xml: fake_request_builder_result)

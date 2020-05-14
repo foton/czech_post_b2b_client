@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# rubocop:disable Layout/LineLength, Style/AsciiComments
+
 # Hopefully complete list of services which can be assigned to parcels
 # It is hard to get list of current services and even harder to find out what does they mean (so You pick right name in English).
 # They have SAME CODES! for different services (depending on which parcel You send).
@@ -7,7 +9,7 @@
 
 # source: https://www.postaonline.cz/podanionline/ePOST-dokumentace/20prilohy.html and older one
 # Old services are commented out
-# omments at end of line mostly describes which type of parcels can 'afford' such service
+# Comments at end of line mostly describes which type of parcels can 'afford' such service
 #
 # Do not miss `CzechPostB2bClient::PostServices.all_classes` method,
 # it has to be at end of module to work properly
@@ -226,7 +228,6 @@ module CzechPostB2bClient
       @code = '13'
       @abbreviation = 'PS'
       @description = 'Opis podací stvrzenky'
-
     end
 
     class GuaranteedDeliveryTimeTo2PM < Base
@@ -612,7 +613,7 @@ module CzechPostB2bClient
     #   @description = 'Doporučený aerogram do zahraničí'
     # end
 
-   # MYSTERIOUS_2 =                                                  { code: '59', abbreviation: '', name_cs:' }
+    # MYSTERIOUS_2 =                                                  { code: '59', abbreviation: '', name_cs:' }
 
     class CompanyRegisteredMail < Base
       @code = '60'
@@ -638,7 +639,7 @@ module CzechPostB2bClient
       @description = 'Obyčejná slepecká zásilka do zahraničí'
     end
 
-   # MYSTERIOUS                                                     64 - 67
+    # MYSTERIOUS                                                     64 - 67
 
     class OnPalette < Base
       @code = '68'
@@ -670,7 +671,6 @@ module CzechPostB2bClient
 
     # MYSTERIOUS_10 =                                               { code: '72', abbreviation: '' }
     # MYSTERIOUS_11 =                                               { code: '73', abbreviation: '' }
-
 
     # class Stickerman < Base
     #   @code = '74'
@@ -722,7 +722,6 @@ module CzechPostB2bClient
     #   # ; Balík Do ruky (DR, DV, DE) |
     # end
 
-
     class PreprocessedBySorting < Base
       @code = '91'
       @abbreviation = 'PP'
@@ -762,10 +761,10 @@ module CzechPostB2bClient
     # Podavatelé, kteří nemají sjednánu smluvní cenu, musí od 1. 3.2019 při podání zásilek Balík Do ruky, Balík Na poštu, Cenný Balík, Doporučený balíček, Balík Expres, Obyčejný balík a EMS uvádět povinně ve službách jednu z rozměrových služeb S, M, L, XL.
 
     # has to be at the end, to load all subcasses before
-    def all_classes
+    def self.all_classes
       ObjectSpace.each_object(CzechPostB2bClient::PostServices::Base.singleton_class)
     end
-    module_function :all_classes
-
   end
 end
+
+# rubocop:enable Layout/LineLength, Style/AsciiComments

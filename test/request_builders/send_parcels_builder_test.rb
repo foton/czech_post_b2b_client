@@ -6,7 +6,7 @@ require 'time'
 
 module CzechPostB2bClient
   module Test
-    class SendParcelsBuilderTest < Minitest::Test
+    class SendParcelsBuilderTest < Minitest::Test # rubocop:disable Metrics/ClassLength
       attr_reader :builder_class
 
       def setup
@@ -21,7 +21,9 @@ module CzechPostB2bClient
 
       def test_it_build_correct_full_xml
         Time.stub(:now, @build_time) do
-          builder = builder_class.call(common_data: full_common_data, parcels: full_parcels_data, request_id: @request_id)
+          builder = builder_class.call(common_data: full_common_data,
+                                       parcels: full_parcels_data,
+                                       request_id: @request_id)
 
           assert builder.success?, "Should be successful, but have errors #{builder.errors}"
           assert_equal expected_not_closing_xml, builder.result
@@ -30,7 +32,9 @@ module CzechPostB2bClient
 
       def test_it_build_correct_short_xml
         Time.stub(:now, @build_time) do
-          builder = builder_class.call(common_data: short_common_data, parcels: short_parcels_data, request_id: @request_id)
+          builder = builder_class.call(common_data: short_common_data,
+                                       parcels: short_parcels_data,
+                                       request_id: @request_id)
 
           assert builder.success?, "Should be successful, but have errors #{builder.errors}"
           assert_equal expected_short_xml, builder.result
@@ -39,7 +43,8 @@ module CzechPostB2bClient
 
       def test_it_assings_request_id_if_it_is_not_present
         Time.stub(:now, @build_time) do
-          builder = builder_class.call(common_data: short_common_data, parcels: short_parcels_data)
+          builder = builder_class.call(common_data: short_common_data,
+                                       parcels: short_parcels_data)
 
           assert builder.success?, "Should be successful, but have errors #{builder.errors}"
           assert_equal expected_short_xml.gsub(">#{@request_id}</", '>1</'), builder.result
@@ -47,13 +52,15 @@ module CzechPostB2bClient
       end
 
       def test_it_allows_no_parcels
-        builder = builder_class.call(common_data: short_common_data, parcels: [])
+        builder = builder_class.call(common_data: short_common_data,
+                                     parcels: [])
 
         assert builder.success?, "Should be successful, but have errors #{builder.errors}"
       end
 
       def test_it_handles_submission_closing_tag
-        builder = builder_class.call(common_data: short_common_data.merge(close_requests_batch: true), parcels: [])
+        builder = builder_class.call(common_data: short_common_data.merge(close_requests_batch: true),
+                                     parcels: [])
 
         assert builder.success?, "Should be successful, but have errors #{builder.errors}"
         assert builder.result.include?('<ns2:transmissionEnd>true</ns2:transmissionEnd>')
@@ -61,18 +68,21 @@ module CzechPostB2bClient
 
       def test_it_allows_max_1000_parcels
         parcels_hashes = Array.new(1000) { |i| minimal_parcel_data_for_id("package_#{i}") }
-        builder = builder_class.call(common_data: short_common_data, parcels: parcels_hashes)
+        builder = builder_class.call(common_data: short_common_data,
+                                     parcels: parcels_hashes)
         assert builder.success?
 
         parcels_hashes += [minimal_parcel_data_for_id('package_1001')]
-        builder = builder_class.call(common_data: short_common_data, parcels: parcels_hashes)
+        builder = builder_class.call(common_data: short_common_data,
+                                     parcels: parcels_hashes)
 
         assert builder.failed?
         assert_includes builder.errors[:parcels], 'Maximum of 1000 parcels are allowed!'
       end
 
       def test_it_checks_for_required_common_params
-        builder = builder_class.call(common_data: {}, parcels: [])
+        builder = builder_class.call(common_data: {},
+                                     parcels: [])
 
         assert builder.failed?
         %i[parcels_sending_date customer_id sending_post_office_code].each do |key|
@@ -82,10 +92,11 @@ module CzechPostB2bClient
 
       def test_it_checks_for_required_parcels_params
         parcel_hashes = deep_copy(short_parcels_data)
-        parcel_hashes[0][:params].merge!({ parcel_id: 'package_no_prefix', parcel_code_prefix: ''})
-        parcel_hashes[1][:params].merge!({ parcel_id: '', parcel_code_prefix: 'XY'})
+        parcel_hashes[0][:params].merge!({ parcel_id: 'package_no_prefix', parcel_code_prefix: '' })
+        parcel_hashes[1][:params].merge!({ parcel_id: '', parcel_code_prefix: 'XY' })
 
-        builder = builder_class.call(common_data: short_common_data, parcels: parcel_hashes)
+        builder = builder_class.call(common_data: short_common_data,
+                                     parcels: parcel_hashes)
 
         assert builder.failed?
         expected_errors = [
@@ -98,9 +109,10 @@ module CzechPostB2bClient
       def test_it_checks_for_required_parcels_address
         parcel_hashes = deep_copy(short_parcels_data)
         parcel_hashes[0].delete(:addressee)
-        parcel_hashes[1][:addressee][:address].merge!({ first_name: "", last_name: "", street: nil })
+        parcel_hashes[1][:addressee][:address].merge!({ first_name: '', last_name: '', street: nil })
 
-        builder = builder_class.call(common_data: short_common_data, parcels: parcel_hashes)
+        builder = builder_class.call(common_data: short_common_data,
+                                     parcels: parcel_hashes)
 
         assert builder.failed?
         expected_errors = [
@@ -129,7 +141,11 @@ module CzechPostB2bClient
       def minimal_parcel_data_for_id(id)
         {
           params: { parcel_id: id, parcel_code_prefix: 'RA' },
-          addressee: { address: { last_name: 'Skočdopole', street: 'Krátká', house_number: 5, city: 'Kotěhůlky', post_code: 77_777 } }
+          addressee: { address: { last_name: 'Skočdopole',
+                                  street: 'Krátká',
+                                  house_number: 5,
+                                  city: 'Kotěhůlky',
+                                  post_code: 77_777 } }
         }
       end
 
@@ -400,7 +416,6 @@ module CzechPostB2bClient
           </b2bRequest>
         XML
       end
-
     end
   end
 end

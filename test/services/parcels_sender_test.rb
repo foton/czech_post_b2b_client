@@ -22,7 +22,8 @@ module CzechPostB2bClient
         @builder_service_class = CzechPostB2bClient::RequestBuilders::SendParcelsBuilder
         @parser_service_class = CzechPostB2bClient::ResponseParsers::SendParcelsParser
         @builder_expected_args = { common_data: expected_common_data, parcels: parcels_to_send }
-        @builder_expected_errors = { parcels: ['Too many'], common_data: ['Missing :parcels_sending_date value', 'xxx'] }
+        @builder_expected_errors = { parcels: ['Too many'],
+                                     common_data: ['Missing :parcels_sending_date value', 'xxx'] }
         @fake_response_parser_result = {
           async_result: { transaction_id: @transaction_id,
                           processing_end_expected_at: @processing_end_expected_at }

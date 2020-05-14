@@ -10,7 +10,6 @@ module CzechPostB2bClient
       def setup
         setup_configuration
 
-
         @endpoint_path = '/getParcelState'
 
         @tested_service_class = CzechPostB2bClient::Services::DeliveringInspector
@@ -57,7 +56,7 @@ module CzechPostB2bClient
         end
       end
 
-      def expected_parser_parcels_hash
+      def expected_parser_parcels_hash # rubocop:disable Metrics/MethodLength
         {
           'BA0109964075X' => {
             parcel_type: 'BA',
@@ -115,4 +114,3 @@ module CzechPostB2bClient
     end
   end
 end
-

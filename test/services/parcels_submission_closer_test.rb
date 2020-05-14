@@ -19,7 +19,8 @@ module CzechPostB2bClient
         @tested_service_class = CzechPostB2bClient::Services::ParcelsSubmissionCloser
         @tested_service_args = { sending_data: sending_data }
 
-        # ParcelsSubmissionCloser actually do/calls the same thing as ParcelsSender, but without parcels and with closing tag
+        # ParcelsSubmissionCloser actually do/calls the same thing as ParcelsSender,
+        # but without parcels and with closing tag
         @builder_service_class = CzechPostB2bClient::RequestBuilders::SendParcelsBuilder
         @parser_service_class = CzechPostB2bClient::ResponseParsers::SendParcelsParser
         @builder_expected_args = { common_data: expected_common_closing_data, parcels: [] }

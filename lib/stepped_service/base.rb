@@ -43,7 +43,8 @@
 #      def put_tea_bags_into_kettle
 #        self.teabags = get_teabags(tea_type, bags_into_kettle)
 #        if teabags.empty?
-#          errors.add(:teabags, "There is no #{bags_into_kettle} #{tea_type} tea teabags in storage,  using fruit tea teabags.")
+#          errors.add(:teabags, "There is no #{bags_into_kettle} #{tea_type} tea teabags in storage," \
+#                               "  using fruit tea teabags.")
 #          self.teabags = get_teabags(:fruit, bags_into_kettle)
 #          if teabags.empty?
 #            errors.add(:teabags, "There is no #{bags_into_kettle} fruit tea teabags in storage either!")

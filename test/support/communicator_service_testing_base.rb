@@ -33,20 +33,15 @@ module CzechPostB2bClient
         }
       end
 
-      def test_it_calls_api_when_data_are_ok
-        builder = builder_mock(expected_args: builder_expected_args,
-                               returns: fake_successful_service(fake_request_builder_result))
-        api_caller = api_caller_mock(expected_args: { endpoint_path: endpoint_path, xml: fake_request_builder_result },
-                                     returns: fake_successful_service(fake_api_caller_result))
-        parser = parser_mock(expected_args: { xml: fake_api_caller_result.xml },
-                             returns: fake_successful_service(fake_response_parser_result))
+      def test_it_calls_api_when_data_are_ok # rubocop:disable Metrics/AbcSize
+        builder = successful_builder_mock
+        api_caller = successful_api_caller_mock
+        parser = successful_parser_mock
 
         builder_service_class.stub(:call, builder) do
           api_caller_service_class.stub(:call, api_caller) do
             parser_service_class.stub(:call, parser) do
-
               @service = tested_service_class.call(tested_service_args)
-
             end
           end
         end
@@ -59,39 +54,29 @@ module CzechPostB2bClient
         succesful_call_asserts(service)
       end
 
-
       def test_it_handle_builder_errors
-        expected_errors = builder_expected_errors
-        builder = builder_mock(expected_args: builder_expected_args,
-                               returns: fake_failing_service(expected_errors))
+        builder = failing_builder_mock
 
         builder_service_class.stub(:call, builder) do
           api_caller_service_class.stub(:call, not_to_be_called_mock('ApiCaller')) do
-
             @service = tested_service_class.call(tested_service_args)
-
           end
         end
 
         assert_mock builder
-
         assert service.failure?
-        assert_equal full_messages_from(expected_errors), service.errors[:request_builder]
+        assert_equal full_messages_from(builder_expected_errors), service.errors[:request_builder]
       end
 
-      def test_it_handle_api_caller_errors
+      def test_it_handle_api_caller_errors # rubocop:disable Metrics/AbcSize
         expected_errors = { network: ['Down'], b2b: ['unreachable'] }
-        builder = builder_mock(expected_args: builder_expected_args,
-                               returns: fake_successful_service(fake_request_builder_result))
-        api_caller = api_caller_mock(expected_args: { endpoint_path: endpoint_path, xml: fake_request_builder_result },
-                                     returns: fake_failing_service(expected_errors, fake_api_caller_result))
+        builder = successful_builder_mock
+        api_caller = failing_api_caller_mock(expected_errors)
 
         builder_service_class.stub(:call, builder) do
           api_caller_service_class.stub(:call, api_caller) do
             parser_service_class.stub(:call, not_to_be_called_mock('ResponseParser')) do
-
               @service = tested_service_class.call(tested_service_args)
-
             end
           end
         end
@@ -103,21 +88,16 @@ module CzechPostB2bClient
         assert_equal full_messages_from(expected_errors), service.errors[:api_caller]
       end
 
-      def test_it_handle_parser_errors
+      def test_it_handle_parser_errors # rubocop:disable Metrics/AbcSize
         expected_errors = { xml: ['Response XML can not be parsed'] }
-        builder = builder_mock(expected_args: builder_expected_args,
-                               returns: fake_successful_service(fake_request_builder_result))
-        api_caller = api_caller_mock(expected_args: { endpoint_path: endpoint_path, xml: fake_request_builder_result },
-                                     returns: fake_successful_service(fake_api_caller_result))
-        parser = parser_mock(expected_args: { xml: fake_api_caller_result.xml },
-                             returns: fake_failing_service(expected_errors))
+        builder = successful_builder_mock
+        api_caller = successful_api_caller_mock
+        parser = failing_parser_mock(expected_errors)
 
         builder_service_class.stub(:call, builder) do
           api_caller_service_class.stub(:call, api_caller) do
             parser_service_class.stub(:call, parser) do
-
               @service = tested_service_class.call(tested_service_args)
-
             end
           end
         end
@@ -128,6 +108,36 @@ module CzechPostB2bClient
 
         assert service.failure?
         assert_equal full_messages_from(expected_errors), service.errors[:response_parser]
+      end
+
+      def successful_builder_mock
+        builder_mock(expected_args: builder_expected_args,
+                     returns: fake_successful_service(fake_request_builder_result))
+      end
+
+      def successful_api_caller_mock
+        api_caller_mock(expected_args: { endpoint_path: endpoint_path, xml: fake_request_builder_result },
+                        returns: fake_successful_service(fake_api_caller_result))
+      end
+
+      def successful_parser_mock
+        parser_mock(expected_args: { xml: fake_api_caller_result.xml },
+                    returns: fake_successful_service(fake_response_parser_result))
+      end
+
+      def failing_builder_mock
+        builder_mock(expected_args: builder_expected_args,
+                     returns: fake_failing_service(builder_expected_errors))
+      end
+
+      def failing_api_caller_mock(expected_errors)
+        api_caller_mock(expected_args: { endpoint_path: endpoint_path, xml: fake_request_builder_result },
+                        returns: fake_failing_service(expected_errors, fake_api_caller_result))
+      end
+
+      def failing_parser_mock(expected_errors, result = nil)
+        parser_mock(expected_args: { xml: fake_api_caller_result.xml },
+                    returns: fake_failing_service(expected_errors, result))
       end
 
       def builder_mock(expected_args:, returns:)

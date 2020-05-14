@@ -32,14 +32,9 @@ module CzechPostB2bClient
       attr_accessor :request_xml, :response, :endpoint_path
 
       def call_api
-        request = Net::HTTP::Post.new service_uri.request_uri, headers
-        request.body = request_xml
-        CzechPostB2bClient.logger.debug("CzechPost B2B REQUEST: #{request} to #{service_uri.request_uri} with body:\n#{request.body}")
-        begin
-          self.response = https_conn.request(request)
-        rescue *KNOWN_CONNECTION_ERRORS => e
-          handle_connection_error(e)
-        end
+        self.response = https_conn.request(request)
+      rescue *KNOWN_CONNECTION_ERRORS => e
+        handle_connection_error(e)
       end
 
       def handle_response
@@ -54,6 +49,16 @@ module CzechPostB2bClient
 
       def https_conn
         @https_conn ||= Net::HTTP.start(service_uri.host, service_uri.port, connection_options)
+      end
+
+      def request
+        request = Net::HTTP::Post.new service_uri.request_uri, headers
+        request.body = request_xml
+
+        debug_msg = "CzechPost B2B REQUEST: #{request} to #{service_uri.request_uri} with body:\n#{request.body}"
+        CzechPostB2bClient.logger.debug(debug_msg)
+
+        request
       end
 
       def service_uri
@@ -95,7 +100,8 @@ module CzechPostB2bClient
       end
 
       def b2b_error_text
-        error_match = result.xml.match(%r{<(?:\w+\:)?errorCode>(\d+)</(?:\w+\:)?errorCode>}) # errorCode tag with stripped out namespace
+        err_code_without_namespace_regexp = %r{<(?:\w+\:)?errorCode>(\d+)</(?:\w+\:)?errorCode>}
+        error_match = result.xml.match(err_code_without_namespace_regexp)
         return 'error code not found in XML' unless error_match
 
         error_code = error_match[1].to_i

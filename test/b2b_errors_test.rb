@@ -16,7 +16,7 @@ module CzechPostB2bClient
 
       def test_raises_error_for_unknown_code
         err = assert_raises(RuntimeError) { CzechPostB2bClient::B2BErrors.new_by_code(6) }
-        assert_equal "B2BError with code: 6 is unknown!", err.message
+        assert_equal 'B2BError with code: 6 is unknown!', err.message
       end
 
       def test_it_knows_all_error_classes
@@ -34,7 +34,7 @@ module CzechPostB2bClient
           7 => CzechPostB2bClient::B2BErrors::BadRequestError,
           8 => CzechPostB2bClient::B2BErrors::CustomerRequestsCountOverflowError,
           9 => CzechPostB2bClient::B2BErrors::ServiceBusyError,
-          10 => CzechPostB2bClient::B2BErrors::ProcessingUnfinishedYetError,
+          10 => CzechPostB2bClient::B2BErrors::ProcessingUnfinishedYetError
         }
       end
     end

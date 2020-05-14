@@ -58,7 +58,6 @@ module CzechPostB2bClient
         assert builder.failed?
         assert_includes builder.errors[:transaction_id], 'Must be present!'
       end
-
     end
   end
 end

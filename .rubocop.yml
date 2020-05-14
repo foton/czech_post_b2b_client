@@ -1,5 +1,5 @@
 require:
-#  - rubocop-minitest
+# rubocop-minitest
 
 AllCops:
   Include:
@@ -36,3 +36,19 @@ Style/YodaCondition:
   EnforcedStyle: forbid_for_equality_operators_only
 Naming/PredicateName:
   Enabled: true
+Layout/SpaceAroundMethodCallOperator:
+    Enabled: true
+Lint/RaiseException:
+    Enabled: true
+Lint/StructNewOverride:
+  Enabled: true
+Style/ExponentialNotation:
+  Enabled: true
+Style/HashEachMethods:
+   Enabled: true
+Style/HashTransformKeys:
+   Enabled: true
+Style/HashTransformValues:
+   Enabled: true
+Naming/VariableNumber:
+  Enabled: false

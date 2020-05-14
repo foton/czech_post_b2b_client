@@ -22,14 +22,14 @@ module CzechPostB2bClient
                                  strip_namespace: true,
                                  symbolize_keys: false,
                                  mode: :hash_no_attrs)
-      rescue Ox::ParseError => error
-        handle_parsing_error(error)
+      rescue Ox::ParseError => e
+        handle_parsing_error(e)
       end
 
       def safely_build_result
         build_result
-      rescue NoMethodError => error # NoMethodError: undefined method `dig' for nil:NilClass
-        handle_result_building_error(error)
+      rescue NoMethodError => e # NoMethodError: undefined method `dig' for nil:NilClass
+        handle_result_building_error(e)
       end
 
       def build_result
@@ -50,7 +50,9 @@ module CzechPostB2bClient
       end
 
       def response_root_node
-        return response_service_data.dig(response_root_node_name) if response_service_data.keys.include?(response_root_node_name)
+        if response_service_data.keys.include?(response_root_node_name)
+          return response_service_data.dig(response_root_node_name)
+        end
 
         errors.add(:xml, "Cannot find `#{response_root_node_name}` in `serviceData` node.")
         fail_on_structure_parsing
@@ -71,7 +73,7 @@ module CzechPostB2bClient
         state_hash = hash || { 'responseCode' => '999', 'responseText' => 'Unknown' }
         state_hash = state_hash.first if state_hash.is_a?(Array) # more <doParcelStateResponse> elements
 
-        { code: state_hash['responseCode'].to_i, text: state_hash['responseText'].to_s}
+        { code: state_hash['responseCode'].to_i, text: state_hash['responseText'].to_s }
       end
 
       def handle_parsing_error(error)

@@ -2,11 +2,15 @@
 
 module CzechPostB2bClient
   module Services
-    class ParcelsSendProcessUpdater < CzechPostB2bClient::Services::Communicator
-      attr_reader :transaction_id
+    # Combination of ParcelsSender + ParcelsSendProcessUpdater for fast SYNC registering parcel at CPOST
+    # It accept all parcels or none!
+    # It should be used for instant one parcel registration.
+    class ParcelsImmediateSender < CzechPostB2bClient::Services::Communicator
+      attr_reader :sending_data, :parcels
 
-      def initialize(transaction_id:)
-        @transaction_id = transaction_id
+      def initialize(sending_data:, parcels:)
+        @sending_data = sending_data
+        @parcels = parcels
       end
 
       def steps
@@ -16,11 +20,11 @@ module CzechPostB2bClient
       private
 
       def request_builder_args
-        { transaction_id: transaction_id }
+        { common_data: common_data, parcels: parcels }
       end
 
       def request_builder_class
-        CzechPostB2bClient::RequestBuilders::GetResultParcelsBuilder
+        CzechPostB2bClient::RequestBuilders::SendParcelsBuilder
       end
 
       def api_caller_class
@@ -31,8 +35,20 @@ module CzechPostB2bClient
         CzechPostB2bClient::ResponseParsers::GetResultParcelsParser
       end
 
+      def common_data
+        data_from_config.merge(sending_data)
+      end
+
+      def data_from_config
+        {
+          contract_id: configuration.contract_id,
+          customer_id: configuration.customer_id,
+          sending_post_office_code: configuration.sending_post_office_code
+        }
+      end
+
       def endpoint_path
-        '/getResultParcels'
+        '/sendParcelsSync'
       end
 
       def build_result_from(response_hash)

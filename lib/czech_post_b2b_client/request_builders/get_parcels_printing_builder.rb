@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# rubocop:disable Layout/LineLength
+
 module CzechPostB2bClient
   module RequestBuilders
     class GetParcelsPrintingBuilder < BaseBuilder
@@ -44,7 +46,7 @@ module CzechPostB2bClient
         end
       end
 
-      def do_printing_header
+      def do_printing_header # rubocop:disable Metrics/AbcSize
         new_element('ns2:doPrintingHeader').tap do |printing_header|
           add_element_to(printing_header, 'ns2:customerID', value: options[:customer_id]) # Technologicke cislo podavatele
           add_element_to(printing_header, 'ns2:contractNumber', value: options[:contract_number]) # Nepovine: ID CCK slozky podavatele
@@ -77,3 +79,5 @@ module CzechPostB2bClient
     end
   end
 end
+
+# rubocop:enable Layout/LineLength

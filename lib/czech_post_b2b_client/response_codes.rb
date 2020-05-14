@@ -1,25 +1,27 @@
+# frozen_string_literal: true
+
 # Codes, which can be returned in response nodes `doParcelStateResponse`
 #
 # Do not miss `CzechPostB2bClient::ResponseCodes.all_classes` and `CzechPostB2bClient::ResponseCodes.new_by_code`,
 # they have to be at end of module to work properly
 module CzechPostB2bClient
-  module ResponseCodes
+  module ResponseCodes # rubocop:disable Metrics/ModuleLength
     class BaseCode
-        @code = 'undefined'
-        @text = '_NONE_'
-        @decription = 'Unspecified B2B response code, is it listed in /doc/.../ResponseCodes.ods'
+      @code = 'undefined'
+      @text = '_NONE_'
+      @decription = 'Unspecified B2B response code, is it listed in /doc/.../ResponseCodes.ods'
 
-      def self.code
-        @code
-      end
+      class << self
+        attr_reader :code
+        end
 
-      def self.text
-        @text
-      end
+      class << self
+        attr_reader :text
+        end
 
-      def self.description
-        @description
-      end
+      class << self
+        attr_reader :description
+        end
 
       def self.error?
         @type == :error
@@ -29,9 +31,9 @@ module CzechPostB2bClient
         @type == :info
       end
 
-      def self.type
-        @type
-      end
+      class << self
+        attr_reader :type
+        end
 
       def self.to_s
         "ResponseCode[#{code} #{text}] #{description}"
@@ -279,7 +281,8 @@ module CzechPostB2bClient
     class InvalidAddressForBigPackage < CzechPostB2bClient::ResponseCodes::BaseCode
       @code = 119
       @text = 'INVALID_ADRESS'
-      @description = 'Adresa odesílatele není vhodná pro produkt Nadrozměrná zásilka(adresa obsahuje údaj P.O.Box nebo Poste restante)!'
+      @description = 'Adresa odesílatele není vhodná pro produkt Nadrozměrná zásilka' \
+                     '(adresa obsahuje údaj P.O.Box nebo Poste restante)!'
       @type = :chyba
     end
 
@@ -587,21 +590,24 @@ module CzechPostB2bClient
     class CODAmountTooBig < CzechPostB2bClient::ResponseCodes::BaseCode
       @code = 177
       @text = 'INVALID_AMOUNT'
-      @description = 'Limit pro uložení zásilky na Výdejním místě je pro Dobírku max. 50.000,- Kč. Zásilka bude uložena na poště, která je Výdejnímu místu nadřízená.'
+      @description = 'Limit pro uložení zásilky na Výdejním místě je pro Dobírku max. 50.000,- Kč.' \
+                     ' Zásilka bude uložena na poště, která je Výdejnímu místu nadřízená.'
       @type = :chyba
     end
 
     class PriceTooBig < CzechPostB2bClient::ResponseCodes::BaseCode
       @code = 178
       @text = 'INVALID_PRICE'
-      @description = 'Limit pro uložení zásilky na Výdejním místě je pro Udanou cenu a Dobírku max. 50.000,- Kč. Zásilka bude uložena na poště, která je Výdejnímu místu nadřízená.'
+      @description = 'Limit pro uložení zásilky na Výdejním místě je pro Udanou cenu a Dobírku max. 50.000,- Kč.' \
+                     ' Zásilka bude uložena na poště, která je Výdejnímu místu nadřízená.'
       @type = :chyba
     end
 
     class PriceAndCODAmountTooBig < CzechPostB2bClient::ResponseCodes::BaseCode
       @code = 179
       @text = 'INVALID_PRICE_AND_AMOUNT'
-      @description = 'Limit pro uložení zásilky na Výdejním místě je pro Udanou cenu a Dobírku max. 50.000,- Kč. Zásilka bude uložena na poště, která je Výdejnímu místu nadřízená.'
+      @description = 'Limit pro uložení zásilky na Výdejním místě je pro Udanou cenu a Dobírku max. 50.000,- Kč.' \
+                     ' Zásilka bude uložena na poště, která je Výdejnímu místu nadřízená.'
       @type = :chyba
     end
 
@@ -1061,7 +1067,6 @@ module CzechPostB2bClient
       @type = :chyba
     end
 
-
     class AddressSuitableForLocalDelivery < CzechPostB2bClient::ResponseCodes::BaseCode
       @code = 257
       @text = 'INVALID_ADRESS' # no kidding! Like 6 times same text?
@@ -1289,7 +1294,8 @@ module CzechPostB2bClient
     class InfoService29And47 < CzechPostB2bClient::ResponseCodes::BaseCode
       @code = 324
       @text = 'INFO_SERVICE_29+47'
-      @description = 'Zásilku s výškou nad 150cm nelze podat jako Balík Do ruky se sl.47, ale musí být využit Balík Nadrozměr v kategorii NZ 2'
+      @description = 'Zásilku s výškou nad 150cm nelze podat jako Balík Do ruky se sl.47,' \
+                     ' ale musí být využit Balík Nadrozměr v kategorii NZ 2'
       @type = :info
     end
 
@@ -1755,14 +1761,14 @@ module CzechPostB2bClient
       @type = :info
     end
 
-    class InfoMissingPartCityServiceDeliveryOnSundayOrHolidayMayNotBeRealized < CzechPostB2bClient::ResponseCodes::BaseCode
+    class InfoMissingPartCityServiceDeliveryOnSundayOrHolidayMayNotBeRealized < CzechPostB2bClient::ResponseCodes::BaseCode # rubocop:disable Layout/LineLength
       @code = 391
       @text = 'INFO_MISSING_PART_CITY_SERVICE_DELIVERY_ON_SUNDAY/HOLIDAY_MAY_NOT_BE_REALIZED'
-      @description = 'Neuvedena část obce - sl. Gar. čas dodání v Ne/Sv nemusí být realizována'
+      @description = 'Neuvedena část obce - služba Garantovaný čas dodání v Ne/Sv nemusí být realizována'
       @type = :info
     end
 
-    class NfoCancelService9 < CzechPostB2bClient::ResponseCodes::BaseCode
+    class InfoCancelService9 < CzechPostB2bClient::ResponseCodes::BaseCode
       @code = 392
       @text = 'NFO_CANCEL_SERVICE_9'
       @description = 'Zrušena nepovolená služba 9 Prioritně'
@@ -1881,20 +1887,16 @@ module CzechPostB2bClient
       @type = :info
     end
 
-    def all_classes
+    # must be at end to collect all classes defined before
+    def self.all_classes
       ObjectSpace.each_object(CzechPostB2bClient::ResponseCodes::BaseCode.singleton_class)
     end
 
-    module_function :all_classes
-
-    def new_by_code(code)
+    def self.new_by_code(code)
       klass = all_classes.detect { |k| k.code == code }
       raise "ResponseCode with code: #{code}  is unknown!" unless klass
 
       klass.new
     end
-
-    module_function :new_by_code
   end
 end
-

@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+# rubocop:disable Layout/LineLength, Style/AsciiComments
+
 module CzechPostB2bClient
   module RequestBuilders
-    class SendParcelsBuilder < BaseBuilder
+    class SendParcelsBuilder < BaseBuilder # rubocop:disable Metrics/ClassLength
       attr_reader :common_data, :parcels
 
       def initialize(common_data:, parcels:, request_id: 1)
@@ -34,7 +36,7 @@ module CzechPostB2bClient
          [:sending_post_office_code]].each do |key_chain|
            value = common_data.dig(*key_chain)
            if value.nil? || value == ''
-             errors.add(:common_data, "Missing value for key { :#{key_chain.join(' => :') } }!")
+             errors.add(:common_data, "Missing value for key { :#{key_chain.join(' => :')} }!")
            end
          end
       end
@@ -72,7 +74,7 @@ module CzechPostB2bClient
         end
       end
 
-      def do_parcel_header
+      def do_parcel_header # rubocop:disable Metrics/AbcSize
         new_element('ns2:doParcelHeader').tap do |parcel_header|
           add_element_to(parcel_header, 'ns2:transmissionDate', value: common_data[:parcels_sending_date].strftime('%d.%m.%Y')) # Predpokladane datum podani (format DD.MM.YYYY !)
           add_element_to(parcel_header, 'ns2:customerID', value: common_data[:customer_id]) # Technologicke cislo podavatele
@@ -133,7 +135,7 @@ module CzechPostB2bClient
         end
       end
 
-      def do_parcel_params(parcel_data)
+      def do_parcel_params(parcel_data) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         params = parcel_data[:params]
         cod = parcel_data[:cash_on_delivery] || {}
         new_element('ns2:doParcelParams').tap do |parcel_params|
@@ -183,7 +185,7 @@ module CzechPostB2bClient
         add_parcel_adress_element('ns2:doParcelAddressDocument', parcel_data[:document_addressee])
       end
 
-      def add_parcel_adress_element(element_name, addressee_data)
+      def add_parcel_adress_element(element_name, addressee_data) # rubocop:disable Metrics/AbcSize
         return nil if addressee_data.nil?
 
         address_data = addressee_data[:address]
@@ -237,7 +239,8 @@ module CzechPostB2bClient
         end
       end
 
-      def add_address_elements(parent_element, address_data, without: []) # Nepovinne. Adresa
+      # Nepovinne. Adresa
+      def add_address_elements(parent_element, address_data, without: [])
         return if address_data.nil?
 
         address_tags_and_values(address_data).each_pair do |xml_tag, value|
@@ -260,7 +263,7 @@ module CzechPostB2bClient
           'ns2:city' => address_data[:city], # Nepovinne: Obec
           'ns2:zipCode' => address_data[:post_code], # Nepovinne: PSC
           'ns2:isoCountry' => address_data[:country_iso_code], # Nepovinne, default 'CZ': ISO kod zeme
-          'ns2:subIsoCountry' => address_data[:subcountry_iso_code], # Nepovinne: ISO kod uzemi
+          'ns2:subIsoCountry' => address_data[:subcountry_iso_code] # Nepovinne: ISO kod uzemi
         }
       end
 
@@ -292,3 +295,5 @@ module CzechPostB2bClient
     end
   end
 end
+
+# rubocop:enable Layout/LineLength, Style/AsciiComments

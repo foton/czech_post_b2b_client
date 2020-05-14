@@ -32,19 +32,19 @@ module CzechPostB2bClient
 
       def builder_mock(expected_args:, returns:)
         fake = Minitest::Mock.new
-        fake.expect(:call, returns) do |from_date: , to_date:|
+        fake.expect(:call, returns) do |from_date:, to_date:|
           from_date == expected_args[:from_date] && to_date == expected_args[:to_date]
         end
         fake
       end
 
       def succesful_call_asserts(tested_service)
-        assert_equal expected_statistics[:requested], tested_service.result.requests.total
-        assert_equal expected_statistics[:with_errors], tested_service.result.requests.with_errors
-        assert_equal expected_statistics[:successful], tested_service.result.requests.successful
+        requests = tested_service.result.requests
+        assert_equal expected_statistics[:requested], requests.total
+        assert_equal expected_statistics[:with_errors], requests.with_errors
+        assert_equal expected_statistics[:successful], requests.successful
         assert_equal expected_statistics[:imported_parcels], tested_service.result.imported_parcels
       end
     end
   end
 end
-

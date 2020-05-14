@@ -77,15 +77,15 @@ module CzechPostB2bClient
       end
 
       def test_allows_max_500_parcel_codes
-        parcel_codes500 = 500.times.collect { |i| "RR123#{i + 100}T" }
+        parcel_codes_500 = 500.times.collect { |i| "RR123#{i + 100}T" }
 
-        builder = CzechPostB2bClient::RequestBuilders::GetParcelsPrintingBuilder.call(parcel_codes: parcel_codes500,
+        builder = CzechPostB2bClient::RequestBuilders::GetParcelsPrintingBuilder.call(parcel_codes: parcel_codes_500,
                                                                                       options: options)
 
         assert builder.success?
 
-        parcel_codes501 = parcel_codes500 + ['RR666111E']
-        builder = CzechPostB2bClient::RequestBuilders::GetParcelsPrintingBuilder.call(parcel_codes: parcel_codes501,
+        parcel_codes_501 = parcel_codes_500 + ['RR666111E']
+        builder = CzechPostB2bClient::RequestBuilders::GetParcelsPrintingBuilder.call(parcel_codes: parcel_codes_501,
                                                                                       options: options)
 
         assert builder.failed?
@@ -109,17 +109,19 @@ module CzechPostB2bClient
         skip 'There can be up to 20 `idForm` nodes, but I do not know how it works yet'
       end
 
-      def test_validate_id_form
+      def test_validate_id_form # rubocop:disable Metrics/AbcSize
         allowed_template_ids.each do |template_id|
+          options.merge!(template_id: template_id)
           builder = CzechPostB2bClient::RequestBuilders::GetParcelsPrintingBuilder.call(parcel_codes: parcel_codes,
-                                                                                        options: options.merge(template_id: template_id))
+                                                                                        options: options)
 
           assert builder.success?, "Build should be succesfull for template_id: '#{template_id}'"
         end
 
         [1, 2, 99].each do |template_id|
+          options.merge!(template_id: template_id)
           builder = CzechPostB2bClient::RequestBuilders::GetParcelsPrintingBuilder.call(parcel_codes: parcel_codes,
-                                                                                        options: options.merge(template_id: template_id))
+                                                                                        options: options)
 
           assert builder.failed?, "Build should NOT be succesfull for template_id: '#{template_id}'"
           assert_includes builder.errors[:template_id], "Value '#{template_id}' is not allowed!"
@@ -127,7 +129,7 @@ module CzechPostB2bClient
       end
 
       def allowed_template_ids
-        # see CzechPostB2bClient::PrintingTemplate
+        # see CzechPostB2bClient::PrintingTemplates
         [7, 8, 10, 11, 12, 13, 20, 21, 22, 23, 24, 25, 26, 38, 39, 40, 41, 56, 57, 58, 59, 60, 61, 62, 63, 72, 73]
       end
     end

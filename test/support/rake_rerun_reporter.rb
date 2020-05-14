@@ -20,7 +20,6 @@ module Minitest
           failed_or_error_tests = (tests.select { |t| t.failure && !t.skipped? })
           return if failed_or_error_tests.empty?
 
-
           puts red("You can rerun failed/error test by commands (you can add rerun prefix with 'rerun_prefix' option):")
           failed_or_error_tests.each do |test|
             print_rerun_command(test)
@@ -37,10 +36,10 @@ module Minitest
 
       def print_rerun_command(test)
         message = rerun_message_for(test)
-        unless message.nil? || message.strip == ''
-          puts
-          puts colored_for(result(test), message)
-        end
+        return if message.nil? || message.strip == ''
+
+        puts
+        puts colored_for(result(test), message)
       end
 
       def rerun_message_for(test)
@@ -60,6 +59,7 @@ module Minitest
 
         exception.backtrace.reverse_each do |ss|
           break if ss.match?(/in .(assert|refute|flunk|pass|fail|raise|must|wont)/)
+
           last_before_assertion = ss
           break if ss.match?(/_test.rb\:/)
         end

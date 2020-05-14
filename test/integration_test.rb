@@ -4,7 +4,7 @@ require 'test_helper'
 
 module CzechPostB2bClient
   module Test
-    class IntegrationTest < Minitest::Test
+    class IntegrationTest < Minitest::Test # rubocop:disable Metrics/ClassLength
       attr_accessor :processing_end_time, :transaction_id, :parcels
       attr_reader :expected_processing_end_time,
                   :expected_transaction_id,
@@ -55,17 +55,15 @@ module CzechPostB2bClient
         assert_equal expected_transaction_id, transaction_id
       end
 
-      def it_collect_results_of_import
+      def it_collect_results_of_import # rubocop:disable Metrics/AbcSize
         wait_until(processing_end_time)
+
         inspector_service = CzechPostB2bClient::Services::ParcelsSendProcessUpdater.call(transaction_id: transaction_id)
-        unless inspector_service.success?
-          wait_until(Time.zone.now + 60)
-          inspector_service = CzechPostB2bClient::Services::ParcelsSendProcessUpdater.call(transaction_id: transaction_id)
-        end
 
         assert inspector_service.success?, "ParcelsSendProcessUpdater failed with errors: #{inspector_service.errors}"
 
-        update_parcels_data_with(inspector_service.result.parcels_hash) # TODO: parcels have assigned `code` and `sending_status`
+        update_parcels_data_with(inspector_service.result.parcels_hash)
+        # TODO: parcels have assigned `code` and `sending_status`
 
         assert_equal parcel_1of2_expected_code, parcel_1of2[:parcel_code]
         assert_equal parcel_2of2_expected_code, parcel_2of2[:parcel_code]
@@ -80,7 +78,8 @@ module CzechPostB2bClient
           margin_in_mm: { top: 5, left: 3 } # required
         }
 
-        pdf_service = CzechPostB2bClient::Services::AddressSheetsGenerator.call(parcel_codes: parcel_codes, options: options )
+        pdf_service = CzechPostB2bClient::Services::AddressSheetsGenerator.call(parcel_codes: parcel_codes,
+                                                                                options: options)
 
         assert pdf_service.success?, "AddressSheetGenerator failed with errors: #{pdf_service.errors}"
 
@@ -94,7 +93,7 @@ module CzechPostB2bClient
         assert closer_service.success?, "ParcelsSubmissionCloser failed with errors: #{closer_service.errors}"
       end
 
-      def it_checks_delivery_statuses
+      def it_checks_delivery_statuses # rubocop:disable Metrics/AbcSize
         refute parcel_1of2[:delivered]
         refute parcel_2of2[:delivered]
         refute parcel_3[:delivered]
@@ -147,7 +146,7 @@ module CzechPostB2bClient
                     weight_in_kg: 345.678,
                     parcel_order: 2,
                     parcels_count: 2 }
-          }
+        }
       end
 
       def parcel_3
@@ -155,7 +154,7 @@ module CzechPostB2bClient
           addressee: short_addressee_data,
           params: { parcel_id: 'package_3',
                     parcel_code_prefix: 'RR' }
-          }
+        }
       end
 
       def stub_api_calls
@@ -173,7 +172,7 @@ module CzechPostB2bClient
         stub_request(:post, 'https://b2b.postaonline.cz/services/POLService/v1/getParcelState')
           .to_return(status: 200, body: get_parcel_state_response_xml, headers: {})
 
-        stub_request(:post, "https://b2b.postaonline.cz/services/POLService/v1/getStats")
+        stub_request(:post, 'https://b2b.postaonline.cz/services/POLService/v1/getStats')
           .to_return(status: 200, body: get_stats_response_xml, headers: {})
       end
 
@@ -228,7 +227,7 @@ module CzechPostB2bClient
         XML
       end
 
-      def get_result_parcels_response_xml
+      def get_result_parcels_response_xml # rubocop:disable Naming/AccessorMethodName
         <<~XML
           <?xml version="1.0" encoding="UTF-8"?>
           <p:b2bSyncResponse xmlns:p="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:PO="https://b2b.postaonline.cz/schema/POLServices-v1">
@@ -284,7 +283,7 @@ module CzechPostB2bClient
         XML
       end
 
-      def get_parcels_printing_response_xml
+      def get_parcels_printing_response_xml # rubocop:disable Naming/AccessorMethodName
         <<~XML
           <?xml version="1.0" encoding="UTF-8"?>
           <b2bSyncResponse xmlns="https://b2b.postaonline.cz/schema/B2BCommon-v1"
@@ -322,7 +321,7 @@ module CzechPostB2bClient
         XML
       end
 
-      def get_parcel_state_response_xml
+      def get_parcel_state_response_xml # rubocop:disable Naming/AccessorMethodName
         <<~XML
           <?xml version="1.0" encoding="UTF-8"?>
           <v1:b2bSyncResponse xmlns:v1="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:v1_1="https://b2b.postaonline.cz/schema/POLServices-v1">
@@ -481,7 +480,7 @@ module CzechPostB2bClient
         XML
       end
 
-      def get_stats_response_xml
+      def get_stats_response_xml # rubocop:disable Naming/AccessorMethodName
         <<~XML
           <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
           <v1:b2bSyncResponse xmlns:v1="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:v1_1="https://b2b.postaonline.cz/schema/POLServices-v1">
@@ -504,7 +503,6 @@ module CzechPostB2bClient
           </v1:b2bSyncResponse>
         XML
       end
-
     end
   end
 end

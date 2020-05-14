@@ -3,7 +3,6 @@
 module CzechPostB2bClient
   module Services
     class Orchestrator < SteppedService::Base
-
       private
 
       def result_of_subservice(service_hash)

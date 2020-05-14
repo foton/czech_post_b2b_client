@@ -1,4 +1,6 @@
-# rubocop:disable Style/AsciiComments
+# frozen_string_literal: true
+
+# rubocop:disable Style/AsciiComments, Layout/LineLength
 
 # response <B2BFaultMessage>
 # Chybový kód | Detail chyby            | Popis
@@ -13,8 +15,6 @@
 #   9  |  TRY_AGAIN_LATER               |  Překročen parametr maximálního počtu volání služby v daný okamžik
 #   10 |  UNFINISHED_PROCESS            |  Zpracování není ještě ukončeno  (u async operací)
 
-# rubocop:enable Style/AsciiComments
-
 # B2B errors, which can be returned in response `B2BFaultMessage`
 #
 # Do not miss `CzechPostB2bClient::B2BErrors.all_error_classes` and `CzechPostB2bClient::B2BErrors.new_by_code`,
@@ -27,12 +27,12 @@ module CzechPostB2bClient
       @code = 'undefined'
       @message = 'Unspecified B2B error'
 
-      def self.code
-        @code
+      class << self
+        attr_reader :code
       end
 
-      def self.message
-        @message
+      class << self
+        attr_reader :message
       end
 
       def code
@@ -89,17 +89,18 @@ module CzechPostB2bClient
       @message = 'Zpracování není ještě ukončeno (u async operací)'
     end
 
-    def all_error_classes
+    # have t be at end of file, to collect all classes defined before
+    def self.all_error_classes
       ObjectSpace.each_object(CzechPostB2bClient::B2BErrors::BaseError.singleton_class)
     end
-    module_function :all_error_classes
 
-    def new_by_code(code)
+    def self.new_by_code(code)
       klass = all_error_classes.detect { |k| k.code == code }
       raise "B2BError with code: #{code} is unknown!" unless klass
 
       klass.new
     end
-    module_function :new_by_code
   end
 end
+
+# rubocop:enable Style/AsciiComments, Layout/LineLength

@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/MethodLength
+# rubocop:disable Layout/CommentIndentation
 def deep_copy(obj)
   Marshal.load(Marshal.dump(obj))
 end
-
 
 def setup_configuration(config_hash = {})
   CzechPostB2bClient.configure do |config|
@@ -12,8 +13,9 @@ def setup_configuration(config_hash = {})
     config.certificate_path = File.join(fixtures_dir, 'certs', 'demo_client.pem')
     config.private_key_password = 'czechpost'
     config.private_key_path = File.join(fixtures_dir, 'certs', 'demo_private.key')
-    config.sending_post_office_code = 12_345 # PSC of post office where parcels will be physically delivered and submitted
-    #config.logger = Logger.new(STDOUT)
+    config.sending_post_office_code = 12_345 # PSC of post office,
+                                             # where parcels will be handed to delivery
+    # config.logger = Logger.new(STDOUT)
 
     config_hash.each_pair do |k, v|
       config.send("#{k}=", v)
@@ -29,19 +31,24 @@ def full_common_data
   {
     contract_id: configuration.contract_id,
     customer_id: 'U219',
-    parcels_sending_date: Date.new(2016, 02, 12),
+    parcels_sending_date: Date.new(2016, 0o2, 12),
     sending_post_office_code: 28_002,
     sending_post_office_location_number: 98_765, # optional
-    close_requests_batch: false, # optional; we want to use more requests for one bulk delivery  (default is true, one request = one delivery)
+    close_requests_batch: false, # optional; we want to use more requests for one bulk delivery
+                                 #          (default is true, one request = one delivery)
     sender: full_sender_data, # optional?, from config?
     cash_on_delivery: full_cash_on_delivery_data, # optional?, from config?
     contract_number: 'string10', # optional
-    franking_machine_number: 'string10f' , # optional
+    franking_machine_number: 'string10f' # optional
   }
 end
 
 def short_common_data
-  shortie = full_common_data.select { |k, _v| %i[customer_id parcels_sending_date sending_post_office_code].include?(k) }
+  shortie = full_common_data.select do |k, _v|
+    %i[customer_id
+       parcels_sending_date
+       sending_post_office_code].include?(k)
+  end
   shortie.merge(sender: short_sender_data)
 end
 
@@ -129,7 +136,7 @@ def full_parcel_data_params
     documents_to_sign_count: 'string30', # he?
     score: 'string30', # napocet ceny sluzby
     zpro_order_number: 'string11', # cislo objednavky ZPRO
-    days_to_deposit: 's2', # pocet dni pro vraceni zasilky
+    days_to_deposit: 's2' # pocet dni pro vraceni zasilky
   }
 end
 
@@ -158,7 +165,7 @@ def full_addressee_data
       subcountry_iso_code: 'US-NY'
     },
     addressee_id: 'string20',
-    addressee_type: 'F',  # string2; => <subject>
+    addressee_type: 'F', # string2; => <subject>
     ic: 1_234_567_890,
     dic: 'AB1234567890',
     addressee_specification: 'date_of_birth', # string15, specifikace adresata, napr. datum narozeni
@@ -182,7 +189,11 @@ end
 
 def full_parcel_data_custom_delaration
   {
-    category: '11', # REQUIRED, kategorie zasilky "91" - dokumenty; "32" - obchodni vzorek; "21" - vracene zbozi; "991" -jine; "11" - obchodni zbozi
+    category: '11', # REQUIRED, kategorie zasilky "91" - dokumenty;
+                    #                             "32" - obchodni vzorek;
+                    #                             "21" - vracene zbozi;
+                    #                             "991" -jine;
+                    #                             "11" - obchodni zbozi
     note: 'string30',
     value_currency_iso_code: 'CZK', # REQUIRED, ISO kod meny celni hodnoty
     content_descriptions: [ # 1- 20x; popis obsahu zasilky
@@ -219,3 +230,6 @@ end
 def fixtures_dir
   File.join(CzechPostB2bClient.root, 'test', 'fixtures')
 end
+
+# rubocop:enable Layout/CommentIndentation
+# rubocop:enable Metrics/MethodLength

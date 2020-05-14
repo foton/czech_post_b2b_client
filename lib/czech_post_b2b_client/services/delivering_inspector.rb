@@ -36,10 +36,10 @@ module CzechPostB2bClient
         result_hash = {}
         response_hash[:parcels].each_pair do |parcel_code, delivering_hash|
           result_hash[parcel_code] = {
-              deposited_until: delivering_hash[:deposited_until],
-              deposited_for_days: delivering_hash[:deposited_for_days],
-              current_state: delivering_hash[:states].last,
-              all_states: delivering_hash[:states]
+            deposited_until: delivering_hash[:deposited_until],
+            deposited_for_days: delivering_hash[:deposited_for_days],
+            current_state: delivering_hash[:states].last,
+            all_states: delivering_hash[:states]
           }
         end
         puts("RESULT_HASH: #{result_hash}")
