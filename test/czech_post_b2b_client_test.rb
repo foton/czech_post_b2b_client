@@ -23,7 +23,7 @@ class CzechPostB2bClientTest < Minitest::Test
   def test_knowns_available_services
     all_services = CzechPostB2bClient::PostServices.all_classes.to_a
 
-    assert_equal 89, all_services.size
+    assert_equal 90, all_services.size
 
     service_32 = all_services.detect { |t| t.code == '32' }
     # assert service_32.# CertificateOfDeliveryWithDeliverToAdresseeOnly

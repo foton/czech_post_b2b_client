@@ -22,31 +22,31 @@ module CzechPostB2bClient
       end
     end
 
-    class SizeS < Base
+    class ParcelSizeS < Base
       @code = 'S'
       @abbreviation = 'S'
-      @description = 'Velkost S'
+      @description = 'Velikost S (nejdelší strana do 35cm)'
       # ; Balík Do ruky (DR, DV, DE) ; Balík Na poštu (NP, NV, NA) ; Cenný balík ((B, BD, BB, V, VD, VV) ; EMS (EE) ; Doporučený balíček (BA) ; Balík Expres (BE) ; Obyčejný balík (O)
     end
 
-    class SizeM < Base
+    class ParcelSizeM < Base
       @code = 'M'
       @abbreviation = 'M'
-      @description = 'Velikost M'
+      @description = 'Velikost M (nejdelší strana do 50cm)'
       # ; Balík Do ruky (DR, DV, DE) ; Balík Na poštu (NP, NV, NA) ; Cenný balík ((B, BD, BB, V, VD, VV) ; EMS (EE) ; Doporučený balíček (BA) ; Balík Expres (BE) ; Obyčejný balík (O)
     end
 
-    class SizeL < Base
+    class ParcelSizeL < Base
       @code = 'L'
       @abbreviation = 'L'
-      @description = 'Velikost L'
+      @description = 'Velikost L (nejdelší strana do 100cm)'
       # ; Balík Do ruky (DR, DV, DE) ; Balík Na poštu (NP, NV, NA) ; Cenný balík ((B, BD, BB, V, VD, VV) ; EMS (EE) ; Doporučený balíček (BA) ; Obyčejný balík (O)
     end
 
-    class SizeXL < Base
+    class ParcelSizeXL < Base
       @code = 'XL'
       @abbreviation = 'XL'
-      @description = 'Velikost XL'
+      @description = 'Velikost XL (nejdelší strana do 240cm)'
       # ; Balík Do ruky (DR, DV, DE) ; Balík Na poštu (NP, NV, NA) ; Cenný balík ((B, BD, BB, V, VD, VV) ; Obyčejný balík (O) |
     end
 
@@ -739,6 +739,12 @@ module CzechPostB2bClient
       @code = '9B'
       @abbreviation = ''
       @description = 'Vrátit ekonomicky'
+    end
+
+    class DiscountForOnlinePosting < Base
+      @code = '97'
+      @abbreviation = ''
+      @description = 'Sleva za elektronické předání dat'
     end
 
     # **Pozn. U RR zásilek je vždy jedna ze služeb 50 až 60 povinná!!!!!!**
