@@ -4,7 +4,7 @@ require 'test_helper'
 
 module CzechPostB2bClient
   module Test
-    class ParcelsImmediateSenderTest < Minitest::Test
+    class ParcelsSyncSenderTest < Minitest::Test
       include CzechPostB2bClient::Test::CommunicatorServiceTestingBase
 
       def setup
@@ -17,7 +17,7 @@ module CzechPostB2bClient
         }
         parcels_to_send = @expected_parcels_hash.keys # no need for real parcels here
 
-        @tested_service_class = CzechPostB2bClient::Services::ParcelsImmediateSender
+        @tested_service_class = CzechPostB2bClient::Services::ParcelsSyncSender
         @tested_service_args = { sending_data: sending_data, parcels: parcels_to_send }
 
         @builder_service_class = CzechPostB2bClient::RequestBuilders::SendParcelsBuilder

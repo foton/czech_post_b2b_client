@@ -152,18 +152,18 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
 
   def sync_import_parcels_data
     # post informations about parcels to Czech Post and get the tracking codes
-    sender_service = CzechPostB2bClient::Services::ParcelsImmediateSender.call(sending_data: sending_data,
+    sender_service = CzechPostB2bClient::Services::ParcelsSyncSender.call(sending_data: sending_data,
                                                                                parcels: parcels)
     raise "ParcelImmediateSender failed with errors: #{sender_service.errors}" unless sender_service.success?
 
     update_parcels_data_with(sender_service.result.parcels_hash)
-    CzechPostB2bClient.logger.debug("[ParcelsImmediateSender] => parcels: #{parcels}")
-    CzechPostB2bClient.logger.debug("[ParcelsImmediateSender] => parcel_codes: #{parcel_codes}")
+    CzechPostB2bClient.logger.debug("[ParcelsSyncSender] => parcels: #{parcels}")
+    CzechPostB2bClient.logger.debug("[ParcelsSyncSender] => parcel_codes: #{parcel_codes}")
   end
 
   def import_parcels_data
     # post informations about parcels to Czech Post
-    sender_service = CzechPostB2bClient::Services::ParcelsSender.call(sending_data: sending_data, parcels: parcels)
+    sender_service = CzechPostB2bClient::Services::ParcelsAsyncSender.call(sending_data: sending_data, parcels: parcels)
     raise "ParcelSender failed with errors: #{sender_service.errors}" unless sender_service.success?
 
     # CzechPost returns CET value but marked as UTC zone
@@ -171,7 +171,7 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
     self.processing_end_time_utc = Time.parse(time_in_cet_masked_as_utc.strftime('%F %T')).utc
 
     self.transaction_id = sender_service.result.transaction_id
-    CzechPostB2bClient.logger.debug("[ParcelsSender] processing_end_time_utc: #{processing_end_time_utc}; transaction_id: #{transaction_id}") # rubocop:disable Layout/LineLength
+    CzechPostB2bClient.logger.debug("[ParcelsAsyncSender] processing_end_time_utc: #{processing_end_time_utc}; transaction_id: #{transaction_id}") # rubocop:disable Layout/LineLength
   end
 
   def collect_results_of_import

@@ -2,7 +2,7 @@
 
 module CzechPostB2bClient
   module Services
-    class ParcelsSubmissionCloser < CzechPostB2bClient::Services::ParcelsSender
+    class ParcelsSubmissionCloser < CzechPostB2bClient::Services::ParcelsAsyncSender
       attr_reader :sending_data
 
       def initialize(sending_data:)

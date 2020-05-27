@@ -4,7 +4,7 @@ require 'test_helper'
 
 module CzechPostB2bClient
   module Test
-    class ParcelsSenderTest < Minitest::Test
+    class ParcelsAsyncSenderTest < Minitest::Test
       include CzechPostB2bClient::Test::CommunicatorServiceTestingBase
 
       attr_reader :transaction_id, :processing_end_expected_at
@@ -16,7 +16,7 @@ module CzechPostB2bClient
         @processing_end_expected_at = Time.parse('2016-02-25T09:30:03.678Z')
         @endpoint_path = '/sendParcels' # 'https://b2b.postaonline.cz/services/POLService/v1/sendParcels'
 
-        @tested_service_class = CzechPostB2bClient::Services::ParcelsSender
+        @tested_service_class = CzechPostB2bClient::Services::ParcelsAsyncSender
         @tested_service_args = { sending_data: sending_data, parcels: parcels_to_send }
 
         @builder_service_class = CzechPostB2bClient::RequestBuilders::SendParcelsBuilder

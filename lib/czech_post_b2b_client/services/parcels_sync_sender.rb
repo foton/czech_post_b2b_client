@@ -2,10 +2,10 @@
 
 module CzechPostB2bClient
   module Services
-    # Combination of ParcelsSender + ParcelsSendProcessUpdater for fast SYNC registering parcel at CPOST
+    # Combination of ParcelsAsyncSender + ParcelsSendProcessUpdater for fast SYNC registering parcel at CPOST
     # It accept all parcels or none!
     # It should be used for instant one parcel registration.
-    class ParcelsImmediateSender < CzechPostB2bClient::Services::Communicator
+    class ParcelsSyncSender < CzechPostB2bClient::Services::Communicator
       attr_reader :sending_data, :parcels
 
       def initialize(sending_data:, parcels:)

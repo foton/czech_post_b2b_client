@@ -140,9 +140,9 @@ Or install it yourself as:
 
   1) Pack your parcel(s)
 
-  2) Call `ParcelsSender`, this will store in `result` `transmission_id` and expected time to ask for results.
+  2) Call `ParcelsAsyncSender`, this will store in `result` `transmission_id` and expected time to ask for results.
       ```
-        psender = CzechPostB2bClient::Services::ParcelsSender.call(sending_data: sending_data, parcels: parcels)
+        psender = CzechPostB2bClient::Services::ParcelsAsyncSender.call(sending_data: sending_data, parcels: parcels)
 
         if psender.success?
           result = psender.result
