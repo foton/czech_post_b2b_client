@@ -22,6 +22,7 @@ module CzechPostB2bClient
         @id = 8
         @description = 'adresní štítek (alonž) + dobírková poukázka A'
       end
+
       class Blank4OnPage < Base
         @id = 20
         @description = 'adresní štítek bianco - 4x (A4)'
@@ -40,22 +41,22 @@ module CzechPostB2bClient
       module ForeignPackage
         class Standard < Base
           @id = 58
-          @description = 'AŠ - samostatný Standardní balík do zahraničí'
+          @description = 'CP72 - standardní balík do zahraničí'
         end
 
-        class Standard4OnPage < Base
+        class Standard2OnPage < Base
           @id = 59
-          @description = 'AŠ - 4xA4 Standardní balík do zahraničí'
+          @description = 'CP72 - standardní balík do zahraničí (2x A4 )'
         end
 
         class Valuable < Base
           @id = 60
-          @description = 'AŠ - samostatný Cenný balík do zahraničí'
+          @description = 'CP72 - cenný balík do zahraničí'
         end
 
         class Valuable4OnPage < Base
           @id = 61
-          @description = '4xA4 Cenný balík do zahraničí'
+          @description = 'CP72 - cenný balík do zahraničí (2x A4)'
         end
 
         class EMS < Base
@@ -66,6 +67,18 @@ module CzechPostB2bClient
         class EMS2x4 < Base
           @id = 63
           @description = 'AŠ - 2xA4 EMS do zahraničí'
+        end
+
+        # Formulare ID 72 a 73 je mozno pouzit pouze pro zasilky s prefixem CE
+        # do zemi AT, DE, FR, GR, HR, CH, IS, LU, LV, NO, PL, SK
+        class HarmonizedLabel < Base
+          @id = 72
+          @description = 'Obchodní balík do zahraničí – samostatný'
+        end
+
+        class HarmonizedLabel4OnPage < Base
+          @id = 73
+          @description = 'Obchodní balík do zahraničí –  4x (A4)'
         end
       end
     end
@@ -132,28 +145,32 @@ module CzechPostB2bClient
       @description = 'Dodejka'
     end
 
-    class CustomDeclarationCN22 < Base
-      @id = 56
-      @description = 'Celní prohlášení CN22'
-    end
+    module CustomDeclaration
+      class CN22 < Base
+        @id = 56
+        @description = 'Celní prohlášení CN22 - 1x (A4)'
+      end
 
-    class CustomDeclarationCN23 < Base
-      @id = 57
-      @description = 'Celní prohlášení CN23'
-    end
+      class CN23 < Base
+        @id = 57
+        @description = 'Celní prohlášení CN23 - 1x (A4)'
+      end
 
-    # Formulare ID 72 a 73 je mozno pouzit pouze pro zasilky s prefixem CE
-    # do zemi AT, DE, FR, GR, HR, CH, IS, LU, LV, NO, PL, SK
-    class HarmonizedLabel < Base
-      @id = 72
-      @description = 'Harmonizovaný štítek pro MZ produkty – samostatný'
-    end
+      class CN224OnPage < Base
+        @id = 74
+        @description = 'Celní prohlášení CN22 - 4x (A4)'
+      end
 
-    class HarmonizedLabel4OnPage < Base
-      @id = 73
-      @description = 'Harmonizovaný štítek pro MZ produkty –  4x (A4)'
-    end
+      class CN22WithCK < Base
+        @id = 75
+        @description = 'Celní prohlášení CN22  s ČK - 1x (A4)'
+      end
 
+      class CN22WithCK4OnPage < Base
+        @id = 76
+        @description = 'Celní prohlášení CN22  s ČK - 4x (A4)'
+      end
+    end
     # has to be at the end, to load all subcasses before
     def self.all_classes
       ObjectSpace.each_object(CzechPostB2bClient::PrintingTemplates::Base.singleton_class)

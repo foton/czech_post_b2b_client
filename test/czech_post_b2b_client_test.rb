@@ -14,10 +14,10 @@ class CzechPostB2bClientTest < Minitest::Test
   def test_knows_available_templates
     all_templates = CzechPostB2bClient::PrintingTemplates.all_classes.to_a
 
-    assert_equal 28, all_templates.size
+    assert_equal 31, all_templates.size
 
     template_61 = all_templates.detect { |t| t.id == 61 }
-    assert_equal '4xA4 Cenný balík do zahraničí', template_61.description
+    assert_equal 'CP72 - cenný balík do zahraničí (2x A4)', template_61.description
   end
 
   def test_knowns_available_services
