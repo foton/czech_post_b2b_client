@@ -14,7 +14,7 @@ AllCops:
     - "bin/*"
 Documentation:
   Enabled: false
-Metrics/LineLength:
+Layout/LineLength:
   Max: 120
 Metrics/AbcSize:
   Max: 20
