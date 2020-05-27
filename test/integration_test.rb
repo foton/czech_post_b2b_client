@@ -44,7 +44,8 @@ module CzechPostB2bClient
 
       def it_imports_parcels_data
         # post informations about parcels to Czech Post
-        sender_service = CzechPostB2bClient::Services::ParcelsAsyncSender.call(sending_data: sending_data, parcels: parcels)
+        sender_service = CzechPostB2bClient::Services::ParcelsAsyncSender.call(sending_data: sending_data,
+                                                                               parcels: parcels)
 
         assert sender_service.success?, "ParcelSender failed with errors: #{sender_service.errors}"
 

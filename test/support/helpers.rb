@@ -105,7 +105,7 @@ def full_parcel_data
   {
     params: full_parcel_data_params, # required
     cash_on_delivery: { amount: 12_345.678, currency_iso_code: 'CZK' },
-    services: %w[43 44 s3],
+    services: %w[4 L],
     addressee: full_addressee_data,
     document_addressee: full_addressee_data, # 0-X
     custom_declaration: full_parcel_data_custom_delaration # 0-1
@@ -195,6 +195,7 @@ def full_parcel_data_custom_delaration
                     #                             "991" -jine;
                     #                             "11" - obchodni zbozi
     note: 'string30',
+    importer_reference_number: 'CD12345',
     value_currency_iso_code: 'CZK', # REQUIRED, ISO kod meny celni hodnoty
     content_descriptions: [ # 1- 20x; popis obsahu zasilky
       {

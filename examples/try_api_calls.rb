@@ -153,7 +153,7 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
   def sync_import_parcels_data
     # post informations about parcels to Czech Post and get the tracking codes
     sender_service = CzechPostB2bClient::Services::ParcelsSyncSender.call(sending_data: sending_data,
-                                                                               parcels: parcels)
+                                                                          parcels: parcels)
     raise "ParcelImmediateSender failed with errors: #{sender_service.errors}" unless sender_service.success?
 
     update_parcels_data_with(sender_service.result.parcels_hash)

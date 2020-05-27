@@ -84,7 +84,7 @@ module CzechPostB2bClient
       end
 
       def expected_states_array_4075
-        # rubocop:disable Metrics/LineLength
+        # rubocop:disable Layout/LineLength
 
         # order is exactly as in XML, there is no ordering key
         [
@@ -109,7 +109,7 @@ module CzechPostB2bClient
           { id: '43', date: Date.parse('2015-08-20'), text: 'E-mail odesílateli - dodání zásilky.', post_code: nil, post_name: nil },
           { id: '91', date: Date.parse('2015-08-20'), text: 'Dodání zásilky.', post_code: '25756', post_name: 'Neveklov' }
         ]
-        # rubocop:enable Metrics/LineLength
+        # rubocop:enable Layout/LineLength
       end
     end
   end

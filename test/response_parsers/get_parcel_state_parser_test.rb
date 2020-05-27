@@ -37,7 +37,7 @@ module CzechPostB2bClient
         assert_equal no_parcels_struct, parser.result
       end
 
-      # rubocop:disable Metrics/LineLength
+      # rubocop:disable Layout/LineLength
       def expected_ok_struct # rubocop:disable Metrics/MethodLength
         {
           request: { created_at: Time.parse('2016-03-12T10:00:34.573Z'), contract_id: '25195667001', request_id: '64' },
@@ -240,7 +240,7 @@ module CzechPostB2bClient
           }
         }
       end
-      # rubocop:enable Metrics/LineLength
+      # rubocop:enable Layout/LineLength
 
       def b2b_ok_response
         fixture_response_xml('getParcelState_ok.xml')

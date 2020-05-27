@@ -2,11 +2,14 @@
 Accessing B2B API of Czech Post for bulk processing of parcels ("B2B - WS PodáníOnline").
 
 There are these supported operations of API:
+- *parcelServiceSync* - stores data of one parcel and return package_code and optional PDF adress sheet [HTTP POST - sync response]
+                        Seems to me, that there are is no place extensive Cash On Delivery data, just `amount` and `currency`
 - *sendParcels* - stores data of parcels for async processing [HTTP POST - async response]
 - *getResultParcels* - return results of such processing [HTTP GET - sync response]
 - *getStats* - returns statistics of parcels sent in time period [HTTP GET - sync response]
 - *getParcelState* - returns all known states for listed parcels [HTTP GET - sync response]
 - *getParcelsPrinting* - returns PDF with address labels/stickers for listed parcels [HTTP GET - sync response]
+
 
 ## Installation
 ### 1) Registration at Czech Post (CP)
