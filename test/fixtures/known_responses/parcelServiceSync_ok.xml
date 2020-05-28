@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<v1:b2bSyncResponse xmlns:v1="https://b2b.postaonline.cz/schema/B2BCommon-v1"
-  xmlns:v1_1="https://b2b.postaonline.cz/schema/POLServices-v1">
+<v1:b2bSyncResponse xmlns:v1="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:v1_1="https://b2b.postaonline.cz/schema/POLServices-v1">
   <v1:header>
-    <v1:timeStamp>2020-02-18T16:00:34.913Z</v1:timeStamp>
+    <v1:timeStamp>2020-02-18T16:00:34.913Z</v1:timeStamp><!-- in real answer it was not here -->
     <v1:b2bRequestHeader>
       <v1:idExtTransaction>33</v1:idExtTransaction>
       <v1:timeStamp>2020-03-12T10:00:34.573Z</v1:timeStamp>

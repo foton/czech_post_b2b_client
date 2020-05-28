@@ -7,7 +7,7 @@ module CzechPostB2bClient
     class ParcelsSyncSenderTest < Minitest::Test
       include CzechPostB2bClient::Test::CommunicatorServiceTestingBase
 
-      def setup
+      def setup # rubocop:disable Metrics/MethodLength
         setup_configuration
 
         @endpoint_path = '/parcelServiceSync' # 'https://b2b.postaonline.cz/services/POLService/v1/parcelServiceSync'
@@ -29,9 +29,12 @@ module CzechPostB2bClient
 
         @builder_service_class = CzechPostB2bClient::RequestBuilders::ParcelServiceSyncBuilder
         @parser_service_class = CzechPostB2bClient::ResponseParsers::ParcelServiceSyncParser
-        @builder_expected_args = { common_data: expected_common_data, parcel: parcel_1of2 } # builder accepts PARCEL, not PARCELS!
+
+        # builder accepts PARCEL, not PARCELS!
+        @builder_expected_args = { common_data: expected_common_data, parcel: parcel_1of2 }
         @builder_expected_errors = { parcels: ['Too many'],
                                      common_data: ['Missing :parcels_sending_date value', 'xxx'] }
+
         # parser returns accepts PARCEL, not PARCELS!
         @fake_response_parser_result = fake_response_parser_result_shared_part.merge(parcel: @expected_parcels_hash)
         @fake_response_parser_result[:response].merge!(state: { code: 1, text: 'OK' })
@@ -45,7 +48,7 @@ module CzechPostB2bClient
       def test_it_fails_with_errors_in_response_data # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         expected_parcels_hash_with_errors = {
           'package_1' => { parcel_code: nil, states: [{ code: 104, text: 'INVALID_WEIGHT' },
-                                                      { code: 261, text: 'MISSING_SIZE_CATEGORY' }] },
+                                                      { code: 261, text: 'MISSING_SIZE_CATEGORY' }] }
         }
         fake_response_parser_result_with_errors = fake_response_parser_result_shared_part
         fake_response_parser_result_with_errors.merge!(parcel: expected_parcels_hash_with_errors)

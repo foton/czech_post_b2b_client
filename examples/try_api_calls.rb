@@ -5,6 +5,7 @@ $LOAD_PATH.unshift File.expand_path('.././lib', __dir__)
 
 require 'czech_post_b2b_client'
 require 'time' # to be able Time.parse
+require 'pry'
 
 class TryApiCalls # rubocop:disable Metrics/ClassLength
   attr_accessor :configuration, :processing_end_time_utc, :transaction_id, :parcels
@@ -30,7 +31,10 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
     end
 
     # print_all_template_sheets_for_parcel_codes  # if you need to check available templates for parcel_types
-    print_address_sheets(print_options) # and stick it on right parcels
+
+    # prin address sheets and stick it on right parcels
+    # sync version get address sheet in response of import
+    print_address_sheets(print_options) unless import_parcels == :sync
 
     ### here comes the human part: these parcels to post office
 
@@ -152,9 +156,10 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
 
   def sync_import_parcels_data
     # post informations about parcels to Czech Post and get the tracking codes
-    sender_service = CzechPostB2bClient::Services::ParcelsSyncSender.call(sending_data: sending_data,
-                                                                          parcels: parcels)
-    raise "ParcelImmediateSender failed with errors: #{sender_service.errors}" unless sender_service.success?
+    send_data = sending_data.merge(print_params: print_options)
+    sender_service = CzechPostB2bClient::Services::ParcelsSyncSender.call(sending_data: send_data, parcels: parcels)
+
+    raise "ParcelSyncSender failed with errors: #{sender_service.errors}" unless sender_service.success?
 
     update_parcels_data_with(sender_service.result.parcels_hash)
     CzechPostB2bClient.logger.debug("[ParcelsSyncSender] => parcels: #{parcels}")
@@ -164,7 +169,7 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
   def import_parcels_data
     # post informations about parcels to Czech Post
     sender_service = CzechPostB2bClient::Services::ParcelsAsyncSender.call(sending_data: sending_data, parcels: parcels)
-    raise "ParcelSender failed with errors: #{sender_service.errors}" unless sender_service.success?
+    raise "ParcelAsyncSender failed with errors: #{sender_service.errors}" unless sender_service.success?
 
     # CzechPost returns CET value but marked as UTC zone
     time_in_cet_masked_as_utc = sender_service.result.processing_end_expected_at
@@ -314,5 +319,5 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
   end
 end
 
-# TryApiCalls.new.run
-TryApiCalls.new.download_xsds
+TryApiCalls.new.run
+# TryApiCalls.new.download_xsds

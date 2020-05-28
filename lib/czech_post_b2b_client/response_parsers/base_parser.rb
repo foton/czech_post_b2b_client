@@ -37,7 +37,7 @@ module CzechPostB2bClient
           request: { created_at: request_data.time_stamp,
                      contract_id: request_data.id_contract,
                      request_id: request_data.id_ext_transaction },
-          response: { created_at: Time.parse(response_header.dig('timeStamp')) }
+          response: { created_at: response_time }
         }
       end
 
@@ -67,6 +67,12 @@ module CzechPostB2bClient
         OpenStruct.new(id_ext_transaction: b2b_request_hash.dig('idExtTransaction').to_s,
                        time_stamp: Time.parse(b2b_request_hash.dig('timeStamp')),
                        id_contract: b2b_request_hash.dig('idContract').to_s)
+      end
+
+      def response_time
+        Time.parse(response_header.dig('timeStamp'))
+      rescue TypeError
+        Time.now.utc
       end
 
       def state_hash_from(hash)

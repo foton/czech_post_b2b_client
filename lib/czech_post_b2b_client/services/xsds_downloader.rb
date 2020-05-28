@@ -48,6 +48,8 @@ module CzechPostB2bClient
 
       def save_response_to_file
         filename = xsd_uri.request_uri.split('/').last
+        filename += '.xsd' if filename.split('.').last.downcase != 'xsd'
+
         File.write(filename, response.body)
       end
 
