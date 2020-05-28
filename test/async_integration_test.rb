@@ -4,7 +4,7 @@ require 'test_helper'
 
 module CzechPostB2bClient
   module Test
-    class IntegrationTest < Minitest::Test # rubocop:disable Metrics/ClassLength
+    class AsyncIntegrationTest < Minitest::Test # rubocop:disable Metrics/ClassLength
       attr_accessor :processing_end_time, :transaction_id, :parcels
       attr_reader :expected_processing_end_time,
                   :expected_transaction_id,
@@ -16,6 +16,7 @@ module CzechPostB2bClient
 
       def setup
         setup_configuration
+
         @parcels = [parcel_1of2, parcel_2of2, parcel_3]
         @expected_processing_end_time = (Time.now + 4) # + 4 seconds
         @expected_transaction_id = 'string50'
@@ -47,7 +48,7 @@ module CzechPostB2bClient
         sender_service = CzechPostB2bClient::Services::ParcelsAsyncSender.call(sending_data: sending_data,
                                                                                parcels: parcels)
 
-        assert sender_service.success?, "ParcelSender failed with errors: #{sender_service.errors}"
+        assert sender_service.success?, "ParcelAsyncSender failed with errors: #{sender_service.errors}"
 
         @processing_end_time = sender_service.result.processing_end_expected_at
         @transaction_id = sender_service.result.transaction_id

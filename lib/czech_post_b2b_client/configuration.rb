@@ -21,8 +21,8 @@ module CzechPostB2bClient
 
       # ours, accessible, but maybe out of date, for test usage
       @namespaces = {
-        'xmlns' => 'https://raw.githubusercontent.com/foton/czech_post_b2b_client/master/doc/20181023/B2BCommon-v1.1.xsd',
-        'xmlns:ns2' => 'https://raw.githubusercontent.com/foton/czech_post_b2b_client/master/doc/20181023/B2B-POLServices-v1.6.xsd'
+        'xmlns' => 'https://raw.githubusercontent.com/foton/czech_post_b2b_client/master/documents/B2B_CP_POL_2020-05-21/B2BCommon-v1.1.xsd',
+        'xmlns:ns2' => 'https://raw.githubusercontent.com/foton/czech_post_b2b_client/master/documents/B2B_CP_POL_2020-05-21/B2B-POLServices-v1.8.xsd'
       }
       # original, accessible only with setup certificates
       @namespaces = {

@@ -42,11 +42,12 @@ module CzechPostB2bClient
 
         return pd_hash if value.nil?
 
-        # more doParcelParamsResult nodes for one parcel_id => probably errors
+        # merging states
+        value[:states] = (value[:states] + pd_hash[:states]).sort { |a, b| a[:code] <=> b[:code] }
+
+        # more parcel_codes for one parcel_id => probably errors
         old_p_code = value[:parcel_code]
         new_p_code = pd_hash[:parcel_code]
-
-        value[:states] = (value[:states] + pd_hash[:states]).sort { |a, b| a[:code] <=> b[:code] }
         if old_p_code != new_p_code
           raise "Two different parcel_codes [#{old_p_code}, #{new_p_code}] for parcel_id:'#{parcel_id}'"
         end

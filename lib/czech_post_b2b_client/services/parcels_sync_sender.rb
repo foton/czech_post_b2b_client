@@ -3,7 +3,7 @@
 module CzechPostB2bClient
   module Services
     # Combination of ParcelsAsyncSender + ParcelsSendProcessUpdater for fast SYNC registering parcel at CPOST
-    # It accept all parcels or none!
+    # It accept only one parcel!
     # It should be used for instant one parcel registration.
     class ParcelsSyncSender < CzechPostB2bClient::Services::Communicator
       attr_reader :sending_data, :parcels
@@ -20,11 +20,11 @@ module CzechPostB2bClient
       private
 
       def request_builder_args
-        { common_data: common_data, parcels: parcels }
+        { common_data: common_data, parcel: parcels.first }
       end
 
       def request_builder_class
-        CzechPostB2bClient::RequestBuilders::SendParcelsBuilder
+        CzechPostB2bClient::RequestBuilders::ParcelServiceSyncBuilder
       end
 
       def api_caller_class
@@ -32,7 +32,7 @@ module CzechPostB2bClient
       end
 
       def response_parser_class
-        CzechPostB2bClient::ResponseParsers::GetResultParcelsParser
+        CzechPostB2bClient::ResponseParsers::ParcelServiceSyncParser
       end
 
       def common_data
@@ -48,11 +48,11 @@ module CzechPostB2bClient
       end
 
       def endpoint_path
-        '/sendParcelsSync'
+        '/parcelServiceSync'
       end
 
       def build_result_from(response_hash)
-        OpenStruct.new(parcels_hash: response_hash[:parcels],
+        OpenStruct.new(parcels_hash: response_hash[:parcel],
                        state_text: response_hash.dig(:response, :state, :text),
                        state_code: response_hash.dig(:response, :state, :code))
       end

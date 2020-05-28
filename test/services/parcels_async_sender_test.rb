@@ -43,6 +43,32 @@ module CzechPostB2bClient
         assert_equal transaction_id, tested_service.result.transaction_id
       end
 
+      def parcel_1of2
+        @parcel_1of2 ||= {
+          addressee: full_addressee_data,
+          params: { parcel_id: 'package_1',
+                    parcel_code_prefix: 'BA',
+                    weight_in_kg: 12_345.678,
+                    parcel_order: 1,
+                    parcels_count: 2 }
+        }
+      end
+
+      def parcel_2of2
+        @parcel_2of2 ||= {
+          addressee: full_addressee_data,
+          params: { parcel_id: 'package_2',
+                    parcel_code_prefix: 'BA',
+                    weight_in_kg: 345.678,
+                    parcel_order: 2,
+                    parcels_count: 2 }
+        }
+      end
+
+      def parcels_to_send
+        [parcel_1of2, parcel_2of2]
+      end
+
       def sending_data
         sd = full_common_data.dup
         sd.delete(:contract_id) # taken from config
@@ -59,10 +85,6 @@ module CzechPostB2bClient
 
       def expected_common_data
         data_from_config.merge(sending_data)
-      end
-
-      def parcels_to_send
-        [1, 2] # no need for real parcels here
       end
     end
   end

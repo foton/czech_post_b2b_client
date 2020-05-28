@@ -111,7 +111,7 @@ module CzechPostB2bClient
 
         <<~XML
           <?xml version="1.0" encoding="UTF-8"?>
-          <v1:B2BFaultMessage xmlns:v1="https://raw.githubusercontent.com/foton/czech_post_b2b_client/master/doc/20181023/B2BCommon-v1.1.xsd">
+          <v1:B2BFaultMessage xmlns:v1="https://raw.githubusercontent.com/foton/czech_post_b2b_client/master/documents/B2B_CP_POL_2020-05-21/B2BCommon-v1.1.xsd">
             <v1:errorDetail>  Error text </v1:errorDetail>
             <v1:errorCode>#{error_code}</v1:errorCode>
           </v1:B2BFaultMessage>
