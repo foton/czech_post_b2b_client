@@ -26,8 +26,8 @@ module CzechPostB2bClient
           response: { created_at: Time.parse('2020-02-18T16:00:34.913Z'), state: { code: 1, text: 'OK' } },
           parcel: { '12345' => { parcel_code: 'DR0404870003M',
                                  states: [{ code: 408, text: 'INFO_ADDRESS_WAS_MODIFIED' }],
-                                 print: { pdf_content: 'very big pdf extracted from base64 string',
-                                          state: { code: 1, text: 'OK' } } } }
+                                 printings: { pdf_content: 'very big pdf extracted from base64 string',
+                                              state: { code: 1, text: 'OK' } } } }
         }
       end
 
@@ -40,7 +40,7 @@ module CzechPostB2bClient
           parcel: { '12345' => { parcel_code: nil,
                                  states: [{ code: 104, text: 'INVALID_WEIGHT' },
                                           { code: 261, text: 'MISSING_SIZE_CATEGORY' }],
-                                 print: nil } }
+                                 printings: nil } }
         }
       end
 

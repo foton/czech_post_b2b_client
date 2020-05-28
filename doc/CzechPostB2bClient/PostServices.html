@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Module: CzechPostB2bClient::PostServices
+  
+    &mdash; Documentation by YARD 0.9.24
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" />
+
+<script type="text/javascript">
+  pathId = "CzechPostB2bClient::PostServices";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (P)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../CzechPostB2bClient.html" title="CzechPostB2bClient (module)">CzechPostB2bClient</a></span></span>
+     &raquo; 
+    <span class="title">PostServices</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Module: CzechPostB2bClient::PostServices
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>lib/czech_post_b2b_client/post_services.rb</dd>
+  </dl>
+  
+</div>
+
+<h2>Defined Under Namespace</h2>
+<p class="children">
+  
+    
+  
+    
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="PostServices/AddreseeVerification.html" title="CzechPostB2bClient::PostServices::AddreseeVerification (class)">AddreseeVerification</a></span>, <span class='object_link'><a href="PostServices/AddresseeAlertOfArrivalByEmail.html" title="CzechPostB2bClient::PostServices::AddresseeAlertOfArrivalByEmail (class)">AddresseeAlertOfArrivalByEmail</a></span>, <span class='object_link'><a href="PostServices/AddresseeAlertOfArrivalBySms.html" title="CzechPostB2bClient::PostServices::AddresseeAlertOfArrivalBySms (class)">AddresseeAlertOfArrivalBySms</a></span>, <span class='object_link'><a href="PostServices/AddresseeAlertOfArrivalBySmsAndEmail.html" title="CzechPostB2bClient::PostServices::AddresseeAlertOfArrivalBySmsAndEmail (class)">AddresseeAlertOfArrivalBySmsAndEmail</a></span>, <span class='object_link'><a href="PostServices/AddresseeVerificationOnDelivery.html" title="CzechPostB2bClient::PostServices::AddresseeVerificationOnDelivery (class)">AddresseeVerificationOnDelivery</a></span>, <span class='object_link'><a href="PostServices/AfternoonDelivery.html" title="CzechPostB2bClient::PostServices::AfternoonDelivery (class)">AfternoonDelivery</a></span>, <span class='object_link'><a href="PostServices/Base.html" title="CzechPostB2bClient::PostServices::Base (class)">Base</a></span>, <span class='object_link'><a href="PostServices/CashOnDeliveryByPKA.html" title="CzechPostB2bClient::PostServices::CashOnDeliveryByPKA (class)">CashOnDeliveryByPKA</a></span>, <span class='object_link'><a href="PostServices/CashOnDeliveryByPKC.html" title="CzechPostB2bClient::PostServices::CashOnDeliveryByPKC (class)">CashOnDeliveryByPKC</a></span>, <span class='object_link'><a href="PostServices/CashOnDeliveryInternational.html" title="CzechPostB2bClient::PostServices::CashOnDeliveryInternational (class)">CashOnDeliveryInternational</a></span>, <span class='object_link'><a href="PostServices/CertificateOfDelivery.html" title="CzechPostB2bClient::PostServices::CertificateOfDelivery (class)">CertificateOfDelivery</a></span>, <span class='object_link'><a href="PostServices/CertificateOfDeliveryWithDeliverToAdresseeOnly.html" title="CzechPostB2bClient::PostServices::CertificateOfDeliveryWithDeliverToAdresseeOnly (class)">CertificateOfDeliveryWithDeliverToAdresseeOnly</a></span>, <span class='object_link'><a href="PostServices/CertificateOfDeliveryWithDeliverToAdresseePersonOnly.html" title="CzechPostB2bClient::PostServices::CertificateOfDeliveryWithDeliverToAdresseePersonOnly (class)">CertificateOfDeliveryWithDeliverToAdresseePersonOnly</a></span>, <span class='object_link'><a href="PostServices/CompanyRegisteredMail.html" title="CzechPostB2bClient::PostServices::CompanyRegisteredMail (class)">CompanyRegisteredMail</a></span>, <span class='object_link'><a href="PostServices/CompleteDelivery.html" title="CzechPostB2bClient::PostServices::CompleteDelivery (class)">CompleteDelivery</a></span>, <span class='object_link'><a href="PostServices/Consignment.html" title="CzechPostB2bClient::PostServices::Consignment (class)">Consignment</a></span>, <span class='object_link'><a href="PostServices/CumbersomeParcel.html" title="CzechPostB2bClient::PostServices::CumbersomeParcel (class)">CumbersomeParcel</a></span>, <span class='object_link'><a href="PostServices/DeliverToAdresseeOnly.html" title="CzechPostB2bClient::PostServices::DeliverToAdresseeOnly (class)">DeliverToAdresseeOnly</a></span>, <span class='object_link'><a href="PostServices/DeliverToAdresseePersonOnly.html" title="CzechPostB2bClient::PostServices::DeliverToAdresseePersonOnly (class)">DeliverToAdresseePersonOnly</a></span>, <span class='object_link'><a href="PostServices/DeliverToCompany.html" title="CzechPostB2bClient::PostServices::DeliverToCompany (class)">DeliverToCompany</a></span>, <span class='object_link'><a href="PostServices/DepositFor10Days.html" title="CzechPostB2bClient::PostServices::DepositFor10Days (class)">DepositFor10Days</a></span>, <span class='object_link'><a href="PostServices/DepositFor10WorkingDays.html" title="CzechPostB2bClient::PostServices::DepositFor10WorkingDays (class)">DepositFor10WorkingDays</a></span>, <span class='object_link'><a href="PostServices/DepositFor3Days.html" title="CzechPostB2bClient::PostServices::DepositFor3Days (class)">DepositFor3Days</a></span>, <span class='object_link'><a href="PostServices/DepositFor7Days.html" title="CzechPostB2bClient::PostServices::DepositFor7Days (class)">DepositFor7Days</a></span>, <span class='object_link'><a href="PostServices/DepositFor90Days.html" title="CzechPostB2bClient::PostServices::DepositFor90Days (class)">DepositFor90Days</a></span>, <span class='object_link'><a href="PostServices/DepositIfAdresseeIsUnreachable.html" title="CzechPostB2bClient::PostServices::DepositIfAdresseeIsUnreachable (class)">DepositIfAdresseeIsUnreachable</a></span>, <span class='object_link'><a href="PostServices/DiscountForCollectiveShippment.html" title="CzechPostB2bClient::PostServices::DiscountForCollectiveShippment (class)">DiscountForCollectiveShippment</a></span>, <span class='object_link'><a href="PostServices/DiscountForOnlinePosting.html" title="CzechPostB2bClient::PostServices::DiscountForOnlinePosting (class)">DiscountForOnlinePosting</a></span>, <span class='object_link'><a href="PostServices/DoNotDeposit.html" title="CzechPostB2bClient::PostServices::DoNotDeposit (class)">DoNotDeposit</a></span>, <span class='object_link'><a href="PostServices/DoNotExtendCollectionTime.html" title="CzechPostB2bClient::PostServices::DoNotExtendCollectionTime (class)">DoNotExtendCollectionTime</a></span>, <span class='object_link'><a href="PostServices/DoNotPutIntoMailbox.html" title="CzechPostB2bClient::PostServices::DoNotPutIntoMailbox (class)">DoNotPutIntoMailbox</a></span>, <span class='object_link'><a href="PostServices/DoNotResend.html" title="CzechPostB2bClient::PostServices::DoNotResend (class)">DoNotResend</a></span>, <span class='object_link'><a href="PostServices/DoNotReturnLeaveItInMailbox.html" title="CzechPostB2bClient::PostServices::DoNotReturnLeaveItInMailbox (class)">DoNotReturnLeaveItInMailbox</a></span>, <span class='object_link'><a href="PostServices/DoNotReturnToSender.html" title="CzechPostB2bClient::PostServices::DoNotReturnToSender (class)">DoNotReturnToSender</a></span>, <span class='object_link'><a href="PostServices/Document.html" title="CzechPostB2bClient::PostServices::Document (class)">Document</a></span>, <span class='object_link'><a href="PostServices/DocumentlessCashOnDelivery.html" title="CzechPostB2bClient::PostServices::DocumentlessCashOnDelivery (class)">DocumentlessCashOnDelivery</a></span>, <span class='object_link'><a href="PostServices/DocumentsSignedAtDelivery.html" title="CzechPostB2bClient::PostServices::DocumentsSignedAtDelivery (class)">DocumentsSignedAtDelivery</a></span>, <span class='object_link'><a href="PostServices/EAlertOfDeliveryEmail.html" title="CzechPostB2bClient::PostServices::EAlertOfDeliveryEmail (class)">EAlertOfDeliveryEmail</a></span>, <span class='object_link'><a href="PostServices/EAlertOfDeliverySms.html" title="CzechPostB2bClient::PostServices::EAlertOfDeliverySms (class)">EAlertOfDeliverySms</a></span>, <span class='object_link'><a href="PostServices/EAlertOfDeliverySmsAndEmail.html" title="CzechPostB2bClient::PostServices::EAlertOfDeliverySmsAndEmail (class)">EAlertOfDeliverySmsAndEmail</a></span>, <span class='object_link'><a href="PostServices/EconomyDelivery.html" title="CzechPostB2bClient::PostServices::EconomyDelivery (class)">EconomyDelivery</a></span>, <span class='object_link'><a href="PostServices/ExtendedCollectionTime.html" title="CzechPostB2bClient::PostServices::ExtendedCollectionTime (class)">ExtendedCollectionTime</a></span>, <span class='object_link'><a href="PostServices/ForenoonDelivery.html" title="CzechPostB2bClient::PostServices::ForenoonDelivery (class)">ForenoonDelivery</a></span>, <span class='object_link'><a href="PostServices/Fragile.html" title="CzechPostB2bClient::PostServices::Fragile (class)">Fragile</a></span>, <span class='object_link'><a href="PostServices/GiftOrNonCommercialGoods.html" title="CzechPostB2bClient::PostServices::GiftOrNonCommercialGoods (class)">GiftOrNonCommercialGoods</a></span>, <span class='object_link'><a href="PostServices/GoodsWithExportDocumentsProcessed.html" title="CzechPostB2bClient::PostServices::GoodsWithExportDocumentsProcessed (class)">GoodsWithExportDocumentsProcessed</a></span>, <span class='object_link'><a href="PostServices/GuaranteedDeliveryTimeAtSaturday.html" title="CzechPostB2bClient::PostServices::GuaranteedDeliveryTimeAtSaturday (class)">GuaranteedDeliveryTimeAtSaturday</a></span>, <span class='object_link'><a href="PostServices/GuaranteedDeliveryTimeAtWeekend.html" title="CzechPostB2bClient::PostServices::GuaranteedDeliveryTimeAtWeekend (class)">GuaranteedDeliveryTimeAtWeekend</a></span>, <span class='object_link'><a href="PostServices/GuaranteedDeliveryTimeTo2PM.html" title="CzechPostB2bClient::PostServices::GuaranteedDeliveryTimeTo2PM (class)">GuaranteedDeliveryTimeTo2PM</a></span>, <span class='object_link'><a href="PostServices/HeavyParcelDeliveryToHand.html" title="CzechPostB2bClient::PostServices::HeavyParcelDeliveryToHand (class)">HeavyParcelDeliveryToHand</a></span>, <span class='object_link'><a href="PostServices/InformSenderAboutDelivery.html" title="CzechPostB2bClient::PostServices::InformSenderAboutDelivery (class)">InformSenderAboutDelivery</a></span>, <span class='object_link'><a href="PostServices/InternationalMail.html" title="CzechPostB2bClient::PostServices::InternationalMail (class)">InternationalMail</a></span>, <span class='object_link'><a href="PostServices/InternationalMailForBlinds.html" title="CzechPostB2bClient::PostServices::InternationalMailForBlinds (class)">InternationalMailForBlinds</a></span>, <span class='object_link'><a href="PostServices/InternationalPrintedMatterBag.html" title="CzechPostB2bClient::PostServices::InternationalPrintedMatterBag (class)">InternationalPrintedMatterBag</a></span>, <span class='object_link'><a href="PostServices/InternationalRegisteredMail.html" title="CzechPostB2bClient::PostServices::InternationalRegisteredMail (class)">InternationalRegisteredMail</a></span>, <span class='object_link'><a href="PostServices/InternationalRegisteredMailForBlinds.html" title="CzechPostB2bClient::PostServices::InternationalRegisteredMailForBlinds (class)">InternationalRegisteredMailForBlinds</a></span>, <span class='object_link'><a href="PostServices/InternationalRegisteredPrintedMatterBag.html" title="CzechPostB2bClient::PostServices::InternationalRegisteredPrintedMatterBag (class)">InternationalRegisteredPrintedMatterBag</a></span>, <span class='object_link'><a href="PostServices/ListedPrice.html" title="CzechPostB2bClient::PostServices::ListedPrice (class)">ListedPrice</a></span>, <span class='object_link'><a href="PostServices/Missed.html" title="CzechPostB2bClient::PostServices::Missed (class)">Missed</a></span>, <span class='object_link'><a href="PostServices/Missive.html" title="CzechPostB2bClient::PostServices::Missive (class)">Missive</a></span>, <span class='object_link'><a href="PostServices/MissiveStandard.html" title="CzechPostB2bClient::PostServices::MissiveStandard (class)">MissiveStandard</a></span>, <span class='object_link'><a href="PostServices/MultiParcelShippment.html" title="CzechPostB2bClient::PostServices::MultiParcelShippment (class)">MultiParcelShippment</a></span>, <span class='object_link'><a href="PostServices/MultiParcelShippmentBig.html" title="CzechPostB2bClient::PostServices::MultiParcelShippmentBig (class)">MultiParcelShippmentBig</a></span>, <span class='object_link'><a href="PostServices/NonStandardPackage.html" title="CzechPostB2bClient::PostServices::NonStandardPackage (class)">NonStandardPackage</a></span>, <span class='object_link'><a href="PostServices/OldApplianceRemoval.html" title="CzechPostB2bClient::PostServices::OldApplianceRemoval (class)">OldApplianceRemoval</a></span>, <span class='object_link'><a href="PostServices/OnPalette.html" title="CzechPostB2bClient::PostServices::OnPalette (class)">OnPalette</a></span>, <span class='object_link'><a href="PostServices/ParcelSizeL.html" title="CzechPostB2bClient::PostServices::ParcelSizeL (class)">ParcelSizeL</a></span>, <span class='object_link'><a href="PostServices/ParcelSizeM.html" title="CzechPostB2bClient::PostServices::ParcelSizeM (class)">ParcelSizeM</a></span>, <span class='object_link'><a href="PostServices/ParcelSizeS.html" title="CzechPostB2bClient::PostServices::ParcelSizeS (class)">ParcelSizeS</a></span>, <span class='object_link'><a href="PostServices/ParcelSizeXL.html" title="CzechPostB2bClient::PostServices::ParcelSizeXL (class)">ParcelSizeXL</a></span>, <span class='object_link'><a href="PostServices/PickupByThirdPerson.html" title="CzechPostB2bClient::PostServices::PickupByThirdPerson (class)">PickupByThirdPerson</a></span>, <span class='object_link'><a href="PostServices/PosteRestante.html" title="CzechPostB2bClient::PostServices::PosteRestante (class)">PosteRestante</a></span>, <span class='object_link'><a href="PostServices/PreprocessedBySorting.html" title="CzechPostB2bClient::PostServices::PreprocessedBySorting (class)">PreprocessedBySorting</a></span>, <span class='object_link'><a href="PostServices/PrioritaireByAir.html" title="CzechPostB2bClient::PostServices::PrioritaireByAir (class)">PrioritaireByAir</a></span>, <span class='object_link'><a href="PostServices/RegisteredMail.html" title="CzechPostB2bClient::PostServices::RegisteredMail (class)">RegisteredMail</a></span>, <span class='object_link'><a href="PostServices/RegisteredMailForBlinds.html" title="CzechPostB2bClient::PostServices::RegisteredMailForBlinds (class)">RegisteredMailForBlinds</a></span>, <span class='object_link'><a href="PostServices/RegisteredMailStandard.html" title="CzechPostB2bClient::PostServices::RegisteredMailStandard (class)">RegisteredMailStandard</a></span>, <span class='object_link'><a href="PostServices/ResendToOtherAddress.html" title="CzechPostB2bClient::PostServices::ResendToOtherAddress (class)">ResendToOtherAddress</a></span>, <span class='object_link'><a href="PostServices/ResponseEnvelope.html" title="CzechPostB2bClient::PostServices::ResponseEnvelope (class)">ResponseEnvelope</a></span>, <span class='object_link'><a href="PostServices/ResponseShipment.html" title="CzechPostB2bClient::PostServices::ResponseShipment (class)">ResponseShipment</a></span>, <span class='object_link'><a href="PostServices/ReturnByAir.html" title="CzechPostB2bClient::PostServices::ReturnByAir (class)">ReturnByAir</a></span>, <span class='object_link'><a href="PostServices/ReturnEconomically.html" title="CzechPostB2bClient::PostServices::ReturnEconomically (class)">ReturnEconomically</a></span>, <span class='object_link'><a href="PostServices/ReturnOfGoods.html" title="CzechPostB2bClient::PostServices::ReturnOfGoods (class)">ReturnOfGoods</a></span>, <span class='object_link'><a href="PostServices/ReturnToSenderAfterXDays.html" title="CzechPostB2bClient::PostServices::ReturnToSenderAfterXDays (class)">ReturnToSenderAfterXDays</a></span>, <span class='object_link'><a href="PostServices/ReturnToSenderImmediately.html" title="CzechPostB2bClient::PostServices::ReturnToSenderImmediately (class)">ReturnToSenderImmediately</a></span>, <span class='object_link'><a href="PostServices/SaveKey.html" title="CzechPostB2bClient::PostServices::SaveKey (class)">SaveKey</a></span>, <span class='object_link'><a href="PostServices/SubmissionByPostbox.html" title="CzechPostB2bClient::PostServices::SubmissionByPostbox (class)">SubmissionByPostbox</a></span>, <span class='object_link'><a href="PostServices/SubmissionReceiptCopy.html" title="CzechPostB2bClient::PostServices::SubmissionReceiptCopy (class)">SubmissionReceiptCopy</a></span>, <span class='object_link'><a href="PostServices/ThisSideUp.html" title="CzechPostB2bClient::PostServices::ThisSideUp (class)">ThisSideUp</a></span>, <span class='object_link'><a href="PostServices/ValuableContent.html" title="CzechPostB2bClient::PostServices::ValuableContent (class)">ValuableContent</a></span>
+    
+  
+</p>
+
+
+
+
+
+
+
+  
+    <h2>
+      Class Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#all_classes-class_method" title="all_classes (class method)">.<strong>all_classes</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>has to be at the end, to load all subcasses before.</p>
+</div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="all_classes-class_method">
+  
+    .<strong>all_classes</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>has to be at the end, to load all subcasses before</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+770
+771
+772</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/czech_post_b2b_client/post_services.rb', line 770</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_all_classes'>all_classes</span>
+  <span class='const'>ObjectSpace</span><span class='period'>.</span><span class='id identifier rubyid_each_object'>each_object</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../CzechPostB2bClient.html" title="CzechPostB2bClient (module)">CzechPostB2bClient</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="" title="CzechPostB2bClient::PostServices (module)">PostServices</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="PostServices/Base.html" title="CzechPostB2bClient::PostServices::Base (class)">Base</a></span></span><span class='period'>.</span><span class='id identifier rubyid_singleton_class'>singleton_class</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      <div id="footer">
+  Generated on Thu May 28 17:06:47 2020 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.24 (ruby-2.4.1).
+</div>
+
+    </div>
+  </body>
+</html>

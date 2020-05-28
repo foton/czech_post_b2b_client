@@ -6,15 +6,15 @@
 <title>
   Exception: CzechPostB2bClient::B2BErrors::BaseError
   
-    &mdash; Documentation by YARD 0.9.19
+    &mdash; Documentation by YARD 0.9.24
   
 </title>
 
-  <link rel="stylesheet" href="../../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "CzechPostB2bClient::B2BErrors::BaseError";
   relpath = '../../';
 </script>
@@ -111,18 +111,10 @@
 
 
 
-
-
-
-  
-    <h2>
-      Class Method Summary
-      <small><a href="#" class="summary_toggle">collapse</a></small>
-    </h2>
-
-    <ul class="summary">
-      
-        <li class="public ">
+  <h2>Class Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
+  <ul class="summary">
+    
+      <li class="public ">
   <span class="summary_signature">
     
       <a href="#code-class_method" title="code (class method)">.<strong>code</strong>  &#x21d2; Object </a>
@@ -133,18 +125,25 @@
   
   
   
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
   
   
   
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute code.</p>
+</div></span>
   
 </li>
 
-      
-        <li class="public ">
+    
+      <li class="public ">
   <span class="summary_signature">
     
       <a href="#message-class_method" title="message (class method)">.<strong>message</strong>  &#x21d2; Object </a>
@@ -155,18 +154,29 @@
   
   
   
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
   
   
   
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute message.</p>
+</div></span>
   
 </li>
 
-      
-    </ul>
+    
+  </ul>
+
+
+
+
   
     <h2>
       Instance Method Summary
@@ -230,34 +240,45 @@
   
   
   
-
-  <div id="class_method_details" class="method_details_list">
-    <h2>Class Method Details</h2>
-
+  <div id="class_attr_details" class="attr_details">
+    <h2>Class Attribute Details</h2>
     
+      
+      <span id=""></span>
       <div class="method_details first">
   <h3 class="signature first" id="code-class_method">
   
-    .<strong>code</strong>  &#x21d2; <tt>Object</tt> 
+    .<strong>code</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
   
 
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the value of attribute code.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-30
 31
-32</pre>
+32
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/czech_post_b2b_client/b2b_errors.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'lib/czech_post_b2b_client/b2b_errors.rb', line 31</span>
 
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_code'>code</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_code'>code</span>
   <span class='ivar'>@code</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -265,29 +286,42 @@
 </table>
 </div>
     
+      
+      <span id=""></span>
       <div class="method_details ">
   <h3 class="signature " id="message-class_method">
   
-    .<strong>message</strong>  &#x21d2; <tt>Object</tt> 
+    .<strong>message</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
   
 
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the value of attribute message.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-34
 35
-36</pre>
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/czech_post_b2b_client/b2b_errors.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'lib/czech_post_b2b_client/b2b_errors.rb', line 35</span>
 
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_message'>message</span>
   <span class='ivar'>@message</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -296,6 +330,7 @@
 </div>
     
   </div>
+
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
@@ -366,9 +401,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Mar 20 17:49:05 2020 by
+  Generated on Thu May 28 17:06:48 2020 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.19 (ruby-2.4.1).
+  0.9.24 (ruby-2.4.1).
 </div>
 
     </div>

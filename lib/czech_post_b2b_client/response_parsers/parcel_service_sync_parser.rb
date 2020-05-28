@@ -17,7 +17,7 @@ module CzechPostB2bClient
           parcel_id = parcel_parcel_id_from(rp_hash)
           result[parcel_id] = updated_result_value_for(result[parcel_id], rp_hash)
         end
-        pdh[parcel_id].merge!(print: print_data_from(response_print_hash))
+        pdh[parcel_id].merge!(printings: print_data_from(response_print_hash))
 
         pdh
       end

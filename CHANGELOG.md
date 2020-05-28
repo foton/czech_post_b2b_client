@@ -2,11 +2,16 @@
 
 All changes to the gem are documented here.
 
+## [1.1.0] - 2020-05-28
+
+ - Introducing new API documentation from Czech Post
+ - Added service `ParcelSyncSender` service which uses newly discovered `parcelsServiceSync` API endpoint
+ - Renamed `ParcelSender` to `ParcelAsyncSender` . And created deprecating clone `ParcelSender`, so no Breaking change! If You usit it calls `ParcelAsyncSender` and displays deprecation message.
 
 ## [1.0.3] - 2020-05-20
 
  - Added Czech Post service  DiscountForOnlinePosting.
- - **Breaking**: Renamed Post service size classes `CzechPostB2bClient::PostServices::Size???` to `CzechPostB2bClient::PostServices::ParcelSize???` (eg. : `CzechPostB2bClient::PostServices::ParcelSizeXL`)
+ - **Breaking**: Renamed Post service "Size" classes `CzechPostB2bClient::PostServices::Size???` to `CzechPostB2bClient::PostServices::ParcelSize???` (eg. : `CzechPostB2bClient::PostServices::ParcelSizeXL`)
   I know, that I have **breaking** in every new version, I hope You are not fast enough.
 
 ## [1.0.2] - 2020-05-08

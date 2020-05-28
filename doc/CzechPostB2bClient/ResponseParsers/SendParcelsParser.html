@@ -6,15 +6,15 @@
 <title>
   Class: CzechPostB2bClient::ResponseParsers::SendParcelsParser
   
-    &mdash; Documentation by YARD 0.9.19
+    &mdash; Documentation by YARD 0.9.24
   
 </title>
 
-  <link rel="stylesheet" href="../../css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="../../css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "CzechPostB2bClient::ResponseParsers::SendParcelsParser";
   relpath = '../../';
 </script>
@@ -145,6 +145,52 @@
 </li>
 
       
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#cpost_time_zone-instance_method" title="#cpost_time_zone (instance method)">#<strong>cpost_time_zone</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>just for info.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#parse_time_with_correction-instance_method" title="#parse_time_with_correction (instance method)">#<strong>parse_time_with_correction</strong>(b2b_time_str)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
     </ul>
   
 
@@ -201,16 +247,113 @@
 7
 8
 9
-10</pre>
+10
+11
+12
+13</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/czech_post_b2b_client/response_parsers/send_parcels_parser.rb', line 6</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_build_result'>build_result</span>
   <span class='kw'>super</span>
-  <span class='ivar'>@result</span><span class='lbracket'>[</span><span class='symbol'>:async_result</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>transaction_id:</span> <span class='id identifier rubyid_response_header'>response_header</span><span class='period'>.</span><span class='id identifier rubyid_dig'>dig</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>idTransaction</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='comma'>,</span>
-                             <span class='label'>processing_end_expected_at:</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_response_header'>response_header</span><span class='period'>.</span><span class='id identifier rubyid_dig'>dig</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>timeStampProcessing</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='rbrace'>}</span> <span class='comment'># it is NOT CORRECT! They return CET time value with UTC timezone
-</span><span class='kw'>end</span></pre>
+
+  <span class='ivar'>@result</span><span class='lbracket'>[</span><span class='symbol'>:async_result</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbrace'>{</span>
+    <span class='label'>transaction_id:</span> <span class='id identifier rubyid_response_header'>response_header</span><span class='period'>.</span><span class='id identifier rubyid_dig'>dig</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>idTransaction</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='comma'>,</span>
+    <span class='label'>processing_end_expected_at:</span> <span class='id identifier rubyid_parse_time_with_correction'>parse_time_with_correction</span><span class='lparen'>(</span><span class='id identifier rubyid_response_header'>response_header</span><span class='period'>.</span><span class='id identifier rubyid_dig'>dig</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>timeStampProcessing</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='rparen'>)</span>
+  <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="cpost_time_zone-instance_method">
+  
+    #<strong>cpost_time_zone</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>just for info</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+30
+31
+32</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/czech_post_b2b_client/response_parsers/send_parcels_parser.rb', line 30</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_cpost_time_zone'>cpost_time_zone</span>
+  <span class='id identifier rubyid_timezone'>timezone</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Europe/Prague</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="parse_time_with_correction-instance_method">
+  
+    #<strong>parse_time_with_correction</strong>(b2b_time_str)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/czech_post_b2b_client/response_parsers/send_parcels_parser.rb', line 15</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_parse_time_with_correction'>parse_time_with_correction</span><span class='lparen'>(</span><span class='id identifier rubyid_b2b_time_str'>b2b_time_str</span><span class='rparen'>)</span>
+  <span class='comment'># b2b time in XML is NOT CORRECT! They return CET time value with UTC timezone
+</span>  <span class='comment'># Like `2016-02-25T09:30:03.678Z`, which is actually `2016-02-25T09:30:03.678+0100`  (CET)
+</span>  <span class='comment'># Or   `2016-05-25T09:30:03.678Z`, which is actually `2016-05-25T09:30:03.678+0200` (CET + DST)
+</span>  <span class='comment'># But we must be prepare for unnoticed fix by CPost
+</span>
+  <span class='comment'># unfortunattely this can be done for only freshly generated XMLs (comparing b2b_time with Time.now.utc)
+</span>  <span class='comment'># but we have to kepp it compatible for old XML
+</span>  <span class='comment'># so we pass it up and leave comments in documenation
+</span>  <span class='comment'># Users of this gem will have to care of it
+</span>
+  <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_b2b_time_str'>b2b_time_str</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -221,9 +364,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Mar 20 17:49:10 2020 by
+  Generated on Thu May 28 17:06:51 2020 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.19 (ruby-2.4.1).
+  0.9.24 (ruby-2.4.1).
 </div>
 
     </div>

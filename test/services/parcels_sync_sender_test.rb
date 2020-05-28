@@ -18,8 +18,8 @@ module CzechPostB2bClient
         @expected_parcels_hash = {
           'package_1' => { parcel_code: 'RA12354679',
                            states: [{ code: 1, text: 'OK' }],
-                           print: { pdf_content: 'very big pdf extracted from base64 string',
-                                    state: { code: 1, text: 'OK' } } }
+                           printings: { pdf_content: 'very big pdf extracted from base64 string',
+                                        state: { code: 1, text: 'OK' } } }
         }
 
         parcels_to_send = [parcel_1of2]
@@ -43,6 +43,7 @@ module CzechPostB2bClient
       def succesful_call_asserts(tested_service)
         puts(tested_service.result.parcels_hash)
         assert_equal @expected_parcels_hash, tested_service.result.parcels_hash
+        assert_equal 'very big pdf extracted from base64 string', tested_service.result.pdf_content
       end
 
       def test_it_fails_with_errors_in_response_data # rubocop:disable Metrics/AbcSize, Metrics/MethodLength

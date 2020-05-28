@@ -6,15 +6,15 @@
 <title>
   Module: SteppedService
   
-    &mdash; Documentation by YARD 0.9.19
+    &mdash; Documentation by YARD 0.9.24
   
 </title>
 
-  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "SteppedService";
   relpath = '';
 </script>
@@ -132,7 +132,8 @@ can be added, but they will not stop the execution.</p>
   def put_tea_bags_into_kettle
     self.teabags = get_teabags(tea_type, bags_into_kettle)
     if teabags.empty?
-      errors.add(:teabags, &quot;There is no #{bags_into_kettle} #{tea_type} tea teabags in storage,  using fruit tea teabags.&quot;)
+      errors.add(:teabags, &quot;There is no #{bags_into_kettle} #{tea_type} tea teabags in storage,&quot; \
+                           &quot;  using fruit tea teabags.&quot;)
       self.teabags = get_teabags(:fruit, bags_into_kettle)
       if teabags.empty?
         errors.add(:teabags, &quot;There is no #{bags_into_kettle} fruit tea teabags in storage either!&quot;)
@@ -214,9 +215,9 @@ teamaker.errors[:teabags] # =&gt; [&quot;There is no 2 :black tea teabags in sto
 </div>
 
       <div id="footer">
-  Generated on Fri Mar 20 17:49:05 2020 by
+  Generated on Thu May 28 17:06:47 2020 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.19 (ruby-2.4.1).
+  0.9.24 (ruby-2.4.1).
 </div>
 
     </div>

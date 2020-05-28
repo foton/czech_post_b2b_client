@@ -53,6 +53,7 @@ module CzechPostB2bClient
 
       def build_result_from(response_hash)
         OpenStruct.new(parcels_hash: response_hash[:parcel],
+                       pdf_content: response_hash[:parcel].values.first.dig(:printings, :pdf_content),
                        state_text: response_hash.dig(:response, :state, :text),
                        state_code: response_hash.dig(:response, :state, :code))
       end
