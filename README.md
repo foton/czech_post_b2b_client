@@ -56,6 +56,11 @@ CzechPostB2bClient.configure do |config|
   config.private_key_path = 'full_path/to/your/postsignum_private.key'
   config.private_key_password = 'your_password or nil'
 
+  # these two just save Your time, can be overwritten for each call
+  config.custom_card_number = 'ABCD123456'
+  config.print_options = { template_id: 21, # 'adresní štítek bianco - samostatný'
+                           margin_in_mm: { top: 0, left: 0 } }
+
   # this actually do not work, I have to use `sending_post_office_location_number`. But it is REQUIRED!
   config.sending_post_office_code = 12_345 # PSC of post office where parcels will be physically delivered and submitted
 
@@ -279,6 +284,8 @@ end
   4) Error `11: INVALID_LOCATION` was occuring when only `sending_post_office_code` was used. Try to use `sending_post_office_location_number`.
   5) And last tip `261 MISSING_SIZE_CATEGORY` -> add correct "size service" to services (eg: 'S', 'M')
   6) Compare resulting request XML with examples in `test/request_builders`
+  7) If You get strings like `"Obdr\xC5\xBEeny \xC3\xBAdaje k z\xC3\xA1silce."` instead of `"Obdrženy údaje k zásilce."`, You need to `str.force_encoding('UTF-8')`. It happens to me, after I started to use gem in app. Something like backward influence.
+
 
 ## Development
 

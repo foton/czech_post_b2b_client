@@ -14,7 +14,9 @@ module CzechPostB2bClient
                   :namespaces,
                   :language,
                   :logger,
-                  :b2b_api_base_uri
+                  :b2b_api_base_uri,
+                  :print_options,
+                  :custom_card_number
 
     def initialize
       # set defaults here

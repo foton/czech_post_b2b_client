@@ -16,23 +16,23 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
     @configuration = CzechPostB2bClient.configuration
     @processing_end_time_utc = nil
     @transaction_id = nil
-    import_parcels = :async # :no, :sync, :async
+    import_parcels = :sync # :no, :sync, :async
 
     case import_parcels
     when :async
       @parcels = [parcel_1of2, parcel_2of2, parcel_3]
       async_import_parcels_data
     when :sync
-      @parcels = [parcel_3]
+      @parcels = [parcel_uk]
       sync_import_parcels_data
     else # eg :no
       # if You skipping IMPORT of parcels and asks for existing records
       @parcels = build_parcels_for(existing_parcel_codes)
     end
 
-    # print_all_template_sheets_for_parcel_codes  # if you need to check available templates for parcel_types
+    # print_all_template_sheets_for_parcel_codes # if you need to check available templates for parcel_types
 
-    # prin address sheets and stick it on right parcels
+    # print address sheets and stick it on right parcels
     # sync version get address sheet in response of import
     print_address_sheets(print_options) unless import_parcels == :sync
 
@@ -79,7 +79,7 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
       customer_id: configuration.customer_id, # required
       contract_number: configuration.contract_id, # not required
       template_id: 40,
-      margin_in_mm: { top: 1, left: 1 } # required
+      margin_in_mm: { top: 0, left: 0 } # required
     }
   end
 
@@ -91,7 +91,7 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
                 weight_in_kg: 1.0, # BA => max 2.0
                 parcel_order: 1,
                 parcels_count: 2 },
-      services: [70, 7, 'S']
+      services: [50, 70, 7, 'S'] # registered mail, multiparcel, listed price, small parcel
     }
   end
 
@@ -100,10 +100,10 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
       addressee: short_addressee_data,
       params: { parcel_id: 'package_2of2',
                 parcel_code_prefix: 'BA',
-                weight_in_kg: 1.6,
+                weight_in_kg: 1.3,
                 parcel_order: 2,
                 parcels_count: 2 },
-      services: [70, 'S']
+      services: [50, 70, 'S']
     }
   end
 
@@ -111,9 +111,19 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
     @parcel_3 ||= {
       addressee: short_addressee_data,
       params: { parcel_id: 'package_3',
-                parcel_code_prefix: 'BA',
-                weight_in_kg: 1.9 },
-      services: [7, 'M']
+                parcel_code_prefix: 'RR',
+                weight_in_kg: 0.2 },
+      services: [50, '1K'] # registered mail, economy delivering
+    }
+  end
+
+  def parcel_uk
+    @parcel_uk ||= {
+      addressee: short_addressee_data_uk,
+      params: { parcel_id: 'package_3',
+                parcel_code_prefix: 'CS',
+                weight_in_kg: 0.2 },
+      services: [50, '1K', '4C'] # registered mail, economy delivering, do not return
     }
   end
 
@@ -304,18 +314,38 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
 
   def short_addressee_data
     # all items optional?!
-    { address: {
-      first_name: 'Petr',
-      last_name: 'Foton',
-      street: 'Fischerova',
-      house_number: '686',
-      sequence_number: '32',
-      city_part: 'Nové Sady',
-      city: 'Olomouc',
-      post_code: 77_900
-    },
+    {
+      address: {
+        first_name: 'Petr',
+        last_name: 'Foton',
+        street: 'Fischerova',
+        house_number: '686',
+        sequence_number: '32',
+        city_part: 'Nové Sady',
+        city: 'Olomouc',
+        post_code: 77_900
+      },
       email: 'foton@github.com',
-      mobile_phone: '+420777888999' }
+      mobile_phone: '+420777888999'
+    }
+  end
+
+  def short_addressee_data_uk
+    {
+      address: {
+        first_name: 'Petr',
+        last_name: 'Foton',
+        street: 'Fischerova',
+        house_number: '686',
+        sequence_number: '32',
+        city_part: '',
+        city: 'London',
+        post_code: 'NW16X',
+        country_iso_code: 'GB'
+      },
+      email: 'foton@github.com',
+      mobile_phone: '+15417543010'
+    }
   end
 end
 

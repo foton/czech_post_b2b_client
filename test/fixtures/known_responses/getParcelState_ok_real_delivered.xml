@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<v1:b2bSyncResponse xmlns:v1="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:v1_1="https://b2b.postaonline.cz/schema/POLServices-v1">
+  <v1:header>
+    <v1:timeStamp>2020-06-05T14:41:09.901Z</v1:timeStamp>
+    <v1:b2bRequestHeader>
+      <v1:idExtTransaction>1</v1:idExtTransaction>
+      <v1:timeStamp>2020-06-05T12:41:09.229Z</v1:timeStamp>
+      <v1:idContract>356936003</v1:idContract>
+    </v1:b2bRequestHeader>
+  </v1:header>
+  <v1:serviceData><v1_1:getParcelStateResponse><v1_1:parcel>
+        <v1_1:idParcel>DR9016151977C</v1_1:idParcel>
+        <v1_1:parcelType>DR</v1_1:parcelType>
+        <v1_1:weight>0.113</v1_1:weight>
+        <v1_1:amount>0</v1_1:amount>
+        <v1_1:currency></v1_1:currency>
+        <v1_1:timeDeposit>7</v1_1:timeDeposit>
+        <v1_1:states><v1_1:state>
+            <v1_1:id>-M</v1_1:id>
+            <v1_1:date>2020-05-12</v1_1:date>
+            <v1_1:text>Obdrženy údaje k zásilce.</v1_1:text>
+          </v1_1:state><v1_1:state>
+            <v1_1:id>21</v1_1:id>
+            <v1_1:date>2020-05-13</v1_1:date>
+            <v1_1:text>Zásilka převzata do přepravy.</v1_1:text>
+            <v1_1:postCode>70071</v1_1:postCode>
+            <v1_1:name>Depo Ostrava 71</v1_1:name>
+          </v1_1:state><v1_1:state>
+            <v1_1:id>-F</v1_1:id>
+            <v1_1:date>2020-05-12</v1_1:date>
+            <v1_1:text>Zásilka v přepravě.</v1_1:text>
+          </v1_1:state><v1_1:state>
+            <v1_1:id>-I</v1_1:id>
+            <v1_1:date>2020-05-13</v1_1:date>
+            <v1_1:text>Zásilka vypravena z třídícího centra.</v1_1:text>
+            <v1_1:postCode>70002</v1_1:postCode>
+            <v1_1:name>SPU Ostrava 02</v1_1:name>
+          </v1_1:state><v1_1:state>
+            <v1_1:id>-B</v1_1:id>
+            <v1_1:date>2020-05-13</v1_1:date>
+            <v1_1:text>Přeprava zásilky k dodací poště.</v1_1:text>
+          </v1_1:state><v1_1:state>
+            <v1_1:id>53</v1_1:id>
+            <v1_1:date>2020-05-14</v1_1:date>
+            <v1_1:text>Doručování zásilky.</v1_1:text>
+            <v1_1:postCode>77072</v1_1:postCode>
+            <v1_1:name>Depo Olomouc 72</v1_1:name>
+          </v1_1:state><v1_1:state>
+            <v1_1:id>43</v1_1:id>
+            <v1_1:date>2020-05-14</v1_1:date>
+            <v1_1:text>E-mail adresátovi - termín doručení zásilky.</v1_1:text>
+          </v1_1:state><v1_1:state>
+            <v1_1:id>91</v1_1:id>
+            <v1_1:date>2020-05-14</v1_1:date>
+            <v1_1:text>Dodání zásilky.</v1_1:text>
+            <v1_1:postCode>77072</v1_1:postCode>
+            <v1_1:name>Depo Olomouc 72</v1_1:name>
+          </v1_1:state></v1_1:states>
+      </v1_1:parcel></v1_1:getParcelStateResponse></v1:serviceData>
+</v1:b2bSyncResponse>

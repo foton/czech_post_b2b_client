@@ -26,19 +26,21 @@ Gem::Specification.new do |spec|
     spec.metadata['bug_tracker_uri'] = github_uri + '/issues'
     spec.metadata['documentation_uri'] = github_uri + '/blob/master/doc/index.html'
   else
-    msg = "RubyGems 2.0 or newer is required to protect against public "\
-          "gem pushes. You can update your rubygems version by running:\n\n"\
-          "gem install rubygems-update\n"\
-          "update_rubygems\n"\
-          "gem update --system"
+    msg = <<~MSG
+      RubyGems 2.0 or newer is required to protect against public
+      gem pushes. You can update your rubygems version by running:\n\n
+      gem install rubygems-update\n
+      update_rubygems\n
+      gem update --system
+    MSG
     raise msg
   end
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
-  spec.files = Dir["bin/*","certs/*","doc/**/*","lib/**/*"] \
-               + ['LICENSE.txt', 'README.md', 'CHANGELOG.md', 'CODE_OF_CONDUCT.md','.rubocop.yml'] \
-               + ['Rakefile', 'Gemfile']
+  spec.files = Dir['bin/*', 'certs/*', 'doc/**/*', 'lib/**/*'] \
+               + ['LICENSE.txt', 'README.md', 'CHANGELOG.md', 'CODE_OF_CONDUCT.md', '.rubocop.yml'] \
+               + %w[Rakefile Gemfile]
   # spec.test_files = Dir["{test}/**/*_test.rb"]
 
   spec.bindir        = 'exe'
@@ -47,7 +49,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'ox', '~> 2.11'
 
-  spec.add_development_dependency 'bundler'
+  spec.add_development_dependency 'bundler', '~> 2.1'
   spec.add_development_dependency 'minitest', '~> 5.0'
   spec.add_development_dependency 'minitest-reporters', '~> 1.0'
   spec.add_development_dependency 'pry-byebug', '~> 3.0'

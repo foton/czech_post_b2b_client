@@ -32,7 +32,6 @@ module CzechPostB2bClient
       end
 
       def build_result_from(response_hash)
-        puts("RESPONSE_HASH: #{response_hash}")
         result_hash = {}
         response_hash[:parcels].each_pair do |parcel_code, delivering_hash|
           result_hash[parcel_code] = {
@@ -42,7 +41,6 @@ module CzechPostB2bClient
             all_states: delivering_hash[:states]
           }
         end
-        puts("RESULT_HASH: #{result_hash}")
         result_hash
       end
     end

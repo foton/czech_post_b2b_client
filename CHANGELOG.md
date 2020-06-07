@@ -2,6 +2,11 @@
 
 All changes to the gem are documented here.
 
+## [1.2.0] - 2020-06-07
+
+ - **Breaking** Introducing new Printing templates, improved some template names and scopes
+ - Added options `custom_card_number` and `print_options` to `Configuration`
+
 ## [1.1.0] - 2020-05-28
 
  - Introducing new API documentation from Czech Post

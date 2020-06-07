@@ -50,7 +50,7 @@ module CzechPostB2bClient
         new_element('ns2:doPrintingHeader').tap do |printing_header|
           add_element_to(printing_header, 'ns2:customerID', value: options[:customer_id]) # Technologicke cislo podavatele
           add_element_to(printing_header, 'ns2:contractNumber', value: options[:contract_number]) # Nepovine: ID CCK slozky podavatele
-          add_element_to(printing_header, 'ns2:idForm', value: options[:template_id]) # Nepovine[0-20x]: ID formulare
+          add_element_to(printing_header, 'ns2:idForm', value: options[:template_id]) # Nepovine, default 20: ID formulare
           add_element_to(printing_header, 'ns2:shiftHorizontal', value: options[:margin_in_mm][:left]) # Hodnota posunu doprava v mm
           add_element_to(printing_header, 'ns2:shiftVertical', value: options[:margin_in_mm][:top]) # Hodnota posunu dolu v mm
           add_element_to(printing_header, 'ns2:position', value: options[:position_order]) # Nepovinna: Hodnota pozice
