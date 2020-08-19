@@ -74,6 +74,7 @@ module CzechPostB2bClient
           use_ssl: true,
           verify_mode: OpenSSL::SSL::VERIFY_PEER,
           keep_alive_timeout: 30,
+          ciphers: secure_and_available_ciphers,
           cert: OpenSSL::X509::Certificate.new(File.read(configuration.certificate_path)),
           # cert_password: configuration.certificate_password,
           key: OpenSSL::PKey::RSA.new(File.read(configuration.private_key_path), configuration.private_key_password),
@@ -115,6 +116,15 @@ module CzechPostB2bClient
         @result = OpenStruct.new(code: 500, xml: '')
         errors.add(:connection, "#{error.class} > #{service_uri} - #{error}")
         fail!
+      end
+
+      def secure_and_available_ciphers
+        # Available non-weak suites for b2b.postaonline.cz (https://www.ssllabs.com/ssltest/analyze.html?d=b2b.postaonline.cz)
+        # TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (0xc030)   ECDH secp384r1 (eq. 7680 bits RSA)   FS	256
+        # TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (0xc02f)   ECDH secp384r1 (eq. 7680 bits RSA)   FS
+        # which have following names in OpenSSL (see `openssl ciphers`)
+
+        %w[ECDHE-RSA-AES256-GCM-SHA384 ECDHE-RSA-AES128-GCM-SHA256]
       end
     end
   end

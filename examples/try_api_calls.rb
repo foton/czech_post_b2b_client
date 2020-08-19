@@ -10,13 +10,14 @@ require 'pry'
 class TryApiCalls # rubocop:disable Metrics/ClassLength
   attr_accessor :configuration, :processing_end_time_utc, :transaction_id, :parcels
 
-  def run
+  def initialize
     setup_configuration(config_hash)
+  end
 
-    @configuration = CzechPostB2bClient.configuration
+  def run
     @processing_end_time_utc = nil
     @transaction_id = nil
-    import_parcels = :sync # :no, :sync, :async
+    import_parcels = :sync # options: :no, :sync, :async
 
     case import_parcels
     when :async
@@ -43,8 +44,22 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
   end
 
   def download_xsds
-    setup_configuration(config_hash)
-    CzechPostB2bClient::Services::XsdsDownloader.call
+    puts('This do not work, xsds are not public or what')
+    return
+
+    CzechPostB2bClient::Services::XsdsDownloader.call # rubocop:disable Lint/UnreachableCode
+  end
+
+  def print_selected_combinations
+    [
+      ['RR950397329CZ', 74],
+      ['CS229935172CZ', 74],
+      ['CS229890414CZ', 72],
+      ['CS229935209CZ', 41],
+      ['CV200650205CZ', 20],
+      ['RR0305100012L', 58],
+      ['RR0305100026L', 61]
+    ].each { |p_code, t_id| print_template_for_package(t_id, p_code) }
   end
 
   private
@@ -64,7 +79,9 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
   def existing_parcel_codes
     # If Import of parcels do not work for You yet,
     # You can insert parcels in Web PodaniOnline and then use this hack to check some services
-    %w[BA0305100278L BA0305100264L BA0305100255L]
+
+    %w[BA0305100216L RR0305100026L RR0305100012L BB0305100012L
+       BA0305100114L CV200650205CZ CS229935209CZ RR950397329CZ CS229890414CZ CS229935172CZ CS229935169CZ]
   end
 
   def sending_data
@@ -148,6 +165,7 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
         config.send("#{k}=", v)
       end
     end
+    @configuration = CzechPostB2bClient.configuration
   end
 
   def async_import_parcels_data
@@ -210,10 +228,23 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
   end
 
   def print_all_template_sheets_for_parcel_codes
-    CzechPostB2bClient::PrintingTemplates.all_classes.each do |t_klass|
-      puts("printing #{t_klass}")
-      print_address_sheets(print_options.merge(template_id: t_klass.id), false)
-      sleep(1)
+    parcel_codes.each do |parcel_code|
+      CzechPostB2bClient::PrintingTemplates.all_classes.each do |t_klass|
+        print_template_for_package(t_klass.id, parcel_code)
+        sleep 1
+      end
+    end
+  end
+
+  def print_template_for_package(t_klass_id, parcel_code)
+    options = print_options.merge(template_id: t_klass_id, parcel_code: parcel_code)
+    puts "AddressSheetGenerator [#{parcel_code} , #{t_klass_id}] : #{options}"
+    pdf_service = CzechPostB2bClient::Services::AddressSheetsGenerator.call(parcel_codes: [parcel_code],
+                                                                            options: options)
+    if pdf_service.failure?
+      save_as_txt(pdf_service.errors.to_s, options)
+    else
+      save_as_pdf(pdf_service.result.pdf_content, options)
     end
   end
 
@@ -240,13 +271,24 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
     CzechPostB2bClient.logger.debug("[TimePeriodStatisticator] =>  #{statisticator.result}")
   end
 
-  def save_as_pdf(pdf_content, options)
-    def_str = "-template_id_#{options[:template_id]}-"
+  def filename(options)
+    def_str = options[:parcel_code] || parcel_codes.collect { |pc| pc[0..1] }.join('_')
+    def_str += "-template_id_#{options[:template_id]}-"
     def_str += "top_#{options[:margin_in_mm][:top]}-"
     def_str += "left_#{options[:margin_in_mm][:left]}"
-    puts('saving:' + def_str)
-    prefixes = parcel_codes.collect { |pc| pc[0..1] }
-    File.write("#{prefixes.join('_')}#{def_str}.pdf", pdf_content)
+    def_str
+  end
+
+  def save_as_txt(content, options)
+    f_name = filename(options) + '_no_print.txt'
+    puts('saving:' + f_name)
+    File.write(f_name, content)
+  end
+
+  def save_as_pdf(pdf_content, options)
+    f_name = filename(options) + '.pdf'
+    puts('saving:' + f_name)
+    File.write(f_name, pdf_content)
   end
 
   def update_parcels_data_with(updated_parcels_hash)
@@ -351,3 +393,4 @@ end
 
 TryApiCalls.new.run
 # TryApiCalls.new.download_xsds
+# TryApiCalls.new.print_selected_combinations

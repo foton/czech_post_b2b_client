@@ -130,7 +130,9 @@ def full_parcel_data_params
     length: 123,
     width: 231,
     height: 312,
-    mrn_code: '15CZ65000021QMDZN0', # string18, what it is MRN code?
+    mrn_code: '15CZ65000021QMDZN0', # string18, MRN code? => "Cislo z VDD tzn. MRN (movement reference number)"
+                                    # What is VDD? => "Vyvozni doprovodny doklad"
+
     reference_number: 'string30', # cislo jednaci
     pallets_count: 1, # 1-99
     documents_to_sign_count: 'string30', # he?

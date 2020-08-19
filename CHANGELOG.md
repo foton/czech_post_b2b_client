@@ -2,6 +2,12 @@
 
 All changes to the gem are documented here.
 
+## [1.2.2] - 2020-08-19
+
+ - Printing templates now include @page_dimensions
+ - Forced secure SSL ciphers for requests
+ - `examples/try_api_call.rb` refactored to be more versatile (download XSDs [:do not work], pritn_selected_combinations)
+
 ## [1.2.0] - 2020-06-07
 
  - **Breaking** Introducing new Printing templates, improved some template names and scopes

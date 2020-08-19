@@ -1889,7 +1889,8 @@ module CzechPostB2bClient
 
     # must be at end to collect all classes defined before
     def self.all_classes
-      ObjectSpace.each_object(CzechPostB2bClient::ResponseCodes::BaseCode.singleton_class)
+      base_class = CzechPostB2bClient::ResponseCodes::BaseCode
+      ObjectSpace.each_object(base_class.singleton_class).reject { |c| c == base_class }
     end
 
     def self.new_by_code(code)

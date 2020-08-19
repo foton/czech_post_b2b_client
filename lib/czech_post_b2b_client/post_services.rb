@@ -768,7 +768,8 @@ module CzechPostB2bClient
 
     # has to be at the end, to load all subcasses before
     def self.all_classes
-      ObjectSpace.each_object(CzechPostB2bClient::PostServices::Base.singleton_class)
+      base_class = CzechPostB2bClient::PostServices::Base
+      ObjectSpace.each_object(base_class.singleton_class).reject { |c| c == base_class }
     end
   end
 end
