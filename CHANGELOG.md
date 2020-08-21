@@ -2,6 +2,11 @@
 
 All changes to the gem are documented here.
 
+## [1.2.3] - 2020-08-21
+
+ - Corrected order in XML `sequence` elements
+ - Added `schemaLocation` to root element and placed publicly accessible XSDs into Github repo
+
 ## [1.2.2] - 2020-08-19
 
  - Printing templates now include @page_dimensions

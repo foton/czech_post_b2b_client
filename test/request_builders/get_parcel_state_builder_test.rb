@@ -23,7 +23,7 @@ module CzechPostB2bClient
       def expected_xml
         <<~XML
           <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-          <b2bRequest xmlns="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:ns2="https://b2b.postaonline.cz/schema/POLServices-v1">
+          <b2bRequest xmlns=\"https://b2b.postaonline.cz/schema/B2BCommon-v1\" xmlns:ns2=\"https://b2b.postaonline.cz/schema/POLServices-v1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"https://raw.githubusercontent.com/foton/czech_post_b2b_client/master/documents/latest_xsds/B2BCommon.xsd\" xsi:schemaLocation=\"https://b2b.postaonline.cz/schema/POLServices-v1 https://raw.githubusercontent.com/foton/czech_post_b2b_client/master/documents/latest_xsds/B2BPOLServices.xsd\">
             <header>
               <idExtTransaction>#{@request_id}</idExtTransaction>
               <timeStamp>#{@expected_build_time_str}</timeStamp>

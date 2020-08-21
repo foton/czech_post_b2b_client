@@ -102,20 +102,11 @@ module CzechPostB2bClient
       end
 
       def sender_address
-        return nil unless sender_data[:address]
-
-        new_element('ns2:senderAddress').tap do |s_address|
-          add_address_elements(s_address, sender_data[:address], without: ['ns2:firstName', 'ns2:surname'])
-        end
+        add_header_address_element('ns2:senderAddress', sender_data)
       end
 
       def cache_on_delivery_address
-        adr_data = common_data.dig(:cash_on_delivery, :address)
-        return nil unless adr_data
-
-        new_element('ns2:codAddress').tap do |cod_address|
-          add_address_elements(cod_address, adr_data, without: ['ns2:firstName', 'ns2:surname'])
-        end
+        add_header_address_element('ns2:codAddress', common_data[:cash_on_delivery])
       end
 
       def cache_on_delivery_bank
@@ -135,7 +126,7 @@ module CzechPostB2bClient
         end
       end
 
-      def do_parcel_params(parcel_data) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      def do_parcel_params(parcel_data) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
         params = parcel_data[:params]
         cod = parcel_data[:cash_on_delivery] || {}
         new_element('ns2:doParcelParams').tap do |parcel_params|
@@ -185,19 +176,50 @@ module CzechPostB2bClient
         add_parcel_adress_element('ns2:doParcelAddressDocument', parcel_data[:document_addressee])
       end
 
-      def add_parcel_adress_element(element_name, addressee_data) # rubocop:disable Metrics/AbcSize
+      def add_header_address_element(element_name, addressee_data) # rubocop:disable Metrics/AbcSize
         return nil if addressee_data.nil?
 
         address_data = addressee_data[:address]
+
+        new_element(element_name).tap do |do_parcel_address|
+          add_element_to(do_parcel_address, 'ns2:companyName', value: address_data[:company_name]) # Nepovinne: Nazev spolecnosti
+          add_element_to(do_parcel_address, 'ns2:aditionAddress', value: address_data[:addition_to_name]) # Nepovinne: Doplnujici iformace k nazvu podavatele
+          add_element_to(do_parcel_address, 'ns2:street', value: address_data[:street]) # Nepovinne: Ulice
+          add_element_to(do_parcel_address, 'ns2:houseNumber', value: address_data[:house_number]) # Nepovinne: Cislo popisne
+          add_element_to(do_parcel_address, 'ns2:sequenceNumber', value: address_data[:sequence_number]) # Nepovinne: Cislo orientacni
+          add_element_to(do_parcel_address, 'ns2:partCity', value: address_data[:city_part]) # Nepovinne: Cast obce
+          add_element_to(do_parcel_address, 'ns2:city', value: address_data[:city]) # Nepovinne: Obec
+          add_element_to(do_parcel_address, 'ns2:zipCode', value: address_data[:post_code]) # Nepovinne: PSC
+          add_element_to(do_parcel_address, 'ns2:isoCountry', value: address_data[:country_iso_code]) # Nepovinne, default 'CZ': ISO kod zeme
+          add_element_to(do_parcel_address, 'ns2:subIsoCountry', value: address_data[:subcountry_iso_code]) # Nepovinne: ISO kod uzemi
+        end
+      end
+
+      def add_parcel_adress_element(element_name, addressee_data) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+        return nil if addressee_data.nil?
+
+        address_data = addressee_data[:address]
+
         new_element(element_name).tap do |do_parcel_address|
           add_element_to(do_parcel_address, 'ns2:recordID', value: addressee_data[:addressee_id]) # Nepovinne: Interni oznaceni adresata
-
-          add_address_elements(do_parcel_address, address_data) # Nepovinne: Adresa
+          add_element_to(do_parcel_address, 'ns2:firstName', value: address_data[:first_name]) # Nepovinne: Jmeno
+          add_element_to(do_parcel_address, 'ns2:surname', value: address_data[:last_name]) # Nepovinne: Prijmeni
+          add_element_to(do_parcel_address, 'ns2:companyName', value: address_data[:company_name]) # Nepovinne: Nazev spolecnosti
+          add_element_to(do_parcel_address, 'ns2:aditionAddress', value: address_data[:addition_to_name]) # Nepovinne: Doplnujici iformace k nazvu podavatele
 
           add_element_to(do_parcel_address, 'ns2:subject', value: addressee_data[:addressee_type]) # Nepovinne: Typ adresata
           add_element_to(do_parcel_address, 'ns2:ic', value: addressee_data[:ic]) # Nepovinne: ICO
           add_element_to(do_parcel_address, 'ns2:dic', value: addressee_data[:dic]) # Nepovinne: DIC
           add_element_to(do_parcel_address, 'ns2:specification', value: addressee_data[:addressee_specification]) # Nepovinne: Specifikace napr. datum narozeni
+
+          add_element_to(do_parcel_address, 'ns2:street', value: address_data[:street]) # Nepovinne: Ulice
+          add_element_to(do_parcel_address, 'ns2:houseNumber', value: address_data[:house_number]) # Nepovinne: Cislo popisne
+          add_element_to(do_parcel_address, 'ns2:sequenceNumber', value: address_data[:sequence_number]) # Nepovinne: Cislo orientacni
+          add_element_to(do_parcel_address, 'ns2:partCity', value: address_data[:city_part]) # Nepovinne: Cast obce
+          add_element_to(do_parcel_address, 'ns2:city', value: address_data[:city]) # Nepovinne: Obec
+          add_element_to(do_parcel_address, 'ns2:zipCode', value: address_data[:post_code]) # Nepovinne: PSC
+          add_element_to(do_parcel_address, 'ns2:isoCountry', value: address_data[:country_iso_code]) # Nepovinne, default 'CZ': ISO kod zeme
+          add_element_to(do_parcel_address, 'ns2:subIsoCountry', value: address_data[:subcountry_iso_code]) # Nepovinne: ISO kod uzemi
 
           add_bank_elements(do_parcel_address, addressee_data[:bank_account]) # Nepovinne. Kod banky, cislo a predcisli uctu
           add_contact_elements(do_parcel_address, addressee_data) # Nepovinne. Telefon, Mobil a Email
@@ -207,7 +229,6 @@ module CzechPostB2bClient
           (addressee_data[:advice_informations] || []).each_with_index do |adv_info, index|
             add_element_to(do_parcel_address, 'ns2:adviceInformation' + (index + 1).to_s, value: adv_info) # Nepovinne: Informace 1- 6 k dodejce
           end
-
           add_element_to(do_parcel_address, 'ns2:adviceNote', value: addressee_data[:advice_note]) # Nepovinne: Poznamka k dodejce
         end
       end
@@ -278,9 +299,9 @@ module CzechPostB2bClient
           prefix, account, bank = nil
         end
 
+        add_element_to(parent_element, 'ns2:bank', value: bank) # Nepovinne: kod banky
         add_element_to(parent_element, 'ns2:prefixAccount', value: prefix) # Nepovinne: Predcisli k uctu
         add_element_to(parent_element, 'ns2:account', value: account) # Nepovinne: cislo uctu
-        add_element_to(parent_element, 'ns2:bank', value: bank) # Nepovinne: kod banky
       end
 
       def add_contact_elements(parent_element, data_hash)

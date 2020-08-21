@@ -10,6 +10,7 @@ There are these supported operations of API:
 - *getParcelState* - returns all known states for listed parcels [HTTP GET - sync response]
 - *getParcelsPrinting* - returns PDF with address labels/stickers for listed parcels [HTTP GET - sync response]
 
+## Development of this gem is donated by [Squared s.r.o.](https://www.vyvolej.to)
 
 ## Installation
 ### 1) Registration at Czech Post (CP)
@@ -276,6 +277,8 @@ end
   You can quickly check you setup by altering config and run `ruby try_api_calls.rb` see [`try_api_calls.rb`](./examples/try_api_calls.rb).
 
 ## Troubleshooting
+
+  You can validate request XML against XSD in [`documents/latest_xsds`](./documents/latest_xsds) (There are no public  files from Czech Post :-( )
 
   1) Read all stuff in [`./documents`](./documents/) and [Yard docs](./doc/index.html), maybe it helps.
   2) If You get "handshake protocol failed" You do not have correct setup for certificates. If You get any xml response (see logger in debug mode) certificates are ok.

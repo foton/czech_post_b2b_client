@@ -126,7 +126,7 @@ module CzechPostB2bClient
       def expected_xml
         <<~XML
           <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-          <b2bRequest xmlns="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:ns2="https://b2b.postaonline.cz/schema/POLServices-v1">
+          <b2bRequest xmlns=\"https://b2b.postaonline.cz/schema/B2BCommon-v1\" xmlns:ns2=\"https://b2b.postaonline.cz/schema/POLServices-v1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"https://raw.githubusercontent.com/foton/czech_post_b2b_client/master/documents/latest_xsds/B2BCommon.xsd\" xsi:schemaLocation=\"https://b2b.postaonline.cz/schema/POLServices-v1 https://raw.githubusercontent.com/foton/czech_post_b2b_client/master/documents/latest_xsds/B2BPOLServices.xsd\">
             <header>
               <idExtTransaction>#{@request_id}</idExtTransaction>
               <timeStamp>#{@expected_build_time_str}</timeStamp>
@@ -190,6 +190,10 @@ module CzechPostB2bClient
                     <ns2:surname>Nov\xC3\xBD</ns2:surname>
                     <ns2:companyName>Empire observatory</ns2:companyName>
                     <ns2:aditionAddress>state building</ns2:aditionAddress>
+                    <ns2:subject>F</ns2:subject>
+                    <ns2:ic>1234567890</ns2:ic>
+                    <ns2:dic>AB1234567890</ns2:dic>
+                    <ns2:specification>date_of_birth</ns2:specification>
                     <ns2:street>West 34th Street</ns2:street>
                     <ns2:houseNumber>20</ns2:houseNumber>
                     <ns2:sequenceNumber>3</ns2:sequenceNumber>
@@ -198,13 +202,9 @@ module CzechPostB2bClient
                     <ns2:zipCode>10118</ns2:zipCode>
                     <ns2:isoCountry>US</ns2:isoCountry>
                     <ns2:subIsoCountry>US-NY</ns2:subIsoCountry>
-                    <ns2:subject>F</ns2:subject>
-                    <ns2:ic>1234567890</ns2:ic>
-                    <ns2:dic>AB1234567890</ns2:dic>
-                    <ns2:specification>date_of_birth</ns2:specification>
+                    <ns2:bank>2341</ns2:bank>
                     <ns2:prefixAccount>234561</ns2:prefixAccount>
                     <ns2:account>2345678901</ns2:account>
-                    <ns2:bank>2341</ns2:bank>
                     <ns2:mobileNumber>do not have, kidding</ns2:mobileNumber>
                     <ns2:phoneNumber>+1(212)710-1364</ns2:phoneNumber>
                     <ns2:emailAddress>jan.novy@ny.us</ns2:emailAddress>
@@ -223,6 +223,10 @@ module CzechPostB2bClient
                     <ns2:surname>Nov\xC3\xBD</ns2:surname>
                     <ns2:companyName>Empire observatory</ns2:companyName>
                     <ns2:aditionAddress>state building</ns2:aditionAddress>
+                    <ns2:subject>F</ns2:subject>
+                    <ns2:ic>1234567890</ns2:ic>
+                    <ns2:dic>AB1234567890</ns2:dic>
+                    <ns2:specification>date_of_birth</ns2:specification>
                     <ns2:street>West 34th Street</ns2:street>
                     <ns2:houseNumber>20</ns2:houseNumber>
                     <ns2:sequenceNumber>3</ns2:sequenceNumber>
@@ -231,13 +235,9 @@ module CzechPostB2bClient
                     <ns2:zipCode>10118</ns2:zipCode>
                     <ns2:isoCountry>US</ns2:isoCountry>
                     <ns2:subIsoCountry>US-NY</ns2:subIsoCountry>
-                    <ns2:subject>F</ns2:subject>
-                    <ns2:ic>1234567890</ns2:ic>
-                    <ns2:dic>AB1234567890</ns2:dic>
-                    <ns2:specification>date_of_birth</ns2:specification>
+                    <ns2:bank>2341</ns2:bank>
                     <ns2:prefixAccount>234561</ns2:prefixAccount>
                     <ns2:account>2345678901</ns2:account>
-                    <ns2:bank>2341</ns2:bank>
                     <ns2:mobileNumber>do not have, kidding</ns2:mobileNumber>
                     <ns2:phoneNumber>+1(212)710-1364</ns2:phoneNumber>
                     <ns2:emailAddress>jan.novy@ny.us</ns2:emailAddress>
@@ -290,7 +290,7 @@ module CzechPostB2bClient
       def expected_short_xml
         <<~XML
           <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-          <b2bRequest xmlns="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:ns2="https://b2b.postaonline.cz/schema/POLServices-v1">
+          <b2bRequest xmlns=\"https://b2b.postaonline.cz/schema/B2BCommon-v1\" xmlns:ns2=\"https://b2b.postaonline.cz/schema/POLServices-v1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"https://raw.githubusercontent.com/foton/czech_post_b2b_client/master/documents/latest_xsds/B2BCommon.xsd\" xsi:schemaLocation=\"https://b2b.postaonline.cz/schema/POLServices-v1 https://raw.githubusercontent.com/foton/czech_post_b2b_client/master/documents/latest_xsds/B2BPOLServices.xsd\">
             <header>
               <idExtTransaction>#{@request_id}</idExtTransaction>
               <timeStamp>#{@expected_build_time_str}</timeStamp>

@@ -23,14 +23,13 @@ module CzechPostB2bClient
 
       # ours, accessible, but maybe out of date, for test usage
       @namespaces = {
-        'xmlns' => 'https://raw.githubusercontent.com/foton/czech_post_b2b_client/master/documents/B2B_CP_POL_2020-05-21/B2BCommon-v1.1.xsd',
-        'xmlns:ns2' => 'https://raw.githubusercontent.com/foton/czech_post_b2b_client/master/documents/B2B_CP_POL_2020-05-21/B2B-POLServices-v1.8.xsd'
-      }
-      # original, accessible only with setup certificates
-      @namespaces = {
         'xmlns' => 'https://b2b.postaonline.cz/schema/B2BCommon-v1',
-        'xmlns:ns2' => 'https://b2b.postaonline.cz/schema/POLServices-v1'
+        'xmlns:ns2' => 'https://b2b.postaonline.cz/schema/POLServices-v1',
+        'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
+        'xsi:noNamespaceSchemaLocation' => 'https://raw.githubusercontent.com/foton/czech_post_b2b_client/master/documents/latest_xsds/B2BCommon.xsd',
+        'xsi:schemaLocation' => 'https://b2b.postaonline.cz/schema/POLServices-v1 https://raw.githubusercontent.com/foton/czech_post_b2b_client/master/documents/latest_xsds/B2BPOLServices.xsd'
       }
+
       @language = :cs
       @logger = defined?(Rails) ? ::Rails.logger : ::Logger.new(STDOUT)
       @b2b_api_base_uri = 'https://b2b.postaonline.cz/services/POLService/v1'
