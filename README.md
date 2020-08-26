@@ -1,3 +1,40 @@
+
+# FRESH NEWS
+After full usage in production (vyvolej.to, squared.one), we found that Czech POst have trouble with `parcelServiceSync` (maybe `sendParcels` too). When You try to register package with `:customs_documents`, you get `INVALID_BATCH` response with no error, but with `parcelCode`:
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<v1:b2bSyncResponse xmlns:v1="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:v1_1="https://b2b.postaonline.cz/schema/POLServices-v1">
+  <v1:header>
+    <v1:b2bRequestHeader>
+      <v1:idExtTransaction>1</v1:idExtTransaction>
+      <v1:timeStamp>2020-08-22T07:32:20.496Z</v1:timeStamp>
+      <v1:idContract>356936003</v1:idContract>
+    </v1:b2bRequestHeader>
+  </v1:header>
+  <v1:serviceData><v1_1:parcelServiceSyncResponse>
+      <v1_1:responseHeader>
+        <v1_1:resultHeader>
+          <v1_1:responseCode>19</v1_1:responseCode>
+          <v1_1:responseText>BATCH_INVALID</v1_1:responseText>
+        </v1_1:resultHeader>
+        <v1_1:resultParcelData>
+          <v1_1:recordNumber>52427</v1_1:recordNumber>
+          <v1_1:parcelCode>RR950819194CZ</v1_1:parcelCode>
+          <v1_1:parcelDataResponse>
+            <v1_1:responseCode>1</v1_1:responseCode>
+            <v1_1:responseText>OK</v1_1:responseText>
+          </v1_1:parcelDataResponse>
+        </v1_1:resultParcelData>
+      </v1_1:responseHeader>
+    </v1_1:parcelServiceSyncResponse></v1:serviceData>
+</v1:b2bSyncResponse>
+```
+
+*Reality is, that Parcel IS NOT registered!*
+
+They say, that this should be fixed in v1.10 release. But nobody knows, when it will be deployed. And I do not know if there is some public way how to find, which version is now in production.
+
+
 # CzechPostB2bClient
 Accessing B2B API of Czech Post for bulk processing of parcels ("B2B - WS PodáníOnline").
 
