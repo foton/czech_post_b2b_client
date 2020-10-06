@@ -32,7 +32,7 @@ After full usage in production (vyvolej.to, squared.one), we found that Czech PO
 
 *Reality is, that Parcel IS NOT registered!*
 
-They say, that this should be fixed in v1.10 release. But nobody knows, when it will be deployed. And I do not know if there is some public way how to find, which version is now in production.
+They say, that this should be fixed in 2020-10-01 release. But I still can not grab new XSD.
 
 
 # CzechPostB2bClient
