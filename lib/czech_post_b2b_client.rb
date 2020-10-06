@@ -5,6 +5,7 @@ require 'stepped_service'
 
 require 'czech_post_b2b_client/version'
 require 'czech_post_b2b_client/configuration'
+require 'czech_post_b2b_client/logger'
 
 require 'czech_post_b2b_client/b2b_errors'
 require 'czech_post_b2b_client/response_codes'
@@ -26,7 +27,7 @@ module CzechPostB2bClient
   end
 
   def self.logger
-    self.configuration.logger
+    CzechPostB2bClient::Logger.new(self.configuration)
   end
 
   def self.root
