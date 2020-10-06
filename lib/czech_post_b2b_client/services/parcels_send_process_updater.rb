@@ -63,7 +63,7 @@ module CzechPostB2bClient
           response_code = response_state[:code]
           next if response_code == CzechPostB2bClient::ResponseCodes::Ok.code
 
-          errors.add(:parcels, "Parcel[#{parcel_id}] => #{CzechPostB2bClient::ResponseCodes.new_by_code(response_code)}") # rubocop:disable Layout/LineLength
+          errors.add(:parcels, "Parcel[#{parcel_id}] => #{CzechPostB2bClient::ResponseCodes.new_by_code(response_code)}")
         end
       end
     end

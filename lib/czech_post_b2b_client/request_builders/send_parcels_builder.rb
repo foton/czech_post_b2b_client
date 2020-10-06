@@ -35,9 +35,7 @@ module CzechPostB2bClient
          [:customer_id],
          [:sending_post_office_code]].each do |key_chain|
            value = common_data.dig(*key_chain)
-           if value.nil? || value == ''
-             errors.add(:common_data, "Missing value for key { :#{key_chain.join(' => :')} }!")
-           end
+           errors.add(:common_data, "Missing value for key { :#{key_chain.join(' => :')} }!") if value.nil? || value == ''
          end
       end
 

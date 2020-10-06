@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Layout/LineLength
-
 module CzechPostB2bClient
   module RequestBuilders
     class GetParcelsPrintingBuilder < BaseBuilder
@@ -79,5 +77,3 @@ module CzechPostB2bClient
     end
   end
 end
-
-# rubocop:enable Layout/LineLength

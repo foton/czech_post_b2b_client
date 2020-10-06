@@ -48,9 +48,7 @@ module CzechPostB2bClient
         # more parcel_codes for one parcel_id => probably errors
         old_p_code = value[:parcel_code]
         new_p_code = pd_hash[:parcel_code]
-        if old_p_code != new_p_code
-          raise "Two different parcel_codes [#{old_p_code}, #{new_p_code}] for parcel_id:'#{parcel_id}'"
-        end
+        raise "Two different parcel_codes [#{old_p_code}, #{new_p_code}] for parcel_id:'#{parcel_id}'" if old_p_code != new_p_code
 
         value
       end

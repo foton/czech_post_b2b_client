@@ -50,9 +50,7 @@ module CzechPostB2bClient
       end
 
       def response_root_node
-        if response_service_data.keys.include?(response_root_node_name)
-          return response_service_data.dig(response_root_node_name)
-        end
+        return response_service_data.dig(response_root_node_name) if response_service_data.keys.include?(response_root_node_name)
 
         errors.add(:xml, "Cannot find `#{response_root_node_name}` in `serviceData` node.")
         fail_on_structure_parsing

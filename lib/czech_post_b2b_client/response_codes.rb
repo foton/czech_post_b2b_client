@@ -1770,7 +1770,7 @@ module CzechPostB2bClient
       @type = :info
     end
 
-    class InfoMissingPartCityServiceDeliveryOnSundayOrHolidayMayNotBeRealized < CzechPostB2bClient::ResponseCodes::BaseCode # rubocop:disable Layout/LineLength
+    class InfoMissingPartCityServiceDeliveryOnSundayOrHolidayMayNotBeRealized < CzechPostB2bClient::ResponseCodes::BaseCode
       @code = 391
       @text = 'INFO_MISSING_PART_CITY_SERVICE_DELIVERY_ON_SUNDAY/HOLIDAY_MAY_NOT_BE_REALIZED'
       @description = 'Neuvedena část obce - služba Garantovaný čas dodání v Ne/Sv nemusí být realizována'

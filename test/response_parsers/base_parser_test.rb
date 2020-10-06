@@ -32,7 +32,7 @@ module CzechPostB2bClient
       end
 
       def test_sets_current_utc_time_if_response_timestamp_is_not_present
-        get_stats_response_xml = valid_get_stats_response_xml.gsub('<v1:timeStamp>2016-02-25T08:30:03.678Z</v1:timeStamp>', '') # rubocop:disable Layout/LineLength
+        get_stats_response_xml = valid_get_stats_response_xml.gsub('<v1:timeStamp>2016-02-25T08:30:03.678Z</v1:timeStamp>', '')
         utc_time_before_parsing = Time.now.utc
 
         parser = CzechPostB2bClient::ResponseParsers::GetStatsParser.call(xml: get_stats_response_xml)

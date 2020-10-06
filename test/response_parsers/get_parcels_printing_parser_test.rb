@@ -114,8 +114,6 @@ module CzechPostB2bClient
     end
   end
 end
-
-# rubocop:disable Layout/LineLength
 # rubocop:disable Style/AsciiComments
 
 # <complexType name="doPrintingHeaderResult">
@@ -146,4 +144,3 @@ end
 # </complexType>
 
 # rubocop:enable Style/AsciiComments
-# rubocop:enable Layout/LineLength

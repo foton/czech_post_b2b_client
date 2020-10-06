@@ -27,7 +27,6 @@ module CzechPostB2bClient
       @code = 'undefined'
       @message = 'Unspecified B2B error'
 
-
       class << self
         attr_reader :code
       end
