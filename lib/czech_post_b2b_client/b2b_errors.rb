@@ -27,6 +27,7 @@ module CzechPostB2bClient
       @code = 'undefined'
       @message = 'Unspecified B2B error'
 
+
       class << self
         attr_reader :code
       end
@@ -35,12 +36,17 @@ module CzechPostB2bClient
         attr_reader :message
       end
 
+      def initialize(details = '')
+        self.details = details
+      end
+
+      attr_accessor :details
       def code
         self.class.code
       end
 
       def message
-        self.class.message
+        "#{self.class.message} -- #{details}"
       end
     end
 
@@ -94,11 +100,11 @@ module CzechPostB2bClient
       ObjectSpace.each_object(CzechPostB2bClient::B2BErrors::BaseError.singleton_class)
     end
 
-    def self.new_by_code(code)
+    def self.new_by_code(code, details = '')
       klass = all_error_classes.detect { |k| k.code == code }
       raise "B2BError with code: #{code} is unknown!" unless klass
 
-      klass.new
+      klass.new(details)
     end
   end
 end

@@ -71,8 +71,8 @@ module CzechPostB2bClient
       end
 
       def test_it_can_handle_b2b_errors # rubocop:disable  Metrics/AbcSize
-        error = CzechPostB2bClient::B2BErrors::CustomerRequestsCountOverflowError.new
-        fake_response_body = b2b_fault_response_with_error_code(error.code)
+        error = CzechPostB2bClient::B2BErrors::CustomerRequestsCountOverflowError.new('Tooooo much calls')
+        fake_response_body = b2b_fault_response_with_error_code(error)
 
         stub_request(:post, send_parcels_endpoint_url)
           .with(headers: expected_request_headers)
@@ -86,6 +86,7 @@ module CzechPostB2bClient
         assert_equal 200, service.result.code
         assert_equal fake_response_body, service.result.xml
         assert_includes service.errors[:b2b], error.message
+        assert service.errors[:b2b].first.include?(error.details)
       end
 
       def test_it_can_handle_connection_errors
@@ -106,14 +107,15 @@ module CzechPostB2bClient
         end
       end
 
-      def b2b_fault_response_with_error_code(error_code)
+      def b2b_fault_response_with_error_code(error)
         # <v1:B2BFaultMessage xmlns:v1="https://b2b.postaonline.cz/schema/B2BCommon-v1">
 
         <<~XML
           <?xml version="1.0" encoding="UTF-8"?>
           <v1:B2BFaultMessage xmlns:v1="https://raw.githubusercontent.com/foton/czech_post_b2b_client/master/documents/B2B_CP_POL_2020-05-21/B2BCommon-v1.1.xsd">
             <v1:errorDetail>  Error text </v1:errorDetail>
-            <v1:errorCode>#{error_code}</v1:errorCode>
+            <v1:errorCode>#{error.code}</v1:errorCode>
+            <v1:errorDescription>#{error.details}</v1:errorDescription>
           </v1:B2BFaultMessage>
         XML
       end

@@ -27,14 +27,23 @@ class CzechPostB2bClientTest < Minitest::Test
     assert_equal 'Dodejka a do vlastních rukou', service_32.description
   end
 
-  def test_knowns_response_codes
-    all_codes = CzechPostB2bClient::ResponseCodes.all_classes.to_a
+  def test_knowns_all_response_codes
+    assert_equal 276, CzechPostB2bClient::ResponseCodes.all_classes.to_a.size
+  end
 
-    assert_equal 262, all_codes.size
-
-    code_396 = all_codes.detect { |t| t.code == 396 }
+  def test_knows_info_respose_code
+    code_396 = CzechPostB2bClient::ResponseCodes.new_by_code(396)
     assert_equal 'INFO_CANCEL_SERVICE_5C', code_396.text
     assert_equal 'Zrušena služba 5C - neuveden kontaktní údaj adresáta', code_396.description
     assert_equal :info, code_396.type
+    assert_equal '', code_396.details
+  end
+
+  def test_knows_error_respose_code
+    code_420 = CzechPostB2bClient::ResponseCodes.new_by_code(420, 'Chickens are not valid goods')
+    assert_equal 'INVALID_CONTENT_CUSTOM_GOOD', code_420.text
+    assert_equal 'Neplatný popis celního obsahu', code_420.description
+    assert_equal :error, code_420.type
+    assert_equal 'Chickens are not valid goods', code_420.details
   end
 end

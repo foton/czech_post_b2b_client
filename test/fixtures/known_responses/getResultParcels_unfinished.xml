@@ -2,4 +2,5 @@
 <v1:B2BFaultMessage xmlns:v1="https://b2b.postaonline.cz/schema/B2BCommon-v1">
   <v1:errorDetail>UNFINISHED_PROCESS</v1:errorDetail>
   <v1:errorCode>10</v1:errorCode>
+  <v1:errorDescription>Not finshed yet, we are at parcel XXX</v1:errorDescription>
 </v1:B2BFaultMessage>

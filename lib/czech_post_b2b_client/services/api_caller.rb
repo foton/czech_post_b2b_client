@@ -55,7 +55,8 @@ module CzechPostB2bClient
         request = Net::HTTP::Post.new service_uri.request_uri, headers
         request.body = request_xml
 
-        debug_msg = "CzechPost B2B REQUEST: #{request} to #{service_uri.request_uri} with body:\n#{request.body}"
+        debug_msg = "CzechPost B2B REQUEST: #{request} to #{service_uri.request_uri}" \
+                    " with headers: #{headers}\n and body:\n#{request.body}"
         CzechPostB2bClient.logger.debug(debug_msg)
 
         request
@@ -106,7 +107,8 @@ module CzechPostB2bClient
         return 'error code not found in XML' unless error_match
 
         error_code = error_match[1].to_i
-        error = CzechPostB2bClient::B2BErrors.new_by_code(error_code)
+        error_details = result.xml.match(%r{<(?:\w+\:)?errorDescription>(.*)</(?:\w+\:)?errorDescription>})
+        error = CzechPostB2bClient::B2BErrors.new_by_code(error_code, error_details[1])
         return "error code [#{error_code}] is unknown" unless error
 
         error.message

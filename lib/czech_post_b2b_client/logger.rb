@@ -14,7 +14,6 @@ module CzechPostB2bClient
     end
 
     def log(original_level, message)
-      puts("#{message} #{original_level} => #{modified_log_level(original_level)}")
       target_logger.send(modified_log_level(original_level), message)
     end
 
