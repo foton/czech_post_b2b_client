@@ -2,6 +2,10 @@
 
 All changes to the gem are documented here.
 
+## [1.2.4] - 2020-10-06
+
+ - Added `configuration.log_messages_at_least_as` option, to be able debug client behaviour when app log level is higher (eg. production)
+
 ## [1.2.3] - 2020-08-21
 
  - Corrected order in XML `sequence` elements

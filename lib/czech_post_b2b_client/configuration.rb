@@ -16,7 +16,8 @@ module CzechPostB2bClient
                   :logger,
                   :b2b_api_base_uri,
                   :print_options,
-                  :custom_card_number
+                  :custom_card_number,
+                  :log_messages_at_least_as
 
     def initialize
       # set defaults here
@@ -34,6 +35,9 @@ module CzechPostB2bClient
       @logger = defined?(Rails) ? ::Rails.logger : ::Logger.new(STDOUT)
       @b2b_api_base_uri = 'https://b2b.postaonline.cz/services/POLService/v1'
       @sending_post_office_location_number = 1
+
+      # set this to :error in production for API debug logs in production.log
+      @log_messages_at_least_as = :debug # so all logs keeps their level
     end
   end
 end

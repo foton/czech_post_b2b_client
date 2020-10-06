@@ -7,10 +7,6 @@ class CzechPostB2bClientTest < Minitest::Test
     refute_nil ::CzechPostB2bClient::VERSION
   end
 
-  def test_it_does_something_useful
-    assert true
-  end
-
   def test_knows_available_templates
     all_templates = CzechPostB2bClient::PrintingTemplates.all_classes.to_a
 

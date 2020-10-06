@@ -29,7 +29,7 @@ module CzechPostB2bClient
 
       def service_data_struct
         new_element('serviceData').tap do |srv_data|
-          add_element_to(srv_data, send_parcels)
+          add_element_to(srv_data, parcel_service_sync)
         end
       end
 
@@ -65,7 +65,7 @@ module CzechPostB2bClient
         end
       end
 
-      def send_parcels
+      def parcel_service_sync
         new_element('ns2:parcelServiceSyncRequest').tap do |ps_sync_request|
           add_element_to(ps_sync_request, do_parcel_header) # REQUIRED
           add_element_to(ps_sync_request, do_parcel_data) # optional

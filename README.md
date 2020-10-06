@@ -108,6 +108,7 @@ CzechPostB2bClient.configure do |config|
   # config.language => :cs # other languages are not supported now
   # config.logger => ::Rails.logger or ::Logger.new(STDOUT),
   # config.b2b_api_base_uri => 'https://b2b.postaonline.cz/services/POLService/v1'
+  # config.log_messages_at_least_as = :debug
 end
 ```
 
