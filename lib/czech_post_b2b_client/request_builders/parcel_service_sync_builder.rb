@@ -61,36 +61,38 @@ module CzechPostB2bClient
             errors.add(:parcel, "Missing value for key { :#{key_chain.join(' => :')} } for parcel (parcel_id: '#{parcel_id}')!")
           end
         end
+
+        # TODO: check custom goods if present
       end
 
       def parcel_service_sync
         new_element('ns2:parcelServiceSyncRequest').tap do |ps_sync_request|
           add_element_to(ps_sync_request, do_parcel_header) # REQUIRED
-          add_element_to(ps_sync_request, do_parcel_data) # optional
+          add_element_to(ps_sync_request, do_parcel_data) # REQUIRED
         end
       end
 
       def do_parcel_header # rubocop:disable Metrics/AbcSize
         new_element('ns2:doPOLSyncParcelHeader').tap do |parcel_header|
           add_element_to(parcel_header, 'ns2:transmissionDate', value: common_data[:parcels_sending_date].strftime('%d.%m.%Y')) # Predpokladane datum podani (format DD.MM.YYYY !)
-          add_element_to(parcel_header, 'ns2:customerID', value: common_data[:customer_id]) # Technologicke cislo podavatele
+          add_element_to(parcel_header, 'ns2:customerID', value: common_data[:customer_id]) # Nepovinne: Technologicke cislo podavatele
           add_element_to(parcel_header, 'ns2:postCode', value: common_data[:sending_post_office_code]) # PSC podaci posty
           add_element_to(parcel_header, 'ns2:contractNumber', value: common_data[:contract_number]) # Nepovinne: Cislo zakazky
           add_element_to(parcel_header, 'ns2:frankingNumber', value: common_data[:franking_machine_number]) # Nepovinne: Cislo vyplatniho stroje
           add_element_to(parcel_header, 'ns2:transmissionEnd', value: common_data[:close_requests_batch]) # Nepovinna, default true: Indikace zda uzavrit podani, nebo budou jeste nasledovat dalsi requesty pro stejne podani
           add_element_to(parcel_header, 'ns2:locationNumber', value: common_data[:sending_post_office_location_number]) # Nepovinne: cislo podaciho mista (z nastaveni v Podani Online)
           add_element_to(parcel_header, 'ns2:senderCustCardNum', value: sender_data[:custom_card_number]) # Nepovinne: cislo zakaznicke karty odesilatele
-          add_element_to(parcel_header, print_params)
+          add_element_to(parcel_header, print_params) # Nepovinne
         end
       end
 
       def do_parcel_data
         new_element('ns2:doPOLSyncParcelData').tap do |do_parcel_data|
-          add_element_to(do_parcel_data, do_parcel_params)
+          add_element_to(do_parcel_data, do_parcel_params) # 1-5x
           add_element_to(do_parcel_data, do_parcel_address)
-          add_element_to(do_parcel_data, do_parcel_address_document)
-          add_element_to(do_parcel_data, do_parcel_customs_declaration)
-          add_customs_documents_to(do_parcel_data)
+          add_element_to(do_parcel_data, do_parcel_address_document) # 0-1x
+          add_element_to(do_parcel_data, do_parcel_customs_declaration) # 0-1x
+          add_customs_documents_to(do_parcel_data) # 0-3x
         end
       end
 
@@ -221,6 +223,7 @@ module CzechPostB2bClient
           add_element_to(do_p_customs_declaration, 'ns2:customValCur', value: declaration_data[:value_currency_iso_code]) # ISO kod meny celni hodnoty
           add_element_to(do_p_customs_declaration, 'ns2:importerRefNum', value: declaration_data[:importer_reference_number]) # Nepovinne: Cislo dovozce
 
+          # 0-99x
           (declaration_data[:content_descriptions] || []).each do |dsc|
             do_p_customs_declaration << custom_goods_for(dsc)
           end
@@ -242,13 +245,13 @@ module CzechPostB2bClient
 
       def custom_goods_for(description_data)
         new_element('ns2:doPOLParcelCustomsGoods').tap do |do_p_customs_goods|
-          add_element_to(do_p_customs_goods, 'ns2:sequence', value: description_data[:order].to_i) # Nepovinne: Poradi , cisl0 1-20
-          add_element_to(do_p_customs_goods, 'ns2:customCont', value: description_data[:description]) # Nepovinne: Popis zbozi
-          add_element_to(do_p_customs_goods, 'ns2:quantity', value: description_data[:quantity]) # Nepovinne: Mnozstvi
-          add_element_to(do_p_customs_goods, 'ns2:weight', value: description_data[:weight_in_kg]) # Nepovinne: Hmotnost
-          add_element_to(do_p_customs_goods, 'ns2:customVal', value: description_data[:value]) # Nepovinne: Celni hodnota
-          add_element_to(do_p_customs_goods, 'ns2:hsCode', value: description_data[:hs_code]) # Nepovinne: HS kod
-          add_element_to(do_p_customs_goods, 'ns2:iso', value: description_data[:origin_country_iso_code]) # Nepovinne: Zeme puvodu zbozi
+          add_element_to(do_p_customs_goods, 'ns2:sequence', value: description_data[:order].to_i) # Poradi , cisl0 1-20
+          add_element_to(do_p_customs_goods, 'ns2:customCont', value: description_data[:description]) # Popis zbozi
+          add_element_to(do_p_customs_goods, 'ns2:quantity', value: description_data[:quantity]) # Mnozstvi
+          add_element_to(do_p_customs_goods, 'ns2:weight', value: description_data[:weight_in_kg]) # Hmotnost
+          add_element_to(do_p_customs_goods, 'ns2:customVal', value: description_data[:value]) # Celni hodnota
+          add_element_to(do_p_customs_goods, 'ns2:hsCode', value: description_data[:hs_code]) # HS kod
+          add_element_to(do_p_customs_goods, 'ns2:iso', value: description_data[:origin_country_iso_code]) # Zeme puvodu zbozi
         end
       end
 

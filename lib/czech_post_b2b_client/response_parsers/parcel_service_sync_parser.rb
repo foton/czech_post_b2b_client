@@ -44,7 +44,11 @@ module CzechPostB2bClient
 
       def parcel_data_from(rp_hash)
         { parcel_code: rp_hash['parcelCode'],
-          states: [state_hash_from(rp_hash.dig('parcelDataResponse'))] }
+          states: parcel_states_form(rp_hash.dig('parcelDataResponse')) }
+      end
+
+      def parcel_states_form(data_responses)
+        [data_responses].flatten.collect { |data_response| state_hash_from(data_response) }
       end
 
       def print_data_from(print_hash)
@@ -62,7 +66,6 @@ module CzechPostB2bClient
 
       def updated_result_value_for(value, parcel_params_result_hash)
         pd_hash = parcel_data_from(parcel_params_result_hash)
-
         return pd_hash if value.nil?
 
         # merging states

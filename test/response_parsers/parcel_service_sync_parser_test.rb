@@ -18,6 +18,14 @@ module CzechPostB2bClient
         assert_equal expected_failed_batch_struct, parser.result
       end
 
+      def test_it_handles_mixed_errors_in_response
+        parser = CzechPostB2bClient::ResponseParsers::ParcelServiceSyncParser.call(xml: b2b_bad_response_with_tracking_code)
+
+        assert parser.success?
+
+        assert_equal expected_mixed_failed_batch_struct, parser.result
+      end
+
       def expected_ok_struct
         {
           request: { created_at: Time.parse('2020-03-12T10:00:34.573Z'),
@@ -44,12 +52,29 @@ module CzechPostB2bClient
         }
       end
 
+      def expected_mixed_failed_batch_struct
+        {
+          request: { created_at: Time.parse('2020-10-27 10:47:42.401 +0100'),
+                     contract_id: '356936003',
+                     request_id: '1' },
+          response: { created_at: Time.parse('2020-10-27 10:47:44.111 UTC'), state: { code: 19, text: 'BATCH_INVALID' } },
+          parcel: { '62752' => { parcel_code: 'BX0305100675L',
+                                 states: [{ code: 408, text: 'INFO_ADDRESS_WAS_MODIFIED' },
+                                          { code: 310, text: 'INVALID_PREFIX' }],
+                                 printings: nil } }
+        }
+      end
+
       def b2b_ok_response
         fixture_response_xml('parcelServiceSync_ok.xml')
       end
 
       def b2b_bad_response
         fixture_response_xml('parcelServiceSync_with_errors.xml')
+      end
+
+      def b2b_bad_response_with_tracking_code
+        fixture_response_xml('parcelServiceSync_with_errors_2.xml')
       end
     end
   end

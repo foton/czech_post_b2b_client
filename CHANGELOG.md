@@ -2,6 +2,10 @@
 
 All changes to the gem are documented here.
 
+## [1.2.6] - 2020-10-27
+
+ - fixed passing all errors from `parcelsServiceSync` response.
+
 ## [1.2.5] - 2020-10-06
 
  - `errorDescription` from `B2BError` response is now merged into error message.
