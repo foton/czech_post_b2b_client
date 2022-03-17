@@ -2001,6 +2001,13 @@ module CzechPostB2bClient
       @type = :info
     end
 
+    class InfoNonexistingZipCodeWasReplacedByConstant < CzechPostB2bClient::ResponseCodes::BaseCode
+      @code = 429
+      @text = 'INFO_NOTIFICIATON_WAS_MODIFIED'
+      @description = 'Zatím není text, dokumentace je zastaralá: INFO_NOTIFICIATON_WAS_MODIFIED'
+      @type = :info
+    end
+
     # must be at end to collect all classes defined before
     def self.all_classes
       base_class = CzechPostB2bClient::ResponseCodes::BaseCode

@@ -37,6 +37,19 @@ module CzechPostB2bClient
         assert_equal no_parcels_struct, parser.result
       end
 
+      def test_it_handle_fault_response
+        parser = CzechPostB2bClient::ResponseParsers::GetParcelStateParser.call(xml: b2b_no_parcels_response)
+        assert parser.success?, "Failed parser: #{parser.errors}"
+
+        no_parcels_struct = {
+          request: { created_at: Time.parse('2020-03-19T08:40:25.541Z'), contract_id: '25195667001', request_id: '42' },
+          response: { created_at: Time.parse('2020-03-19T09:40:26.099Z') },
+          parcels: {}
+        }
+
+        assert_equal no_parcels_struct, parser.result
+      end
+
       # rubocop:disable Layout/LineLength
       def expected_ok_struct # rubocop:disable Metrics/MethodLength
         {
@@ -256,6 +269,10 @@ module CzechPostB2bClient
 
       def b2b_no_parcels_response
         fixture_response_xml('getParcelState_real_no_parcels.xml')
+      end
+
+      def b2b_overflow_max_count
+        fixture_response_xml('overflow_max_count.xml')
       end
     end
   end
