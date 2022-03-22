@@ -12,6 +12,8 @@ module CzechPostB2bClient
       # we manage these here
       attr_reader :service
 
+      FakeServiceResult = Struct.new(:success?, :failed?, :result, :errors, keyword_init: true)
+
       def api_caller_service_class
         CzechPostB2bClient::Services::ApiCaller
       end
@@ -21,7 +23,7 @@ module CzechPostB2bClient
       end
 
       def fake_api_caller_result
-        OpenStruct.new(code: 200, xml: '<>', error: nil)
+        CzechPostB2bClient::Services::ApiCaller::ApiCallerResult.new(code: 200, xml: '<>')
       end
 
       def fake_response_parser_result_shared_part
@@ -166,12 +168,12 @@ module CzechPostB2bClient
       end
 
       def fake_successful_service(result)
-        OpenStruct.new(success?: true, failed?: false, result: result)
+        FakeServiceResult.new(success?: true, failed?: false, result: result, errors: SteppedService::Errors[])
       end
 
       def fake_failing_service(errors, result = nil)
         err = SteppedService::Errors[errors]
-        OpenStruct.new(success?: false, failed?: true, errors: err, result: result)
+        FakeServiceResult.new(success?: false, failed?: true, errors: err, result: result)
       end
 
       def full_messages_from(err_hash)

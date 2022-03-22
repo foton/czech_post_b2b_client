@@ -5,6 +5,9 @@ module CzechPostB2bClient
     class TimePeriodStatisticator < CzechPostB2bClient::Services::Communicator
       attr_reader :from_date, :to_date
 
+      TimePeriodStatisticatorResult = Struct.new(:requests, :imported_parcels, keyword_init: true)
+      TimePeriodStatisticatorRequestsResult = Struct.new(:total, :with_errors, :successful, keyword_init: true)
+
       def initialize(from_date:, to_date:)
         super()
         @from_date = from_date
@@ -35,10 +38,12 @@ module CzechPostB2bClient
 
       def build_result_from(response_hash)
         imports = response_hash[:imports]
-        OpenStruct.new(requests: OpenStruct.new(total: imports[:requested],
-                                                with_errors: imports[:with_errors],
-                                                successful: imports[:successful]),
-                       imported_parcels: imports[:imported_parcels])
+        TimePeriodStatisticatorResult.new(
+          requests: TimePeriodStatisticatorRequestsResult.new(total: imports[:requested],
+                                                              with_errors: imports[:with_errors],
+                                                              successful: imports[:successful]),
+          imported_parcels: imports[:imported_parcels]
+        )
       end
     end
   end

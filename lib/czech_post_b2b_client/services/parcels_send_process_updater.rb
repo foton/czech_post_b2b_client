@@ -5,6 +5,8 @@ module CzechPostB2bClient
     class ParcelsSendProcessUpdater < CzechPostB2bClient::Services::Communicator
       attr_reader :transaction_id
 
+      ParcelsSendProcessUpdaterResult = Struct.new(:parcels_hash, :state_text, :state_code, keyword_init: true)
+
       def initialize(transaction_id:)
         super()
         @transaction_id = transaction_id
@@ -37,9 +39,11 @@ module CzechPostB2bClient
       end
 
       def build_result_from(response_hash)
-        OpenStruct.new(parcels_hash: response_hash[:parcels],
-                       state_text: response_hash.dig(:response, :state, :text),
-                       state_code: response_hash.dig(:response, :state, :code))
+        ParcelsSendProcessUpdaterResult.new(
+          parcels_hash: response_hash[:parcels],
+          state_text: response_hash.dig(:response, :state, :text),
+          state_code: response_hash.dig(:response, :state, :code)
+        )
       end
 
       def check_for_state_errors

@@ -5,6 +5,8 @@ module CzechPostB2bClient
     class ParcelsAsyncSender < CzechPostB2bClient::Services::Communicator
       attr_reader :sending_data, :parcels
 
+      ParcelsAsyncSenderResult = Struct.new(:transaction_id, :processing_end_expected_at, keyword_init: true)
+
       def initialize(sending_data:, parcels:)
         super()
         @sending_data = sending_data
@@ -46,8 +48,8 @@ module CzechPostB2bClient
       end
 
       def build_result_from(response_hash)
-        OpenStruct.new(transaction_id: response_hash.dig(:async_result, :transaction_id),
-                       processing_end_expected_at: response_hash.dig(:async_result, :processing_end_expected_at))
+        ParcelsAsyncSenderResult.new(transaction_id: response_hash.dig(:async_result, :transaction_id),
+                                     processing_end_expected_at: response_hash.dig(:async_result, :processing_end_expected_at))
       end
     end
   end

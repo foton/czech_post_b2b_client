@@ -18,6 +18,8 @@ module CzechPostB2bClient
         Net::ProtocolError
       ].freeze
 
+      ApiCallerResult = Struct.new(:code, :xml, keyword_init: true)
+
       def initialize(endpoint_path:, xml:)
         super()
         @endpoint_path = endpoint_path
@@ -41,7 +43,7 @@ module CzechPostB2bClient
       def handle_response
         CzechPostB2bClient.logger.debug("CzechPost B2B RESPONSE: #{response} with body:\n#{response.body}")
 
-        @result = ::OpenStruct.new(code: response.code.to_i, xml: response.body)
+        @result = ApiCallerResult.new(code: response.code.to_i, xml: response.body)
         return unless b2b_error?
 
         errors.add(:b2b, b2b_error_text)
@@ -116,7 +118,7 @@ module CzechPostB2bClient
       end
 
       def handle_connection_error(error)
-        @result = OpenStruct.new(code: 500, xml: '')
+        @result = ApiCallerResult.new(code: 500, xml: '')
         errors.add(:connection, "#{error.class} > #{service_uri} - #{error}")
         fail!
       end

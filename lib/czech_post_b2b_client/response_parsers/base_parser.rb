@@ -35,9 +35,9 @@ module CzechPostB2bClient
 
       def build_result
         @result = {
-          request: { created_at: request_data.time_stamp,
-                     contract_id: request_data.id_contract,
-                     request_id: request_data.id_ext_transaction },
+          request: { created_at: request_data[:time_stamp],
+                     contract_id: request_data[:id_contract],
+                     request_id: request_data[:id_ext_transaction] },
           response: { created_at: response_time }
         }
       end
@@ -63,9 +63,9 @@ module CzechPostB2bClient
 
       def request_data
         b2b_request_hash = response_header['b2bRequestHeader']
-        OpenStruct.new(id_ext_transaction: b2b_request_hash['idExtTransaction'].to_s,
-                       time_stamp: Time.parse(b2b_request_hash['timeStamp']),
-                       id_contract: b2b_request_hash['idContract'].to_s)
+        { id_ext_transaction: b2b_request_hash['idExtTransaction'].to_s,
+          time_stamp: Time.parse(b2b_request_hash['timeStamp']),
+          id_contract: b2b_request_hash['idContract'].to_s }
       end
 
       def response_time

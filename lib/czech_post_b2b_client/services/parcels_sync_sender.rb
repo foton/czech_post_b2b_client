@@ -8,6 +8,8 @@ module CzechPostB2bClient
     class ParcelsSyncSender < CzechPostB2bClient::Services::Communicator
       attr_reader :sending_data, :parcels
 
+      ParcelsSyncSenderResult = Struct.new(:parcels_hash, :state_text, :state_code, :pdf_content, keyword_init: true)
+
       def initialize(sending_data:, parcels:)
         super()
         @sending_data = sending_data
@@ -53,10 +55,12 @@ module CzechPostB2bClient
       end
 
       def build_result_from(response_hash)
-        OpenStruct.new(parcels_hash: response_hash[:parcel],
-                       pdf_content: response_hash[:parcel].values.first.dig(:printings, :pdf_content),
-                       state_text: response_hash.dig(:response, :state, :text),
-                       state_code: response_hash.dig(:response, :state, :code))
+        ParcelsSyncSenderResult.new(
+          parcels_hash: response_hash[:parcel],
+          pdf_content: response_hash[:parcel].values.first.dig(:printings, :pdf_content),
+          state_text: response_hash.dig(:response, :state, :text),
+          state_code: response_hash.dig(:response, :state, :code)
+        )
       end
 
       def check_for_state_errors
