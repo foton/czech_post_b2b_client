@@ -2001,10 +2001,45 @@ module CzechPostB2bClient
       @type = :info
     end
 
-    class InfoNonexistingZipCodeWasReplacedByConstant < CzechPostB2bClient::ResponseCodes::BaseCode
+    class InfoService40CanceledDueMissingContactToAddressee < CzechPostB2bClient::ResponseCodes::BaseCode
+      @code = 424
+      @text = 'INFO_CANCEL_SERVICE_40'
+      @description = 'Zrušena služba 40 - neuveden kontaktní údaj adresáta'
+      @type = :info
+    end
+
+    class InfoService29CanceledDueMissingContactToAddressee < CzechPostB2bClient::ResponseCodes::BaseCode
+      @code = 425
+      @text = 'INFO_CANCEL_SERVICE_29'
+      @description = 'Zrušena dopl. sl. 29 – neuveden kontaktní údaj'
+      @type = :info
+    end
+
+    class InfoService40CanceledNotAllowedTogetherWithService29 < CzechPostB2bClient::ResponseCodes::BaseCode
+      @code = 426
+      @text = 'INFO_CANCEL_SERVICE_40'
+      @description = 'Zrušena služba 40 – nepovolena se sl. 29'
+      @type = :info
+    end
+
+    class InfoService40CanceledPackageIsPosteRestante < CzechPostB2bClient::ResponseCodes::BaseCode
+      @code = 427
+      @text = 'INFO_CANCEL_SERVICE_40'
+      @description = 'Zrušena služba 40 – zásilka Poste restante'
+      @type = :info
+    end
+
+    class InfoService7KCancelledNotArrangedForClient < CzechPostB2bClient::ResponseCodes::BaseCode
+      @code = 428
+      @text = 'INFO_CANCEL_SERVICE_7K'
+      @description = 'Zrušena služba 7K - nesjednaná služba pro zákaznické řešení'
+      @type = :info
+    end
+
+    class InfoAvizoServiceAppended < CzechPostB2bClient::ResponseCodes::BaseCode
       @code = 429
       @text = 'INFO_NOTIFICIATON_WAS_MODIFIED'
-      @description = 'Zatím není text, dokumentace je zastaralá: INFO_NOTIFICIATON_WAS_MODIFIED'
+      @description = 'Služba avizování přiřazena dle kontaktních údajů'
       @type = :info
     end
 

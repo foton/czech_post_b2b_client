@@ -28,7 +28,7 @@ class CzechPostB2bClientTest < Minitest::Test
   end
 
   def test_knowns_all_response_codes
-    assert_equal 276, CzechPostB2bClient::ResponseCodes.all_classes.to_a.size
+    assert_equal 282, CzechPostB2bClient::ResponseCodes.all_classes.to_a.size
   end
 
   def test_knows_info_respose_code

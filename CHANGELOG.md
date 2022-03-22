@@ -2,6 +2,9 @@
 
 All changes to the gem are documented here.
 
+## [1.2.8] - 2022-03-22
+ - added new response codes
+
 ## [1.2.6] - 2020-10-27
 
  - fixed passing all errors from `parcelsServiceSync` response.
