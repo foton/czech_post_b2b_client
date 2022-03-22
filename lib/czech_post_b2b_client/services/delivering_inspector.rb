@@ -6,6 +6,7 @@ module CzechPostB2bClient
       attr_reader :parcel_codes
 
       def initialize(parcel_codes:)
+        super()
         @parcel_codes = parcel_codes
       end
 

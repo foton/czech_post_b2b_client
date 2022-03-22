@@ -7,20 +7,20 @@ module CzechPostB2bClient
     class GetParcelsPrintingParser < BaseParser
       def build_result
         super
-        @result[:response][:state] = state_hash_from(printing_response_header_result.dig('doPrintingStateResponse'))
+        @result[:response][:state] = state_hash_from(printing_response_header_result['doPrintingStateResponse'])
         @result[:printings] = { options: options_hash,
                                 pdf_content: pdf_content }
       end
 
       def options_hash
-        options_response = printing_response_header_result.dig('doPrintingHeader')
+        options_response = printing_response_header_result['doPrintingHeader']
         {
-          customer_id: options_response.dig('customerID'),
-          contract_number: options_response.dig('contractNumber'),
-          template_id: options_response.dig('idForm').to_i,
-          margin_in_mm: { top: options_response.dig('shiftVertical').to_i,
-                          left: options_response.dig('shiftHorizontal').to_i },
-          position_order: options_response.dig('position').to_i
+          customer_id: options_response['customerID'],
+          contract_number: options_response['contractNumber'],
+          template_id: options_response['idForm'].to_i,
+          margin_in_mm: { top: options_response['shiftVertical'].to_i,
+                          left: options_response['shiftHorizontal'].to_i },
+          position_order: options_response['position'].to_i
         }
       end
 
@@ -36,7 +36,7 @@ module CzechPostB2bClient
       end
 
       def printing_response_header_result
-        response_root_node.dig('doPrintingHeaderResult')
+        response_root_node['doPrintingHeaderResult']
       end
     end
   end

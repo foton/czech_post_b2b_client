@@ -6,6 +6,7 @@ module CzechPostB2bClient
       attr_reader :from_date, :to_date
 
       def initialize(from_date:, to_date:)
+        super()
         @from_date = from_date
         @to_date = to_date
       end

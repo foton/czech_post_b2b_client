@@ -2,6 +2,7 @@ require:
 # rubocop-minitest
 
 AllCops:
+  NewCops: enable
   Include:
     - "**/Gemfile"
     - "**/Rakefile"

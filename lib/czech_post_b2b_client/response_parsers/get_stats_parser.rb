@@ -13,10 +13,10 @@ module CzechPostB2bClient
 
       def imports
         imports_hash = response_root_node
-        OpenStruct.new(all: imports_hash.dig('importAll').to_i,
-                       err: imports_hash.dig('importErr').to_i,
-                       ok: imports_hash.dig('importOk').to_i,
-                       parcels: imports_hash.dig('parcels').to_i)
+        OpenStruct.new(all: imports_hash['importAll'].to_i,
+                       err: imports_hash['importErr'].to_i,
+                       ok: imports_hash['importOk'].to_i,
+                       parcels: imports_hash['parcels'].to_i)
       end
 
       def response_root_node_name

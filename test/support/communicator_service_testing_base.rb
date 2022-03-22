@@ -166,12 +166,12 @@ module CzechPostB2bClient
       end
 
       def fake_successful_service(result)
-        OpenStruct.new('success?': true, 'failed?': false, result: result)
+        OpenStruct.new(success?: true, failed?: false, result: result)
       end
 
       def fake_failing_service(errors, result = nil)
         err = SteppedService::Errors[errors]
-        OpenStruct.new('success?': false, 'failed?': true, errors: err, result: result)
+        OpenStruct.new(success?: false, failed?: true, errors: err, result: result)
       end
 
       def full_messages_from(err_hash)

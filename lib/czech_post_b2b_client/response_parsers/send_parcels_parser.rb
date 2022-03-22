@@ -7,8 +7,8 @@ module CzechPostB2bClient
         super
 
         @result[:async_result] = {
-          transaction_id: response_header.dig('idTransaction'),
-          processing_end_expected_at: parse_time_with_correction(response_header.dig('timeStampProcessing'))
+          transaction_id: response_header['idTransaction'],
+          processing_end_expected_at: parse_time_with_correction(response_header['timeStampProcessing'])
         }
       end
 

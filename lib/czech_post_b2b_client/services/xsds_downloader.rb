@@ -6,7 +6,9 @@ require 'net/http'
 module CzechPostB2bClient
   module Services
     class XsdsDownloader < ApiCaller
-      def initialize(_anything); end
+      def initialize(_anything)
+        super()
+      end
 
       def steps
         %i[download_xsds]

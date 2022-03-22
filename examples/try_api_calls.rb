@@ -149,7 +149,7 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
       {
         parcel_code: pcode,
         addressee: 'not set',
-        params: { parcel_id: 'ex' + pcode,
+        params: { parcel_id: "ex#{pcode}",
                   parcel_code_prefix: pcode[0..1] }
       }
     end
@@ -216,7 +216,9 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
     CzechPostB2bClient.logger.debug("[ParcelsSendProcessUpdater] => parcel_codes: #{parcel_codes}")
   end
 
-  def print_address_sheets(options, raise_on_failure = true)
+  def print_address_sheets(options)
+    raise_on_failure = options[:raise_on_failure] || true
+
     pdf_service = CzechPostB2bClient::Services::AddressSheetsGenerator.call(parcel_codes: parcel_codes,
                                                                             options: options)
 
@@ -280,14 +282,14 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
   end
 
   def save_as_txt(content, options)
-    f_name = filename(options) + '_no_print.txt'
-    puts('saving:' + f_name)
+    f_name = "#{filename(options)}_no_print.txt"
+    puts("saving: #{f_name}")
     File.write(f_name, content)
   end
 
   def save_as_pdf(pdf_content, options)
-    f_name = filename(options) + '.pdf'
-    puts('saving:' + f_name)
+    f_name = "#{filename(options)}.pdf"
+    puts("saving: #{f_name}")
     File.write(f_name, pdf_content)
   end
 

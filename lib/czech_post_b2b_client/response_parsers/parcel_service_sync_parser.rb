@@ -35,7 +35,7 @@ module CzechPostB2bClient
       end
 
       def response_print_hash
-        response_root_node.dig('responsePrintParams')
+        response_root_node['responsePrintParams']
       end
 
       def parcel_parcel_id_from(rp_hash)
@@ -44,7 +44,7 @@ module CzechPostB2bClient
 
       def parcel_data_from(rp_hash)
         { parcel_code: rp_hash['parcelCode'],
-          states: parcel_states_form(rp_hash.dig('parcelDataResponse')) }
+          states: parcel_states_form(rp_hash['parcelDataResponse']) }
       end
 
       def parcel_states_form(data_responses)
@@ -54,8 +54,8 @@ module CzechPostB2bClient
       def print_data_from(print_hash)
         return nil if print_hash.nil? || print_hash.empty?
 
-        { pdf_content: pdf_content_from(print_hash.dig('file')),
-          state: state_hash_from(print_hash.dig('printParamsResponse')) }
+        { pdf_content: pdf_content_from(print_hash['file']),
+          state: state_hash_from(print_hash['printParamsResponse']) }
       end
 
       def pdf_content_from(pdf_content_encoded)

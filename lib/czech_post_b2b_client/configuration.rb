@@ -32,7 +32,7 @@ module CzechPostB2bClient
       }
 
       @language = :cs
-      @logger = defined?(Rails) ? ::Rails.logger : ::Logger.new(STDOUT)
+      @logger = defined?(Rails) ? ::Rails.logger : ::Logger.new($stdout)
       @b2b_api_base_uri = 'https://b2b.postaonline.cz/services/POLService/v1'
       @sending_post_office_location_number = 1
 

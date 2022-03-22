@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/AsciiComments, Layout/LineLength
+# rubocop:disable Layout/LineLength
 
 # response <B2BFaultMessage>
 # Chybový kód | Detail chyby            | Popis
@@ -36,10 +36,12 @@ module CzechPostB2bClient
       end
 
       def initialize(details = '')
+        super
         self.details = details
       end
 
       attr_accessor :details
+
       def code
         self.class.code
       end
@@ -108,4 +110,4 @@ module CzechPostB2bClient
   end
 end
 
-# rubocop:enable Style/AsciiComments, Layout/LineLength
+# rubocop:enable Layout/LineLength

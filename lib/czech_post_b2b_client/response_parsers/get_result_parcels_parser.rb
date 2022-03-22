@@ -25,7 +25,7 @@ module CzechPostB2bClient
       end
 
       def response_parcel_hashes
-        [response_root_node.dig('doParcelParamResult')].flatten.compact # to always get array of hash(es)
+        [response_root_node['doParcelParamResult']].flatten.compact # to always get array of hash(es)
       end
 
       def parcel_parcel_id_from(rp_hash)
@@ -34,7 +34,7 @@ module CzechPostB2bClient
 
       def parcel_data_from(rp_hash)
         { parcel_code: rp_hash['parcelCode'],
-          states: [state_hash_from(rp_hash.dig('doParcelStateResponse'))] }
+          states: [state_hash_from(rp_hash['doParcelStateResponse'])] }
       end
 
       def updated_result_value_for(value, parcel_params_result_hash)

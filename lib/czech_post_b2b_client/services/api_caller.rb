@@ -19,6 +19,7 @@ module CzechPostB2bClient
       ].freeze
 
       def initialize(endpoint_path:, xml:)
+        super()
         @endpoint_path = endpoint_path
         @request_xml = xml
       end
@@ -102,12 +103,12 @@ module CzechPostB2bClient
       end
 
       def b2b_error_text
-        err_code_without_namespace_regexp = %r{<(?:\w+\:)?errorCode>(\d+)</(?:\w+\:)?errorCode>}
+        err_code_without_namespace_regexp = %r{<(?:\w+:)?errorCode>(\d+)</(?:\w+:)?errorCode>}
         error_match = result.xml.match(err_code_without_namespace_regexp)
         return 'error code not found in XML' unless error_match
 
         error_code = error_match[1].to_i
-        error_details = result.xml.match(%r{<(?:\w+\:)?errorDescription>(.*)</(?:\w+\:)?errorDescription>})
+        error_details = result.xml.match(%r{<(?:\w+:)?errorDescription>(.*)</(?:\w+:)?errorDescription>})
         error = CzechPostB2bClient::B2BErrors.new_by_code(error_code, error_details[1])
         return "error code [#{error_code}] is unknown" unless error
 

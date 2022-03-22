@@ -6,7 +6,7 @@ module CzechPostB2bClient
       attr_reader :sending_data
 
       def initialize(sending_data:)
-        @sending_data = sending_data
+        super(sending_data: sending_data, parcels: [])
       end
 
       private

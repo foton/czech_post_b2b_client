@@ -24,6 +24,7 @@ module CzechPostB2bClient
       end
 
       attr_reader :details
+
       def initialize(details = '')
         @details = details
       end

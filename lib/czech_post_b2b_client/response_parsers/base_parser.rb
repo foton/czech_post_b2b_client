@@ -6,6 +6,7 @@ module CzechPostB2bClient
   module ResponseParsers
     class BaseParser < SteppedService::Base
       def initialize(xml:)
+        super()
         @response_xml = xml
       end
 
@@ -42,33 +43,33 @@ module CzechPostB2bClient
       end
 
       def response_service_data
-        b2b_response_hash.dig('serviceData')
+        b2b_response_hash['serviceData']
       end
 
       def response_header
-        b2b_response_hash.dig('header')
+        b2b_response_hash['header']
       end
 
       def response_root_node
-        return response_service_data.dig(response_root_node_name) if response_service_data.keys.include?(response_root_node_name)
+        return response_service_data[response_root_node_name] if response_service_data.keys.include?(response_root_node_name)
 
         errors.add(:xml, "Cannot find `#{response_root_node_name}` in `serviceData` node.")
         fail_on_structure_parsing
       end
 
       def b2b_response_hash
-        response_hash.dig('b2bSyncResponse') || response_hash.dig('b2bASyncResponse')
+        response_hash['b2bSyncResponse'] || response_hash['b2bASyncResponse']
       end
 
       def request_data
-        b2b_request_hash = response_header.dig('b2bRequestHeader')
-        OpenStruct.new(id_ext_transaction: b2b_request_hash.dig('idExtTransaction').to_s,
-                       time_stamp: Time.parse(b2b_request_hash.dig('timeStamp')),
-                       id_contract: b2b_request_hash.dig('idContract').to_s)
+        b2b_request_hash = response_header['b2bRequestHeader']
+        OpenStruct.new(id_ext_transaction: b2b_request_hash['idExtTransaction'].to_s,
+                       time_stamp: Time.parse(b2b_request_hash['timeStamp']),
+                       id_contract: b2b_request_hash['idContract'].to_s)
       end
 
       def response_time
-        Time.parse(response_header.dig('timeStamp'))
+        Time.parse(response_header['timeStamp'])
       rescue TypeError
         Time.now.utc
       end
@@ -87,7 +88,7 @@ module CzechPostB2bClient
       end
 
       def handle_result_building_error(error)
-        @result = { result_builder_error: error.message + ' at line: ' + error.backtrace.first,
+        @result = { result_builder_error: "#{error.message} at line: #{error.backtrace.first}",
                     response_hash: response_hash }
         fail_on_structure_parsing
       end

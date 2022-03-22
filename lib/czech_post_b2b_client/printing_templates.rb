@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/AsciiComments
-
 # Available printing templates, which can be used in AdressSheetsGenerator `options[:template_id]`
 #
 # Do not miss `CzechPostB2bClient::PrintingTemplates.all_classes` method,
@@ -261,5 +259,3 @@ module CzechPostB2bClient
     end
   end
 end
-
-# rubocop:enable Style/AsciiComments

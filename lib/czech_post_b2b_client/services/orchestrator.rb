@@ -11,7 +11,7 @@ module CzechPostB2bClient
         service = service_class.call(service_hash.values.first)
 
         if service.failed?
-          errors.add_from_hash(Hash[service_name, service.errors.full_messages])
+          errors.add_from_hash({ service_name => service.errors.full_messages })
           fail!
         end
 

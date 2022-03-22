@@ -21,7 +21,7 @@ module CzechPostB2bClient
       def response_parcel_hashes
         return [] if response_root_node.nil?
 
-        [response_root_node.dig('parcel')].flatten.compact # to always get array of hash(es)
+        [response_root_node['parcel']].flatten.compact # to always get array of hash(es)
       end
 
       def parcel_data_from(rp_hash) # rubocop:disable Metrics/AbcSize

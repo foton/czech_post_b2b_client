@@ -114,7 +114,6 @@ module CzechPostB2bClient
     end
   end
 end
-# rubocop:disable Style/AsciiComments
 
 # <complexType name="doPrintingHeaderResult">
 #  <annotation>
@@ -142,5 +141,3 @@ end
 #    </element>
 #  </sequence>
 # </complexType>
-
-# rubocop:enable Style/AsciiComments

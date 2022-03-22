@@ -10,6 +10,7 @@ module CzechPostB2bClient
       TIME_FORMAT = '%FT%T.%L%:z' # '2014-03-12T13:33:34.573+01:00'
 
       def initialize(request_id: 1)
+        super()
         @request_id = request_id
       end
 

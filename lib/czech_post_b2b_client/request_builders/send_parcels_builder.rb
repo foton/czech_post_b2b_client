@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Layout/LineLength, Style/AsciiComments
+# rubocop:disable Layout/LineLength
 
 module CzechPostB2bClient
   module RequestBuilders
@@ -8,6 +8,7 @@ module CzechPostB2bClient
       attr_reader :common_data, :parcels
 
       def initialize(common_data:, parcels:, request_id: 1)
+        super()
         @common_data = common_data
         @parcels = parcels
         @request_id = request_id
@@ -225,7 +226,7 @@ module CzechPostB2bClient
           add_element_to(do_parcel_address, 'ns2:custCardNum', value: addressee_data[:custom_card_number]) # Nepovinne: cislo zakaznicke karty
 
           (addressee_data[:advice_informations] || []).each_with_index do |adv_info, index|
-            add_element_to(do_parcel_address, 'ns2:adviceInformation' + (index + 1).to_s, value: adv_info) # Nepovinne: Informace 1- 6 k dodejce
+            add_element_to(do_parcel_address, "ns2:adviceInformation#{index + 1}", value: adv_info) # Nepovinne: Informace 1- 6 k dodejce
           end
           add_element_to(do_parcel_address, 'ns2:adviceNote', value: addressee_data[:advice_note]) # Nepovinne: Poznamka k dodejce
         end
@@ -263,9 +264,7 @@ module CzechPostB2bClient
         return if address_data.nil?
 
         address_tags_and_values(address_data).each_pair do |xml_tag, value|
-          unless without.include?(xml_tag)
-            add_element_to(parent_element, xml_tag, value: value) unless value.nil?
-          end
+          add_element_to(parent_element, xml_tag, value: value) if !without.include?(xml_tag) && !value.nil?
         end
       end
 
@@ -289,7 +288,7 @@ module CzechPostB2bClient
       def add_bank_elements(parent_element, bank_account)
         return if bank_account.to_s == ''
 
-        if (m = bank_account.match(%r{(?:(\d+)-)?(\d+)\/(\d+)}))
+        if (m = bank_account.match(%r{(?:(\d+)-)?(\d+)/(\d+)}))
           prefix = m[1]
           account = m[2]
           bank = m[3]
@@ -315,4 +314,4 @@ module CzechPostB2bClient
   end
 end
 
-# rubocop:enable Layout/LineLength, Style/AsciiComments
+# rubocop:enable Layout/LineLength

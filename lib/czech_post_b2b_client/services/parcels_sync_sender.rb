@@ -9,6 +9,7 @@ module CzechPostB2bClient
       attr_reader :sending_data, :parcels
 
       def initialize(sending_data:, parcels:)
+        super()
         @sending_data = sending_data
         @parcels = parcels
       end

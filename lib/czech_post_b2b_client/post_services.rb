@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Layout/LineLength, Style/AsciiComments
+# rubocop:disable Layout/LineLength
 
 # Hopefully complete list of services which can be assigned to parcels
 # It is hard to get list of current services and even harder to find out what does they mean (so You pick right name in English).
@@ -84,6 +84,7 @@ module CzechPostB2bClient
       @description = 'Cenný obsah'
       # ; Balík Do ruky (DR, DV, DE) ; Balík Na poštu (NP, NV) |
     end
+
     class EconomyDelivery < Base
       @code = '1K'
       @abbreviation = 'EK'
@@ -774,4 +775,4 @@ module CzechPostB2bClient
   end
 end
 
-# rubocop:enable Layout/LineLength, Style/AsciiComments
+# rubocop:enable Layout/LineLength

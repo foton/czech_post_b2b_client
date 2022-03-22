@@ -43,7 +43,7 @@ module Minitest
       end
 
       def rerun_message_for(test)
-        file_path = location(test.failure).gsub(/(\:\d*)\z/, '')
+        file_path = location(test.failure).gsub(/(:\d*)\z/, '')
         msg = "#{@rerun_user_prefix} rake test TEST=#{file_path} TESTOPTS=\"--name=#{test.name} -v\""
         if test.skipped?
           "Skipped: \n#{msg}"
@@ -61,7 +61,7 @@ module Minitest
           break if ss.match?(/in .(assert|refute|flunk|pass|fail|raise|must|wont)/)
 
           last_before_assertion = ss
-          break if ss.match?(/_test.rb\:/)
+          break if ss.match?(/_test.rb:/)
         end
 
         last_before_assertion.sub(/:in .*$/, '')
