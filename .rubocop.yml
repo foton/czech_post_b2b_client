@@ -13,7 +13,10 @@ AllCops:
     - "**/*.jb"
   Exclude:
     - "bin/*"
-Documentation:
+    - "documents/**/*"
+    - "test/fixtures/**/*"
+
+Style/Documentation:
   Enabled: false
 Layout/LineLength:
   Max: 140

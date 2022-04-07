@@ -1,5 +1,11 @@
 
 # FRESH NEWS
+7.4.2022
+Finally there is some online documentation about nAPI of Czech post (https://www.ceskaposta.cz/napi/b2b)
+Not yet checked  if this is the same api we use or new one. Seems that authorization is different.
+
+
+26.8.2020
 After full usage in production (vyvolej.to, squared.one), we found that Czech POst have trouble with `parcelServiceSync` (maybe `sendParcels` too). When You try to register package with `:customs_documents`, you get `INVALID_BATCH` response with no error, but with `parcelCode`:
 ```
 <?xml version="1.0" encoding="UTF-8"?>

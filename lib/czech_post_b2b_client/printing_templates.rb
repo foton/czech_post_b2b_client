@@ -9,6 +9,10 @@ module CzechPostB2bClient
     class Base
       class << self
         attr_reader :id, :description, :page_dimensions
+
+        def content_type
+          :pdf
+        end
       end
     end
 
@@ -132,12 +136,6 @@ module CzechPostB2bClient
       @page_dimensions = 'unverified'
     end
 
-    class CODVoucherForCSOB < Base
-      @id = 13
-      @description = 'Dobírková složenka ČSOB'
-      @page_dimensions = 'unverified'
-    end
-
     class RRLabels3x8 < Base
       @id = 26
       @description = 'štítky pro RR : 3x8'
@@ -175,29 +173,23 @@ module CzechPostB2bClient
         @page_dimensions = 'A5 landscape (210 × 148 mm)'
       end
 
-      class CN22FourOnPage < Base
-        @id = 74
-        @description = 'Celní prohlášení CN22 : 4x (A4)'
-        @page_dimensions = 'unverified A4'
-      end
+      # class CN22FourOnPage < Base
+      #   @id = 74
+      #   @description = 'Celní prohlášení CN22 : 4x (A4)'
+      #   @page_dimensions = 'unverified A4'
+      # end
 
-      class CN22WithCK < Base
-        @id = 75
-        @description = 'Celní prohlášení CN22 s ČK (A4)'
-        @page_dimensions = 'unverified A4'
-      end
+      # class CN22WithCK < Base
+      #   @id = 75
+      #   @description = 'Celní prohlášení CN22 s ČK (A4)'
+      #   @page_dimensions = 'unverified A4'
+      # end
 
-      class CN22WithCKFourOnPage < Base
-        @id = 76
-        @description = 'Celní prohlášení CN22 s ČK : 4x (A4)'
-        @page_dimensions = 'unverified A4'
-      end
-    end
-
-    class CN22FourOnPage < Base
-      @id = 74
-      @description = 'Celní prohlášení CN22 : 4x'
-      @page_dimensions = 'A4 portrait (210 × 297 mm)'
+      # class CN22WithCKFourOnPage < Base
+      #   @id = 76
+      #   @description = 'Celní prohlášení CN22 s ČK : 4x (A4)'
+      #   @page_dimensions = 'unverified A4'
+      # end
     end
 
     module HarmonizedLabel
@@ -232,20 +224,28 @@ module CzechPostB2bClient
         @description = 'Harmonizovaný štítek bianco - na výšku'
         @page_dimensions = 'A6 landscape (148 × 105 mm)'
       end
+    end
 
-      class ZebraBianco105x148 < Base
+    module ZebraLabel
+      class Base < CzechPostB2bClient::PrintingTemplates::Base
+        def self.content_type
+          :zpl
+        end
+      end
+
+      class Bianco105x148 < ZebraLabel::Base
         @id = 200
         @description = 'Harmonizovaný štítek bianco - (Zebra - 105x148); nejde o PDF'
         @page_dimensions = 'unverified 105 × 148 mm'
       end
 
-      class ZebraBianco100x150 < Base
+      class Bianco100x150 < ZebraLabel::Base
         @id = 201
         @description = 'Harmonizovaný štítek bianco - (Zebra - 100x150); nejde o PDF'
         @page_dimensions = 'unverified 100 × 150 mm'
       end
 
-      class ZebraBianco100x125 < Base
+      class Bianco100x125 < ZebraLabel::Base
         @id = 202
         @description = 'Harmonizovaný štítek bianco - (Zebra - 100x125); nejde o PDF'
         @page_dimensions = 'unverified 100 × 125 mm'
@@ -256,6 +256,13 @@ module CzechPostB2bClient
     def self.all_classes
       base_class = CzechPostB2bClient::PrintingTemplates::Base
       ObjectSpace.each_object(base_class.singleton_class).reject { |c| c == base_class }
+    end
+
+    def self.find(id)
+      klass = all_classes.detect { |k| k.id == id }
+      raise "PrintingTemplate with id: #{id}  is unknown!" unless klass
+
+      klass
     end
   end
 end

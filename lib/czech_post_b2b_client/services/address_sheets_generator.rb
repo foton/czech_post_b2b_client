@@ -5,7 +5,7 @@ module CzechPostB2bClient
     class AddressSheetsGenerator < CzechPostB2bClient::Services::Communicator
       attr_reader :parcel_codes, :options
 
-      AddressSheetsGeneratorResult = Struct.new(:pdf_content, :state_text, :state_code, keyword_init: true)
+      AddressSheetsGeneratorResult = Struct.new(:pdf_content, :zpl_content, :state_text, :state_code, keyword_init: true)
 
       def initialize(parcel_codes:, options: {})
         super()
@@ -41,6 +41,7 @@ module CzechPostB2bClient
 
       def build_result_from(response_hash)
         AddressSheetsGeneratorResult.new(pdf_content: response_hash.dig(:printings, :pdf_content),
+                                         zpl_content: response_hash.dig(:printings, :zpl_content),
                                          state_text: response_hash.dig(:response, :state, :text),
                                          state_code: response_hash.dig(:response, :state, :code))
       end

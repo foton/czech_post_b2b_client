@@ -130,7 +130,7 @@ module CzechPostB2bClient
 
       def allowed_template_ids
         # see CzechPostB2bClient::PrintingTemplates
-        [7, 8, 10, 11, 12, 13, 20, 21, 22, 23, 24, 25, 26, 38, 39, 40, 41, 56, 57, 58, 59, 60, 61, 62, 63, 72, 73]
+        [7, 8, 10, 11, 12, 20, 21, 22, 23, 24, 25, 26, 38, 39, 40, 41, 56, 57, 58, 59, 60, 61, 62, 63, 72, 73]
       end
     end
   end

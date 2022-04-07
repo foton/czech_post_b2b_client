@@ -2,8 +2,14 @@
 
 All changes to the gem are documented here.
 
+## [1.3.0] - 2022-04-07
+ - checked currently available  Print Templates codes
+ - enhanced address sheet printing with ability to print ZPL sheets (templates 200, 201 and 202).
+   Result of `AddressSheetGenerator` now have `pdf_content` and `zpl_content`.
+ - found new(?) API from Czech Post , see `documents/B2B-ZSKService-1.4.0.yaml` and https://www.ceskaposta.cz/napi/b2b.
+
 ## [1.2.8] - 2022-03-22
- - added new response codes
+  - added new response codes
 
 ## [1.2.6] - 2020-10-27
 

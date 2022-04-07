@@ -14,15 +14,30 @@ module CzechPostB2bClient
         compare_structs(expected_ok_struct, parser.result)
       end
 
-      def test_it_parses_real_response_to_correct_structure
-        parser = CzechPostB2bClient::ResponseParsers::GetParcelsPrintingParser.call(xml: b2b_real_response)
+      def test_it_parses_real_pdf_response_to_correct_structure
+        parser = CzechPostB2bClient::ResponseParsers::GetParcelsPrintingParser.call(xml: b2b_real_pdf_response)
 
         assert parser.success?
 
-        expected_struct = expected_ok_real_struct
+        expected_struct = expected_ok_real_pdf_struct
         result_struct = parser.result
         # pdf_file_content = result_struct[:printings][:pdf_content]
         # File.write('address_sheets.pdf', pdf_file_content)
+
+        compare_structs(expected_struct, result_struct)
+      end
+
+      def test_it_parses_real_zpl_response_to_correct_structure
+        parser = CzechPostB2bClient::ResponseParsers::GetParcelsPrintingParser.call(xml: b2b_real_zpl_response)
+
+        assert parser.success?, parser.errors
+
+        expected_struct = expected_ok_real_zpl_struct
+        result_struct = parser.result
+
+        puts parser.result
+        # zpl_file_content = result_struct[:printings][:zpl_content]
+        # File.write('address_sheets.zpl', zpl_file_content)
 
         compare_structs(expected_struct, result_struct)
       end
@@ -34,11 +49,19 @@ module CzechPostB2bClient
         compare_structs(expected_real_wrong_combination_struct, parser.result)
       end
 
-      def compare_structs(expected_struct, actual_struct)
+      def compare_structs(expected_struct, actual_struct) # rubocop:disable Metrics/AbcSize
         if expected_struct[:printings][:pdf_content] == DO_NOT_CHECK
           expected_struct[:printings].delete(:pdf_content)
           actual_struct[:printings].delete(:pdf_content)
         end
+
+        if expected_struct[:printings][:zpl_content] == DO_NOT_CHECK
+          expected_struct[:printings].delete(:zpl_content)
+          actual_struct[:printings].delete(:zpl_content)
+        end
+
+        assert_equal expected_struct[:printings][:zpl_content], actual_struct[:printings][:zpl_content]
+        assert_equal expected_struct[:printings][:pdf_content], actual_struct[:printings][:pdf_content]
         assert_equal expected_struct, actual_struct
       end
 
@@ -61,7 +84,7 @@ module CzechPostB2bClient
         }
       end
 
-      def expected_ok_real_struct
+      def expected_ok_real_pdf_struct
         {
           printings: {
             options: {
@@ -77,6 +100,25 @@ module CzechPostB2bClient
                      contract_id: '25195667001',
                      request_id: '1' },
           response: { created_at: Time.parse('2020-03-17T09:58:05.529Z'), state: { code: 1, text: 'OK' } }
+        }
+      end
+
+      def expected_ok_real_zpl_struct
+        {
+          printings: {
+            options: {
+              customer_id: 'L03051',
+              contract_number: '356936003',
+              template_id: 201, # 'Harmonizovaný štítek bianco - (Zebra - 100x150); nejde o PDF'
+              margin_in_mm: { top: 0, left: 0 },
+              position_order: 0
+            },
+            zpl_content: File.read(File.join(fixtures_dir, 'known_responses', 'real_sheet.zpl'))
+          },
+          request: { created_at: Time.parse('2022-04-07T08:57:26.923+02:00'),
+                     contract_id: '356936003',
+                     request_id: '1' },
+          response: { created_at: Time.parse('2022-04-07T08:57:27.135Z'), state: { code: 1, text: 'OK' } }
         }
       end
 
@@ -100,8 +142,12 @@ module CzechPostB2bClient
         }
       end
 
-      def b2b_real_response
-        fixture_response_xml('getParcelsPrinting_ok_real.xml')
+      def b2b_real_pdf_response
+        fixture_response_xml('getParcelsPrinting_ok_real_pdf.xml')
+      end
+
+      def b2b_real_zpl_response
+        fixture_response_xml('getParcelsPrinting_ok_real_zpl.xml')
       end
 
       def b2b_ok_response

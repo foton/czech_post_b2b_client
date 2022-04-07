@@ -1,0 +1,2322 @@
+openapi: 3.0.3
+info:
+  version: 1.4.0
+  title: B2B-ZSKService
+
+servers:
+  - url: http://localhost:8080/restservices/ZSKService/v1
+    description: Development server
+  - url: https://b2b-test.postaonline.cz:444/restservices/ZSKService/v1
+    description: Testing server
+  - url: https://b2b.postaonline.cz:444/restservices/ZSKService/v1
+    description: Production server
+tags:
+  - name: sendParcels
+  - name: parcelData
+  - name: parcelDataDetail
+  - name: letter
+  - name: location
+
+paths:
+  /sendParcels:
+    post:
+      description: Post data of sended parcels.
+        Operation is used for send of parcels data to the processing. In case of successful process result, datas are atomatically obtainded to submitters post office. This accepted parcels are displayed on POL application website.
+        In case of unsuccessful proces with some data mistakes, all the parcels are refused/unaccepted.
+        Response of this operation is object AsncResponse with the uniqe ID (idTransaction), which is necessary for get the result of the processing. /
+
+
+        Operace slouží k předání dat k zásilkám do dalšího zpracování. V případě, že zpracování proběhlo úspěšně, jsou data automaticky
+        předána na podací poštu. Takto přijatá data k zásilkám je možno zobrazit prostřednictvím web aplikace POL. V případě, že
+        při zpracování byla zaznamenána chyba v datech, není do dalšího zpracování přijata ani jedna zásilka.
+        Výstupem této operace je objekt AsyncResponse, který obsahuje jednoznačné ID (idTransaction) potřebné pro zjištění výsledku zpracování
+        operace.
+      summary: Send Parcels.
+      tags:
+        - sendParcels
+      operationId: postSendParcels
+      security:
+        - Api-Token: []
+          HMAC_SHA256_Auth: []
+          Authorization-Timestamp: []
+          Authorization-content-SHA256: []
+      parameters:
+        - name: idContract
+          in: query
+          required: false
+          description: ID CCK of submitter. In case of non-completion, the submitter is the caller./ ID CČK složky podavatele. V případě nevyplnění, je podavatelem volající.
+          schema:
+            $ref: '#/components/schemas/IdContract'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendParcelsRequest'
+      responses:
+        '202':
+          description: Accepted - ready for processing. / Přijato ke zpracování.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncResponse'
+        '400':
+          $ref: '#/components/responses/400Response'
+        '401':
+          $ref: '#/components/responses/401Response'
+        '403':
+          $ref: '#/components/responses/403Response'
+        default:
+          $ref: '#/components/responses/defaultResponse'
+
+  /sendParcels/idTransaction/{idTransaction}:
+    get:
+      description: Get the result of processing the submitted sendParcels information./
+
+        Operace slouží ke zjištění výsledku zpracování dat předaných prostřednictvím sendParcels.
+
+      summary: Get result of sendParcesls
+      tags:
+        - sendParcels
+      operationId: getSendParcels
+      security:
+        - Api-Token: [ ]
+          HMAC_SHA256_Auth: [ ]
+          Authorization-Timestamp: [ ]
+      parameters:
+        - name: idTransaction
+          in: path
+          required: true
+          description: Transaction ID assigned by the B2B module (asynchronous call). / ID transakce přidělené modulem B2B (asynchronní volání).
+          schema:
+            $ref: '#/components/schemas/IdTransaction'
+      responses:
+        '200':
+          description: Successful call. / Úspěšné volání.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultSendParcels'
+        '202':
+          description: Accepted - still being processed . / Stále ve zpracování.
+        '400':
+          $ref: '#/components/responses/400Response'
+        '401':
+          $ref: '#/components/responses/401Response'
+        '403':
+          $ref: '#/components/responses/403Response'
+        '404':
+          $ref: '#/components/responses/404Response'
+        default:
+          $ref: '#/components/responses/defaultResponse'
+
+  /sendParcels/stats:
+    get:
+      description: Get statistic informations about sendParcels datas. /
+
+        Operace slouží ke zjištění statistických informací o datech předaných prostřednictvím operace sendParcels.
+      summary: Get stats of sendParcesls
+      tags:
+        - sendParcels
+      operationId: getStatsSendParcels
+      security:
+        - Api-Token: [ ]
+          HMAC_SHA256_Auth: [ ]
+          Authorization-Timestamp: [ ]
+      parameters:
+        - name: idContract
+          in: query
+          required: false
+          description: ID CCK of submitter. In case of non-completion, the submitter is the caller./ ID CČK složky podavatele. V případě nevyplnění, je podavatelem volající.
+          schema:
+            $ref: '#/components/schemas/IdContract'
+        - name: dateFrom
+          in: query
+          required: true
+          description: Date from. / Datum od.
+          schema:
+            $ref: '#/components/schemas/DateType'
+        - name: dateTo
+          in: query
+          required: true
+          description: Date from. / Datum od.
+          schema:
+            $ref: '#/components/schemas/DateType'
+      responses:
+        '200':
+          description: Successful call. / Úspěšné volání.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatsSendParcelsResponse'
+        '400':
+          $ref: '#/components/responses/400Response'
+        '401':
+          $ref: '#/components/responses/401Response'
+        '403':
+          $ref: '#/components/responses/403Response'
+        '404':
+          $ref: '#/components/responses/404Response'
+        default:
+          $ref: '#/components/responses/defaultResponse'
+
+  /parcelStatus:
+    post:
+      description: Get informations about Parcel status. /
+
+        Operace slouží k získání seznamu stavů zásilek.
+      summary: Get status of Parcels
+      tags:
+        - parcelDataDetail
+      operationId: getParcelStatus
+      security:
+        - Api-Token: [ ]
+          HMAC_SHA256_Auth: [ ]
+          Authorization-Timestamp: [ ]
+          Authorization-content-SHA256: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParcelStatusRequest'
+      responses:
+        '200':
+          description: Successful call. / Úspěšné volání.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParcelStatusResponse'
+        '400':
+          $ref: '#/components/responses/400Response'
+        '401':
+          $ref: '#/components/responses/401Response'
+        '403':
+          $ref: '#/components/responses/403Response'
+        '404':
+          $ref: '#/components/responses/404Response'
+        default:
+          $ref: '#/components/responses/defaultResponse'
+
+  /parcelDataHistory/parcelID/{parcelID}:
+    get:
+      description: Get informations of parcel history. /
+
+        Získani historie zásilky.
+      summary: Get Parcel Data History.
+      tags:
+        - parcelDataDetail
+      operationId: getParcelDataHistory
+      security:
+        - Api-Token: [ ]
+          HMAC_SHA256_Auth: [ ]
+          Authorization-Timestamp: [ ]
+      parameters:
+        - name: parcelID
+          in: path
+          required: true
+          description: ID of parcel. / Čárový kód zásilky.
+          schema:
+            $ref: '#/components/schemas/ParcelCode'
+      responses:
+        '200':
+          description: Successful call. / Úspěšné volání.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParcelDataHistoryResult'
+        '400':
+          $ref: '#/components/responses/400Response'
+        '401':
+          $ref: '#/components/responses/401Response'
+        '403':
+          $ref: '#/components/responses/403Response'
+        '404':
+          $ref: '#/components/responses/404Response'
+        default:
+          $ref: '#/components/responses/defaultResponse'
+
+
+  /parcelPrinting:
+    post:
+      description: Get informations for printing of Address labels. /
+
+        Operace slouží k získání adresních štítků.
+      summary: Get info of Address labels.
+      tags:
+        - parcelData
+      operationId: getParcelPrinting
+      security:
+        - Api-Token: [ ]
+          HMAC_SHA256_Auth: [ ]
+          Authorization-Timestamp: [ ]
+          Authorization-content-SHA256: [ ]
+      parameters:
+        - name: idContract
+          in: query
+          required: false
+          description: ID CCK of submitter. In case of non-completion, the submitter is the caller./ ID CČK složky podavatele. V případě nevyplnění, je podavatelem volající.
+          schema:
+            $ref: '#/components/schemas/IdContract'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParcelPrintingRequest'
+      responses:
+        '200':
+          description: Successful call. / Úspěšné volání.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParcelPrintingResponse'
+        '400':
+          $ref: '#/components/responses/400Response'
+        '401':
+          $ref: '#/components/responses/401Response'
+        '403':
+          $ref: '#/components/responses/403Response'
+        '404':
+          $ref: '#/components/responses/404Response'
+        default:
+          $ref: '#/components/responses/defaultResponse'
+
+
+  /letterWithCN22:
+    post:
+      description: Post data of sended parcels for OLZ. Asynchronous. /
+
+        Zajišťuje předání dat podaných zásilek pro OLZ. Asynchronní.
+      summary: Send Letter with CN22
+      tags:
+        - letter
+      operationId: postLetter
+      security:
+        - Api-Token: [ ]
+          HMAC_SHA256_Auth: [ ]
+          Authorization-Timestamp: [ ]
+          Authorization-content-SHA256: [ ]
+      parameters:
+        - name: idContract
+          in: query
+          required: false
+          description: ID CCK of submitter. In case of non-completion, the submitter is the caller./ ID CČK složky podavatele. V případě nevyplnění, je podavatelem volající.
+          schema:
+            $ref: '#/components/schemas/IdContract'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LetterRequest'
+      responses:
+        '202':
+          description: Accepted - ready for processing. /
+
+            Přijato ke zpracování.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncResponse'
+        '400':
+          $ref: '#/components/responses/400Response'
+        '401':
+          $ref: '#/components/responses/401Response'
+        '403':
+          $ref: '#/components/responses/403Response'
+        default:
+          $ref: '#/components/responses/defaultResponse'
+
+  /letterWithCN22/idTransaction/{idTransaction}:
+    get:
+      description: Get the result of processing the submitted letterWithCN22 information. /
+
+        Operace slouží ke zjistění výsledku zpracování dat předaných prostřednictvim operace letterWithCN22.
+      summary: Get result of letterWithCN22
+      tags:
+        - letter
+      operationId: getLetter
+      security:
+        - Api-Token: [ ]
+          HMAC_SHA256_Auth: [ ]
+          Authorization-Timestamp: [ ]
+      parameters:
+        - name: idTransaction
+          in: path
+          required: true
+          description: Transaction ID assigned by the B2B module (asynchronous call). / ID transakce (pro asynchronní volání).
+          schema:
+            $ref: '#/components/schemas/IdTransaction'
+      responses:
+        '200':
+          description: Successful call. / Úspěšné volání.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultLetter'
+        '202':
+          description: Accepted - still being processed . / Stále ve zpracování.
+        '400':
+          $ref: '#/components/responses/400Response'
+        '401':
+          $ref: '#/components/responses/401Response'
+        '403':
+          $ref: '#/components/responses/403Response'
+        '404':
+          $ref: '#/components/responses/404Response'
+        default:
+          $ref: '#/components/responses/defaultResponse'
+
+  /letterWithCN22Printing:
+    post:
+      description: Get informations for printing of LetterWithCN22. /
+
+        Operace slouží k získání dat pro tisk LetterWithCN22.
+      summary: Get info for printing of LetterWithCN22.
+      tags:
+        - letter
+      operationId: getLetterWithCN22Printing
+      security:
+        - Api-Token: [ ]
+          HMAC_SHA256_Auth: [ ]
+          Authorization-Timestamp: [ ]
+          Authorization-content-SHA256: [ ]
+      parameters:
+        - name: idContract
+          in: query
+          required: false
+          description: ID CCK of submitter. In case of non-completion, the submitter is the caller./ ID CČK složky podavatele. V případě nevyplnění, je podavatelem volající.
+          schema:
+            $ref: '#/components/schemas/IdContract'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LetterPrintingRequest'
+      responses:
+        '200':
+          description: Successful call. / Úspěšné volání.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LetterPrintingResponse'
+        '400':
+          $ref: '#/components/responses/400Response'
+        '401':
+          $ref: '#/components/responses/401Response'
+        '403':
+          $ref: '#/components/responses/403Response'
+        '404':
+          $ref: '#/components/responses/404Response'
+        default:
+          $ref: '#/components/responses/defaultResponse'
+
+  /location/idContract/{idContract}:
+    get:
+      description: Get the list transmitter places, addresses, bank informations and contacts. /
+
+        Seznam podacích míst, adres, bankovních spojení a kontaktů.
+
+      summary: Get list of location
+      tags:
+        - location
+      operationId: getLocation
+      security:
+        - Api-Token: [ ]
+          HMAC_SHA256_Auth: [ ]
+          Authorization-Timestamp: [ ]
+      parameters:
+        - name: idContract
+          in: path
+          required: true
+          description: ID CCK of submitter. / ID CČK složky podavatele.
+          schema:
+            $ref: '#/components/schemas/IdContract'
+      responses:
+        '200':
+          description: Successful call. / Úspěšné volání.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationList'
+        '400':
+          $ref: '#/components/responses/400Response'
+        '401':
+          $ref: '#/components/responses/401Response'
+        '403':
+          $ref: '#/components/responses/403Response'
+        '404':
+          $ref: '#/components/responses/404Response'
+        default:
+          $ref: '#/components/responses/defaultResponse'
+
+    delete:
+      description: Delete the transmitter place, address, bank informations and contatct. /
+
+        Zruší podací místo včetně adres, bankovních spojení a kontaktů.
+
+      summary: Delete the location
+      tags:
+        - location
+      operationId: deleteLocation
+      security:
+        - Api-Token: [ ]
+          HMAC_SHA256_Auth: [ ]
+          Authorization-Timestamp: [ ]
+      parameters:
+        - name: idContract
+          in: path
+          required: true
+          description: ID CCK of submitter. / ID CČK složky podavatele.
+          schema:
+            $ref: '#/components/schemas/IdContract'
+        - name: locationNumber
+          in: query
+          required: true
+          description: Number of transmitter place. / Číslo podacího místa.
+          schema:
+            $ref: '#/components/schemas/LocationNumber'
+      responses:
+        '204':
+          description: Successful call - deleted. / Úspěšné volání - smazáno.
+        '400':
+          $ref: '#/components/responses/400Response'
+        '401':
+          $ref: '#/components/responses/401Response'
+        '403':
+          $ref: '#/components/responses/403Response'
+        '404':
+          $ref: '#/components/responses/404Response'
+        default:
+          $ref: '#/components/responses/defaultResponse'
+
+    post:
+      description: Create and save the transmitter place, address, bank informations and contatct. /
+
+        Uloží podací místo včetně adres, bankovních spojení a kontaktů.
+
+      summary: Create the location
+      tags:
+        - location
+      operationId: createLocation
+      security:
+        - Api-Token: [ ]
+          HMAC_SHA256_Auth: [ ]
+          Authorization-Timestamp: [ ]
+          Authorization-content-SHA256: [ ]
+      parameters:
+        - name: idContract
+          in: path
+          required: true
+          description: ID CCK of submitter. / ID CČK složky podavatele.
+          schema:
+            $ref: '#/components/schemas/IdContract'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Location'
+      responses:
+        '200':
+          description: Successful call. / Úspěšné volání.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationCreateResponse'
+        '400':
+          $ref: '#/components/responses/400Response'
+        '401':
+          $ref: '#/components/responses/401Response'
+        '403':
+          $ref: '#/components/responses/403Response'
+        '404':
+          $ref: '#/components/responses/404Response'
+        default:
+          $ref: '#/components/responses/defaultResponse'
+
+  /parcelService:
+    post:
+      description: Make validation and data insert, eventual printing of Address labels./
+
+        Provede validaci a zápis dat, případně generování adresního štítku k zásilce.
+
+      summary: Post Parcel Service Data.
+      tags:
+        - parcelData
+      operationId: sendParcelService
+      security:
+        - Api-Token: [ ]
+          HMAC_SHA256_Auth: [ ]
+          Authorization-Timestamp: [ ]
+          Authorization-content-SHA256: [ ]
+      parameters:
+        - name: idContract
+          in: query
+          required: false
+          description: ID CCK of submitter. In case of non-completion, the submitter is the caller./ ID CČK složky podavatele. V případě nevyplnění, je podavatelem volající.
+          schema:
+            $ref: '#/components/schemas/IdContract'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParcelServiceRequest'
+      responses:
+        '200':
+          description: Successful call. / Úspěšné volání.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParcelServiceResponse'
+        '400':
+          $ref: '#/components/responses/400Response'
+        '401':
+          $ref: '#/components/responses/401Response'
+        '403':
+          $ref: '#/components/responses/403Response'
+        '404':
+          $ref: '#/components/responses/404Response'
+        default:
+          $ref: '#/components/responses/defaultResponse'
+
+components:
+  securitySchemes:
+    Api-Token:
+      type: apiKey
+      in: header
+      name: Api-Token
+      description: |
+        Authorization and authentication by API key. This key is generated in User application.
+        In the User application is able to delete and generate a new key.
+
+        Autorizace a autentizace pomocí klíče API. Tento klíč je generován v uživatelské aplikaci.
+        V uživatelské aplikaci je možné smazat a vygenerovat nový klíč.
+
+        Example /Příklad:
+        ```
+        Api-Token: 123e4567-e89b-12d3-a456-426614174000
+        ```
+
+
+    HMAC_SHA256_Auth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: |
+        HMAC_SHA256_Auth is create of nonce (random string) and signature.
+
+        For the requests, the authorization by sercret key is neccessary. This secret key is generated in User application, secretKey is not part of the request.
+        The system of external partner generates 'nonce' - in form UUIDv4.
+        Signature is created as hash HMAC256 of this items:
+        ```
+        Authorization-Content-SHA256;Authorization-Timestamp;nonce
+        ```
+        as first parameter of HMAC function and
+        ```
+        secretKey
+        ```
+        as the second one. The secretKey is in Base64 format.
+
+        In case, that the request doesn't contain any body, the first parameter of HMAC function is created by this items:
+        ```
+        ;Authorization-Timestamp;nonce
+        ```
+
+        /
+
+        HMAC_SHA256_Auth je tvořen pomocí nonce (náhodný řežezec) a signature.
+
+        Pro požadavky je nutná autorizace tajného klíče. Tento tajný klíč je generován v uživatelské aplikaci, tajný klíč není součástí požadavku.
+        Systém externího partnera generuje 'nonce' - ve formátu UUIDv4.
+        Signature se vytvoří jako hash HMAC256 těchto položek:
+        ```
+        Authorization-Content-SHA256;Authorization-Timestamp;nonce
+        ```
+        jako první parametr HMAC funkce a
+        ```
+        secretKey
+        ```
+        jako druhý. SecretKey je ve formátu Base64.
+
+        V případě, že požadavek nemá tělo, je první parametr HMAC funkce tvořen z položek:
+        ```
+        ;Authorization-Timestamp;nonce
+        ```
+
+
+        Example /Příklad:
+        ```
+        Authorization: CP-HMAC-SHA256
+          nonce="74b03ffb-34e1-419e-8c6f-f8275bad9a41",
+          signature="QGBaYeY8loQZXbJRmj91JV2yTwsuBTME6wQhUrEm7mI="
+        ```
+
+
+
+    Authorization-Timestamp:
+      name: Authorization-Timestamp
+      in: header
+      type: apiKey
+      description: |
+        Authorization-Timestamp is used for count of HMAC_SHA256_Auth.The system of external partner generates the timestamp in form 'UTC UNIX Timestamp'.
+        This item must be connected to header as 'Authorization-Timestamp'.
+        This timestamp must be no longer time for 60 second, can't be in the future. The request with invalid timestamp will be refused with response code 401. /
+
+        Authorization-Timestamp je použito pro výpočet HMAC_SHA256_Auth. Systém externího partnera vygeneruje časové razítko ve formátu 'UTC UNIX Timestamp'.
+        Tato položka musí být připojena k hlavičce jako 'Authorization-Timestamp'.
+        Toto časové razítko nesmí být delší než čas 60 sekund, nemůže být v budoucnosti. Požadavek s neplatným časovým razítkem bude odmítnut s kódem odpovědi 401.
+
+        Example: /Příklad:
+        ```
+        Authorization-Timestamp: 1593561601
+        ```
+
+
+    Authorization-content-SHA256:
+      name: Authorization-Content-SHA256
+      in: header
+      type: apiKey
+      description: |
+        SHA256 of body of request. The system of external partner counts the hash SHA256 of 'requestBody' of JSON's body of request.
+        This hash must be connected to header as 'Authorization-Content-SHA256'.
+        In case that the conted hash doesn't agree with the hash of body in the request, request will be refused with response code 401.
+
+        SHA256 těla požadavku. Systém externího partnera počítá hash SHA256 'requestBody' těla požadavku JSON.
+        Tento hash musí být připojen k hlavičce jako 'Authorization-Content-SHA256'.
+        V případě, že tento hash nesouhlasí s hashem těla v požadavku, bude požadavek odmítnut s kódem odpovědi 401.
+
+        Example: / Příklad:
+        ```
+        Authorization-Content-SHA256:
+          f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8
+        ```
+
+
+  parameters:
+    xApiToken:
+      name: Api-Token
+      description: Api-Token - public part of the token, it is generated in User application./ Api-Token - veřejná část tokenu, je generována v Uživatelské aplikaci.
+      in: header
+      required: true
+      schema:
+        type: string
+        example: "123e4567-e89b-12d3-a456-426614174000"
+
+    # HMAC-SHA256 Signing Headers (documentation purpose only)
+    xHMACAuthorization:
+      name: Authorization
+      description: HMAC SHA256 Autorization. / Autorizace HMAC SHA256.
+      in: header
+      required: true
+      schema:
+        type: string
+        minLength: 100
+        maxLength: 255
+        nullable: false
+        example: 'CP-HMAC-SHA256 nonce="74b03ffb-34e1-419e-8c6f-f8275bad9a41",signature="QGBaYeY8loQZXbJRmj91JV2yTwsuBTME6wQhUrEm7mI="'
+
+    xHMACAuthorizationTime:
+      name: Authorization-Timestamp
+      description: UTC Timestamp which is used for count. / UTC Časová značka použitá ve výpočtu.
+      in: header
+      required: true
+      schema:
+        type: integer
+        format: int64
+        minimum: 1593561600
+        maximum: 7952342400
+        nullable: false
+      example: 1593561601
+
+    xHMACAuthorizationContentSHA256:
+      name: Authorization-Content-SHA256
+      description: SHA256 of request body. / SHA256 těla požadavku.
+      in: header
+      required: true
+      schema:
+        type: string
+        minLength: 64
+        maxLength: 64
+        nullable: false
+      example: "f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8"
+
+
+
+  responses:
+    400Response:
+      description: Incorrect input values, eg blank mandatory parameters.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Error'
+            maxItems: 10
+    401Response:
+      description: Unauthorized.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Error'
+            maxItems: 10
+    403Response:
+      description: Forbidden.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Error'
+            maxItems: 10
+    404Response:
+      description: Not found.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Error'
+            maxItems: 10
+    defaultResponse:
+      description: An unexpected error, such as one of the services in use unavailable.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Error'
+            maxItems: 10
+
+  schemas:
+    SendParcelsRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - parcelHeader
+      properties:
+        parcelHeader:
+          $ref: '#/components/schemas/ParcelHeader'
+        parcelDataList:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParcelData'
+          maxItems: 1000
+          description: Parcels datas. / Data zásilek.
+
+    ParcelStatusRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        parcelIds:
+          type: array
+          maxItems: 10
+          items:
+            $ref: '#/components/schemas/ParcelCode'
+        language:
+          type: string
+          description: Prefered language answer. / Jazyk zobrazovaných událostí.
+          example: 'CZ'
+          default: 'CZ'
+
+    ParcelPrintingRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - printingHeader
+        - printingData
+      properties:
+        printingHeader:
+          $ref: '#/components/schemas/PrintingHeader'
+        printingData:
+          $ref: '#/components/schemas/PrintingData'
+
+    LetterPrintingRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - printingHeader
+        - printingData
+      properties:
+        printingHeader:
+          $ref: '#/components/schemas/PrintingHeader'
+        printingData:
+          $ref: '#/components/schemas/PrintingData'
+
+    LetterRequest:
+      type: object
+      required:
+        - letterHeader
+        - letterData
+      additionalProperties: false
+      properties:
+        letterHeader:
+          $ref: '#/components/schemas/LetterHeader'
+        letterData:
+          $ref: '#/components/schemas/LetterDataList'
+
+    Location:
+      type: object
+      additionalProperties: false
+      properties:
+        locationName:
+          $ref: '#/components/schemas/LocationName'
+        locationNameAddOn:
+          $ref: '#/components/schemas/LocationNameAddOn'
+        senderAddress:
+          $ref: '#/components/schemas/Address'
+        codAddress:
+          $ref: '#/components/schemas/Address'
+        codBank:
+          $ref: '#/components/schemas/Bank'
+        senderContacts:
+          $ref: '#/components/schemas/Contact'
+
+    LocationList:
+      type: array
+      items:
+        $ref: '#/components/schemas/LocationItem'
+
+    LocationItem:
+      type: object
+      additionalProperties: false
+      properties:
+        locationNumber:
+          $ref: '#/components/schemas/LocationNumber'
+        location:
+          $ref: '#/components/schemas/Location'
+
+    ParcelServiceRequest:
+      type: object
+      required:
+        - parcelServiceHeader
+      additionalProperties: false
+      properties:
+        parcelServiceHeader:
+          $ref: '#/components/schemas/ParcelServiceHeader'
+        parcelServiceData:
+          $ref: '#/components/schemas/ParcelData'
+        multipartParcelData:
+          $ref: '#/components/schemas/AdditionalParcelData'
+        parcelCustomsDocuments:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParcelCustomsDocuments'
+          maxItems: 3
+
+    AdditionalParcelData:
+      type: array
+      minItems: 1
+      maxItems: 4
+      items:
+        $ref: '#/components/schemas/AddParcelData'
+      description: It uses for multipart parcel, resp. for 2.-5.part of multipart parcel . / Používá se pro vícekusovou zásilku, resp. pro 2.-5.kus vícekusové zásilky.
+
+    AddParcelData:
+      type: object
+      properties:
+        addParcelData:
+          $ref: '#/components/schemas/ParcelParams'
+        addParcelDataServices:
+          $ref: '#/components/schemas/Services'
+
+    ParcelCustomsDocuments:
+      type: object
+      additionalProperties: false
+      properties:
+        recordID:
+          $ref: '#/components/schemas/RecordID'
+        code:
+          type: string
+          description: Type. / Typ.
+        name:
+          type: string
+          description: Name. / Název.
+        id:
+          type: string
+          description: ID. / Id.
+
+    ParcelServiceHeader:
+      type: object
+      additionalProperties: false
+      properties:
+        parcelServiceHeaderCom:
+          $ref: '#/components/schemas/LetterHeader'
+        transmissionEnd:
+          $ref: '#/components/schemas/TransmissionEnd'
+        printParams:
+          $ref: '#/components/schemas/PrintParams'
+        position:
+          $ref: '#/components/schemas/Position'
+
+    PrintParams:
+      type: object
+      additionalProperties: false
+      properties:
+        idForm:
+          $ref: '#/components/schemas/IdForm'
+        shiftHorizontal:
+          $ref: '#/components/schemas/ShiftHorizontal'
+        shiftVertical:
+          $ref: '#/components/schemas/ShiftVertical'
+
+    ParcelStatusResponse:
+      type: object
+      additionalProperties: false
+      description: Parcel Status response. / Výsledek operace Parcel Status.
+      properties:
+        detail:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParcelStatusDetail'
+
+    ParcelStatusDetail:
+      type: object
+      additionalProperties: false
+      properties:
+        idParcel:
+          $ref: '#/components/schemas/ParcelCode'
+        parcelType:
+          $ref: '#/components/schemas/PrefixParcelCode'
+        weight:
+          $ref: '#/components/schemas/Weight'
+        amount:
+          $ref: '#/components/schemas/Amount'
+        currency:
+          $ref: '#/components/schemas/Currency'
+        parcelsQuantity:
+          $ref: '#/components/schemas/Quantity'
+        depositTo:
+          type: string
+          format: date
+          description: Date format ISO8601. / Datum ve formátu ISO8601.
+        timeDeposit:
+          type: integer
+          description: Deposit time. / Úložní doba.
+        countryOfOrigin:
+          type: string
+          description: Country of origin. / Země původu.
+        countryOfDestination:
+          type: string
+          description: Country of destination. / Země určení.
+        parcelStatuses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParcelStatus'
+
+    ParcelPrintingResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        printingHeaderResult:
+          $ref: '#/components/schemas/PrintingHeaderResult'
+        printingDataResult:
+          $ref: '#/components/schemas/PrintingDataResult'
+
+    LetterPrintingResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        printingHeaderResult:
+          $ref: '#/components/schemas/PrintingHeaderResult'
+        printingDataResult:
+          $ref: '#/components/schemas/PrintingDataResult'
+
+    PrintingStatusResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - responseCode
+        - responseText
+      properties:
+        responseCode:
+          type: integer
+        responseText:
+          type: string
+      description: |
+        * 1 - OK - The processing parameter datas are OK. / OK - Data parametru zpracování v pořádku.
+        * 2 - INTERNAL_ERROR - Another system error. / INTERNAL_ERROR - Jiná chyba systému.
+        * 100 - INVALID_PARCEL_CODE - The parcel code is invalid. / INVALID_PARCEL_CODE - Neplatné ID zásilky.
+        * 378 - INVALID_PREFIX_COMBINATION - The parcel is incorrectly assigned to the print template ID. / INVALID_PREFIX_COMBINATION - Zásilka je chybně přiřazená k id tiskové šablony.
+        * 379 - PARCEL_DOES_NOT_MEET_THE_REQUIREMENTS_FORM - The parcel parameters doesn't agree with the conditions of the form./ PARCEL_DOES_NOT_MEET_THE_REQUIREMENTS_FORM - Parametry zásilky nesplňují podmínky požadovaného formuláře.
+        * 380 - NO_CONTRACT_SERVICE_RETURN_RECEIPT - For this form does not exists valid contract for the Advice service./ NO_CONTRACT_SERVICE_RETURN_RECEIPT - K formuláři není sjednaná smlouva ke službě Dodejka.
+
+    LocationCreateResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        locationStateSenderResponse:
+          type: array
+          items:
+            $ref: '#/components/schemas/StatusResponseItem'
+        locationStateCodResponse:
+          type: array
+          items:
+            $ref: '#/components/schemas/StatusResponseItem'
+        locationData:
+          $ref: '#/components/schemas/LocationData'
+
+    ParcelServiceResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        responseHeader:
+          $ref: '#/components/schemas/ParcelServiceResponseHeader'
+
+    ParcelServiceResponseHeader:
+      type: object
+      additionalProperties: false
+      properties:
+        resultHeader:
+          $ref: '#/components/schemas/StatusResponseItem'
+        resultParcelData:
+          $ref: '#/components/schemas/ResultSendParcelsListItem'
+        resultParcelCustomsGoods:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResultParcelCustomsGoodsItem'
+        resultParcelCustomsDocument:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResultParcelCustomsDocumentList'
+        responsePrintParams:
+          $ref: '#/components/schemas/ResponsePrintParams'
+
+    ResponsePrintParams:
+      type: object
+      additionalProperties: false
+      properties:
+        file:
+          $ref: '#/components/schemas/PrintingDataResult'
+        printParamsResponse:
+          type: array
+          items:
+            $ref: '#/components/schemas/StatusResponseItem'
+
+    ResultParcelCustomsDocumentList:
+      type: object
+      additionalProperties: false
+      properties:
+        recordID:
+          $ref: '#/components/schemas/RecordID'
+        customDocumentsResponse:
+          type: array
+          items:
+            $ref: '#/components/schemas/StatusResponseItem'
+
+    ResultParcelCustomsGoodsItem:
+      type: object
+      additionalProperties: false
+      properties:
+        sequence:
+          $ref: '#/components/schemas/Sequence'
+        customGoodsResponse:
+          type: array
+          items:
+            $ref: '#/components/schemas/StatusResponseItem'
+
+    ParcelDataHistoryResult:
+      type: object
+      additionalProperties: false
+      properties:
+        parcelDataHistory:
+          $ref: '#/components/schemas/ParcelDataHistory'
+        parcelStatusHistory:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParcelStatusHistory'
+
+
+    ParcelDataHistory:
+      type: object
+      additionalProperties: false
+      description: Data detail of parcels. / Detail dat zásilky.
+      properties:
+        parcelCode:
+          $ref: '#/components/schemas/ParcelCode'
+        customerID:
+          $ref: '#/components/schemas/CustomerID'
+        name:
+          type: string
+          description: Name./Jméno.
+          example: 'Jan'
+        surname:
+          type: string
+          description: Surname./Příjmení.
+          example: 'Novák'
+        company:
+          type: string
+          description: Company name. / Název společnosti.
+          example: 'The Great Company'
+        aditionAddress:
+          type: string
+          description: Aditional information. / Doplňující informace k názvu adresáta.
+          example: 'Add info'
+        address:
+          $ref: '#/components/schemas/AddressCOMMON'
+        cashOnDelivery:
+          $ref: '#/components/schemas/Amount'
+        insuredValue:
+          $ref: '#/components/schemas/InsuredValue'
+        weight:
+          $ref: '#/components/schemas/Weight'
+        services:
+          $ref: '#/components/schemas/Service'
+        vsVoucher:
+          $ref: '#/components/schemas/VsVoucher'
+        vsParcel:
+          $ref: '#/components/schemas/VsParcel'
+        currency:
+          $ref: '#/components/schemas/Currency'
+        height:
+          $ref: '#/components/schemas/Height'
+        width:
+          $ref: '#/components/schemas/Width'
+        lenght:
+          $ref: '#/components/schemas/Length'
+        volumeWeight:
+          $ref: '#/components/schemas/VolumeWeight'
+        payoutAmount:
+          $ref: '#/components/schemas/PayoutAmount'
+        payoutAmountSum:
+          $ref: '#/components/schemas/PayoutAmountSum'
+        sumWeight:
+          $ref: '#/components/schemas/SumWeight'
+        masterCode:
+          $ref: '#/components/schemas/MasterCode'
+        sequenceParcel:
+          $ref: '#/components/schemas/SequenceParcel'
+        quantityParcel:
+          $ref: '#/components/schemas/QuantityParcel'
+        creditedData:
+          $ref: '#/components/schemas/CreditedData'
+        senderCustCardNum:
+          $ref: '#/components/schemas/CustCardNum'
+
+
+
+
+    ResultSendParcels:
+      type: object
+      additionalProperties: false
+      required:
+        - StatusResponseList
+      properties:
+        StatusResponseList:
+          type: array
+          maxItems: 999
+          items:
+            $ref: '#/components/schemas/StatusResponseItem'
+        ResultSendParcelsList:
+          $ref: '#/components/schemas/ResultSendParcelsListItem'
+
+    ResultLetter:
+      type: object
+      additionalProperties: false
+      required:
+        - StatusResponseList
+      properties:
+        StatusResponse:
+          type: array
+          maxItems: 999
+          items:
+            $ref: '#/components/schemas/StatusResponseItem'
+        parcelParamsResult:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParcelParamsResult'
+          maxItems: 1000
+
+    LetterHeader:
+      type: object
+      additionalProperties: false
+      required:
+        - transmissionDate
+      properties:
+        transmissionDate:
+          $ref: '#/components/schemas/TransmissionDate'
+        customerID:
+          $ref: '#/components/schemas/CustomerID'
+        postCode:
+          $ref: '#/components/schemas/PostCode'
+        contractNumber:
+          $ref: '#/components/schemas/ContractNumber'
+        frankingNumber:
+          $ref: '#/components/schemas/FrankingNumber'
+        senderCustCardNum:
+          $ref: '#/components/schemas/CustCardNum'
+        locationNumber:
+          $ref: '#/components/schemas/LocationNumber'
+
+
+    LocationName:
+      type: string
+      description: Name of location. / Název podacího místa.
+
+    LocationNameAddOn:
+      type: string
+      description: Name of location - addon. / Doplněk názvu podacího místa.
+
+    LetterDataList:
+      type: array
+      items:
+        $ref: '#/components/schemas/LetterData'
+      maxItems: 1000
+      description: Data of letters. / Data k zásilkám.
+
+    LetterData:
+      type: object
+      additionalProperties: false
+      properties:
+        letterParams:
+          $ref: '#/components/schemas/LetterParams'
+        letterAddress:
+          $ref: '#/components/schemas/LetterAddress'
+        letterCustomsDeclaration:
+          $ref: '#/components/schemas/LetterCustomsDeclaration'
+
+    LetterAddress:
+      type: object
+      additionalProperties: false
+      properties:
+        title:
+          $ref: '#/components/schemas/Title'
+        address:
+          $ref: '#/components/schemas/AddressCOMMON'
+        bank:
+          $ref: '#/components/schemas/Bank'
+        contact:
+          $ref: '#/components/schemas/Contact'
+        custCardNum:
+          $ref: '#/components/schemas/CustCardNum'
+        adviceInfo:
+          $ref: '#/components/schemas/adviceInfo'
+
+    LetterCustomsDeclaration:
+      type: object
+      additionalProperties: false
+      properties:
+        category:
+          $ref: '#/components/schemas/Category'
+        note:
+          $ref: '#/components/schemas/Note'
+        customValCur:
+          $ref: '#/components/schemas/CustomValCur'
+        importerRefNum:
+          type: string
+          description: Importer number. / Číslo dovozce.
+        customGoods:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParcelCustomGoods'
+          maxItems: 99
+
+    LetterParams:
+      type: object
+      additionalProperties: false
+      properties:
+        recordID:
+          $ref: '#/components/schemas/RecordID'
+        parcelCode:
+          $ref: '#/components/schemas/ParcelCode'
+        weight:
+          $ref: '#/components/schemas/Weight'
+        note:
+          $ref: '#/components/schemas/Note'
+        note2:
+          $ref: '#/components/schemas/Note'
+        letterServices:
+          $ref: '#/components/schemas/Services'
+
+    PrintingHeaderResult:
+      type: object
+      additionalProperties: false
+      properties:
+        printingHeader:
+          $ref: '#/components/schemas/PrintingHeader'
+        printingStatusResponse:
+          $ref: '#/components/schemas/PrintingStatusResponse'
+
+    PrintingHeader:
+      type: object
+      additionalProperties: false
+      required:
+        - customerID
+        - shiftHorizontal
+        - shiftVertical
+      properties:
+        customerID:
+          $ref: '#/components/schemas/CustomerID'
+        contractNumber:
+          $ref: '#/components/schemas/IdContract'
+        idForm:
+          $ref: '#/components/schemas/IdForm'
+        shiftHorizontal:
+          $ref: '#/components/schemas/ShiftHorizontal'
+        shiftVertical:
+          $ref: '#/components/schemas/ShiftVertical'
+        position:
+          $ref: '#/components/schemas/Position'
+
+    IdForm:
+      type: integer
+      default: 20
+      description: |
+        * 7 - address label type allonge (simple, independent) / adresní štítek (alonž) - samostatný
+        * 8 - address label type allonge (with cash on delivery voucher) / adresní štítek (alonž) + dobírková poukazka
+        * 10 - cash on delivery voucher type A (simple, independent) / poštovní dobírková poukázka A - samostatná
+        * 11 - cash on delivery voucher type A (3x, for A4 format) / poštovní dobírková poukázka A - 3x (A4)
+        * 12 - cash on delivery voucher type C / poštovní dobírková poukázka C
+        * 20 - address lable (empty - 4x, A4 format) / adresní štítek bianco - 4x (A4)
+        * 21 - address lable (empty, independent) / adresní štítek bianco - samostatný
+        * 22 - envelope 1 - C6 / obálka 1 - C6
+        * 23 - envelope 2 - C5 / obálka 2 - C5
+        * 24 - envelope 3 - B4 / obálka 3 - B4
+        * 25 - envelope 4 - DL without window / obálka 4 - DL bez okenka
+        * 26 - labels for RR - 3x8 (A4 format) / stitky pro RR - 3*8 (A4)
+        * 38 - integrated certificate / integrovany doklad
+        * 39 - address label empty (independent, in width) / adresní štítek bianco - samostatný (na sirku)
+        * 40 - address 3x8 (A4) / adresní udaje 3x8 (A4)
+        * 41 - advice / dodejka
+        * 56 - CN22
+        * 57 - CN23
+        * 58 - Standard parcel abroad (independent) / AS - samostatný Standardni balík do zahraničí
+        * 59 - Standard parcel abroad (4xA4) / AS - 4xA4 Standardni balík do zahraničí
+        * 60 - Valuable parcel abroad (independent) / AS - samostatný Cenny balík do zahraničí
+        * 61 - Valuable parcel abroad (4xA4) / AS - 4xA4 Cenny balík do zahraničí
+        * 62 - EMS abroad (independent) / AS - samostatný EMS do zahraničí
+        * 63 - EMS abroad (2xA4) / AS - 2xA4 EMS do zahraničí
+        * 72 - Harmonized label for IS products (intependent) - usable only for CE prefix parcels / Harmonizovaný štítek pro MZ produkty - samostatný - možno použít pouze pro zásilky s prefixem CE do určených zemí
+        * 73 - Harmonized label for IS products (4xA4) - usable only for CE prefix parcels/ Harmonizovaný štítek pro MZ produkty - 4xA4 - možno použít pouze pro zásilky s prefixem CE do určených zemí
+        * 100 - Harmonized label (empty, 4xA4) / Harmonizovaný štítek bianco - 4x(A4)
+        * 101 - Harmonized label (empty, intependent) / Harmonizovaný štítek bianco - samostatný
+        * 102 - Harmonized label (empty, intependent, in height) / Harmonizovaný štítek bianco - samostatný (na výšku)
+        * 103 - Address lable A6 - 4x
+        * 200 - Harmonized label (empty, Zebra 105x148) / Harmonizovaný štítek bianco - Zebra 105x148
+        * 201 - Harmonized label (empty, Zebra 100x150) / Harmonizovaný štítek bianco - Zebra 100x150
+        * 202 - Harmonized label (empty, Zebra 100x125) / Harmonizovaný štítek bianco - Zebra 100x125
+
+    ShiftHorizontal:
+      type: number
+      description: Value of shift right (in mm). / Hodnota posunu doprava v mm.
+
+    ShiftVertical:
+      type: number
+      description: Value of shift down (in mm). / Hodmota posunu dolů v mm.
+
+    Position:
+      type: number
+      description: Position value. / Hodnota pozice.
+
+    PrintingData:
+      type: array
+      items:
+        $ref: '#/components/schemas/ParcelCode'
+      maxItems: 500
+      description: Items data. / Položkové údaje.
+
+    PrintingDataResult:
+      type: string
+      format: byte
+      description: PDF file. / Soubor PDF.
+
+    ParcelStatus:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - date
+        - text
+      properties:
+        id:
+          type: string
+          description: Status ID. / ID stavu.
+        date:
+          $ref: '#/components/schemas/DateType'
+        text:
+          type: string
+          description: Status text. / Text stavu.
+        postCode:
+          type: string
+          description: Postal code of origin. / PSČ, kde stav nastal.
+        name:
+          type: string
+          description: Office name of origin. / Název provozovny, kde stav nastal.
+
+    ParcelHeader:
+      type: object
+      additionalProperties: false
+      required:
+        - transmissionDate
+      properties:
+        transmissionDate:
+          $ref: '#/components/schemas/TransmissionDate'
+        customerID:
+          $ref: '#/components/schemas/CustomerID'
+        postCode:
+          $ref: '#/components/schemas/PostCode'
+        contractNumber:
+          $ref: '#/components/schemas/ContractNumber'
+        frankingNumber:
+          $ref: '#/components/schemas/FrankingNumber'
+        senderAddress:
+          $ref: '#/components/schemas/Address'
+        codAddress:
+          $ref: '#/components/schemas/Address'
+        codBank:
+          $ref: '#/components/schemas/Bank'
+        senderContacts:
+          $ref: '#/components/schemas/SenderContacts'
+        senderCustCardNum:
+          $ref: '#/components/schemas/CustCardNum'
+        locationNumber:
+          $ref: '#/components/schemas/LocationNumber'
+        transmissionEnd:
+          $ref: '#/components/schemas/TransmissionEnd'
+        goodToAccept:
+          type: boolean
+          description: Indication - accepting of correct datas in case of existing some mistage in the same request./ Indikace, zda mají být v případě výskytu chyby v datech ostatní korektní data přijata do zpracování.
+
+    SenderContacts:
+      type: object
+      additionalProperties: false
+      properties:
+        mobilNumber:
+          $ref: '#/components/schemas/MobilNumber'
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber'
+        emailAddress:
+          $ref: '#/components/schemas/emailAddress'
+
+    CustomerID:
+      type: string
+      maxLength: 6
+      description: Technological number of the transmitter. /Technologické číslo podavatele.
+      example: 'U219'
+
+    TransmissionDate:
+      type: string
+      format: date
+      description: Supposed date of transmission in ISO8601 format. / Předpokládané datum podání.
+      example: '2021-03-28'
+
+    PostCode:
+      type: string
+      maxLength: 5
+      description: Postcode of the filing branch. / PSC podací pošty.
+      example: '28002'
+
+    ContractNumber:
+      type: string
+      maxLength: 10
+      description: Number of the contract. /Číslo zakazky.
+      example: '1021535'
+
+    FrankingNumber:
+      type: string
+      maxLength: 10
+      description: Payout machine number. /Číslo vyplatniho stroje.
+      example: '1'
+
+    LocationNumber:
+      type: integer
+      description: Number of transmitter place. / Číslo podacího místa (jedná se o Číslo podacího místa, pod kterým chce provádět import - v případě využití této položky není třeba uvádět v importních datech údaje odesílatele).
+      example: 1
+
+    LocationData:
+      type: object
+      additionalProperties: false
+      properties:
+        locationNumber:
+          $ref: '#/components/schemas/LocationNumber'
+        locationDataResponseList:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocationDataResponse'
+
+    LocationDataResponse:
+      $ref: '#/components/schemas/StatusResponseItem'
+
+    ParcelData:
+      type: object
+      additionalProperties: false
+      required:
+        - parcelParams
+        - parcelAddress
+      properties:
+        parcelParams:
+          $ref: '#/components/schemas/ParcelParams'
+        parcelServices:
+          $ref: '#/components/schemas/Services'
+        parcelAddress:
+          $ref: '#/components/schemas/ParcelAddress'
+        parcelAddressDocument:
+          $ref: '#/components/schemas/ParcelAddress'
+        parcelCustomsDeclaration:
+          $ref: '#/components/schemas/ParcelCustomsDeclaration'
+
+    ParcelParams:
+      type: object
+      additionalProperties: false
+      required:
+        - recordID
+        - prefixParcelCode
+      properties:
+        recordID:
+          $ref: '#/components/schemas/RecordID'
+        parcelCode:
+          $ref: '#/components/schemas/ParcelCode'
+        masterCode:
+          $ref: '#/components/schemas/MasterCode'
+        prefixParcelCode:
+          $ref: '#/components/schemas/PrefixParcelCode'
+        weight:
+          $ref: '#/components/schemas/Weight'
+        insuredValue:
+          $ref: '#/components/schemas/InsuredValue'
+        amount:
+          $ref: '#/components/schemas/Amount'
+        currency:
+          $ref: '#/components/schemas/Currency'
+        vsVoucher:
+          $ref: '#/components/schemas/VsVoucher'
+        vsParcel:
+          $ref: '#/components/schemas/VsParcel'
+        sequenceParcel:
+          $ref: '#/components/schemas/SequenceParcel'
+        quantityParcel:
+          $ref: '#/components/schemas/QuantityParcel'
+        note:
+          $ref: '#/components/schemas/Note'
+        notePrint:
+          type: string
+          maxLength: 50
+          description: Note for printing. / Poznamka pro tisk.
+        length:
+          $ref: '#/components/schemas/Length'
+        width:
+          $ref: '#/components/schemas/Width'
+        height:
+          $ref: '#/components/schemas/Height'
+        mrn:
+          type: string
+          maxLength: 18
+          description: MRN code. / Kod MRN.
+          example: '15CZ65000021QMDZN0'
+        referenceNumber:
+          type: string
+          maxLength: 30
+          description: Reference number. / Číslo jednací.
+        pallets:
+          type: integer
+          minimum: 1
+          maximum: 99
+          description: Number of pallets. / Počet palet.
+        specSym:
+          type: string
+          maxLength: 10
+          description: Specific symbol. / Specifický symbol.
+        note2:
+          type: string
+          maxLength: 50
+          description: Note no. 2. / Poznámka 2.
+        numSign:
+          type: string
+          maxLength: 30
+          description: Number of documents. / Počet dokumentů.
+        score:
+          type: string
+          maxLength: 30
+          description: Service price calculation. / Nápočet ceny služby.
+        orderNumberZPRO:
+          type: string
+          maxLength: 11
+          description: Number of ZPRO's number. / Číslo objednávky ZPRO.
+        returnNumDays:
+          type: string
+          maxLength: 2
+          description: Number of days for returning the parcel. / Počet dní pro vrácení zásilky.
+
+    MasterCode:
+      type: string
+      maxLength: 13
+      description: Master ID of parcel (for customer services). / ID řídící zásilky pro zákaznické služby.
+      example: 'RR22558874B'
+
+    InsuredValue:
+      type: number
+      format: double
+      minimum: 0.00
+      maximum: 999999999.99
+      description: Insured value. / Udaná cena.
+
+    VsVoucher:
+      type: string
+      pattern: '^\d{1,10}$'
+      description: Variable symbol of voucher. / Variabilní symbol - poukázka.
+
+    VsParcel:
+      type: string
+      pattern: '^\d{1,10}$'
+      description: Variable symbol of parcel. / Variabilní symbol - zásilka.
+
+    SequenceParcel:
+      type: integer
+      minimum: 0
+      maximum: 99
+      description: Order in the case of a multi-part package. / Pořadí v rámci vícekusové zásilky.
+
+    QuantityParcel:
+      type: integer
+      minimum: 0
+      maximum: 99
+      description: Sum of parts in multi-part package. / Celkový Počet zasilek vícekusové zásilky.
+
+    Length:
+      type: integer
+      minimum: 0
+      maximum: 999
+      description: Length. / Délka.
+
+    Width:
+      type: integer
+      minimum: 0
+      maximum: 999
+      description: Width. / Šířka.
+
+    Height:
+      type: integer
+      minimum: 0
+      maximum: 999
+      description: Height. / Výška.
+
+    RecordID:
+      type: string
+      maxLength: 50
+      description: Unique ID of record (recommendation - useful for identification of failed statuses of the records in automatically generating IDs of parcels). / Unikátní ID záznamu (doporučujeme využít pro identifikaci případných chybových stavů u jednotlivých záznamů v případě generování ID zásilek aplikaci)
+      example: '1'
+
+    ParcelCode:
+      type: string
+      maxLength: 13
+      description: Parcel's ID. / ID (čárový kód) zásilky.
+      example: 'BA1234567890A'
+
+    PrefixParcelCode:
+      type: string
+      maxLength: 2
+      description: Prefix of the parcel (type of the parcel). / Typ zásilky (prefix).
+      example: 'BA'
+
+    Weight:
+      type: string
+      pattern: '^((\d{1,5})|(\d{1,5}\.\d{1,3}))$'
+      description: Weight. / Hmotnost.
+      example: '100.20'
+
+    VolumeWeight:
+      type: string
+      pattern: '^((\d{1,5})|(\d{1,5}\.\d{1,3}))$'
+      description: Weight of volume. / Objemová hmotnost.
+      example: '100.20'
+
+    SumWeight:
+      type: string
+      pattern: '^((\d{1,5})|(\d{1,5}\.\d{1,3}))$'
+      description: Sum of weight's of multi-part package. / Součet hmostností vícekusu.
+      example: '100.20'
+
+    Amount:
+      type: number
+      format: double
+      minimum: 0.00
+      maximum: 999999999.99
+      description: Cash on delivery amount. / Dobírka.
+      example: 105.00
+
+    PayoutAmount:
+      type: number
+      format: double
+      minimum: 0.00
+      maximum: 999999999.99
+      description: Payout amount. / Vyplatní částka.
+      example: 225.00
+
+    PayoutAmountSum:
+      type: number
+      format: double
+      minimum: 0.00
+      maximum: 999999999.99
+      description: Sum of payout amounts for multi-part package. / Součet výplatného vícekusové zásilky.
+      example: 225.00
+
+    Currency:
+      type: string
+      default: 'CZK'
+      maxLength: 3
+      description: ISO code of currency of cash on delivery amount. / ISO kód měny dobírky.
+      example: 'CZK'
+
+    Services:
+      type: array
+      minItems: 1
+      items:
+        $ref: '#/components/schemas/Service'
+      description: Required additional services. / Požadované doplňkové služby.
+      example: ['43','44','53']
+
+    Service:
+      type: string
+      description: Required additional service. / Požadovaná doplňková služba.
+      example: '43'
+
+    Note:
+      type: string
+      maxLength: 50
+      description: Note. / Poznámka.
+      example: 'note'
+
+    ParcelAddress:
+      type: object
+      additionalProperties: false
+      properties:
+        recordID:
+          type: string
+          maxLength: 20
+          description: Internal destination of the recipient./ Interni označení adresáta.
+        firstName:
+          type: string
+          description: First name. / Jméno.
+          example: 'John'
+        surname:
+          type: string
+          description: Surname. / Příjmení.
+          example: 'Doe'
+        company:
+          type: string
+          description: Company name. / Název společnosti.
+          example: 'Universal Company'
+        aditionAddress:
+          type: string
+          description: Aditional information. / Doplňující informace k názvu adresáta.
+          example: 'additional info'
+        subject:
+          type: string
+          description: Recipient's type. / Typ adresáta.
+          example: 'type'
+        ic:
+          type: integer
+          description: CIN - company identification number. / IČO - identifikacni Číslo ekonomickych subjektů.
+          example: 08541234
+        dic:
+          type: string
+          description: VATIN - value added tax identification number. / DIČ - daňove identifikacni Číslo.
+          example: 'CZ08541234'
+        specification:
+          type: string
+          description: Specification, eg. birthdate. / Specifikace, např. datum narození.
+          example: 'specification - 01.12.1960'
+        address:
+          $ref: '#/components/schemas/AddressCOMMON'
+        bank:
+          $ref: '#/components/schemas/Bank'
+        mobilNumber:
+          $ref: '#/components/schemas/MobilNumber'
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber'
+        emailAddress:
+          $ref: '#/components/schemas/emailAddress'
+        custCardNum:
+          $ref: '#/components/schemas/CustCardNum'
+        adviceInfo:
+          $ref: '#/components/schemas/adviceInfo'
+
+    CustCardNum:
+      type: string
+      maxLength: 20
+      description: Number of customer card. / Číslo zakaznické karty.
+      example: '1000008444201'
+
+    Address:
+      type: object
+      additionalProperties: false
+      required:
+        - companyName
+        - city
+        - zipCode
+      properties:
+        companyName:
+          type: string
+          description: Name of the company. / Název odesilatele.
+          example: 'Company Alpha and Omega'
+        aditionAddress:
+          type: string
+          description: Added company name information. /Doplňující informace k názvu podavatele.
+          example: 'Branch AAO'
+        street:
+          type: string
+          maxLength: 40
+          description: Street. / Ulice.
+          example: 'V olšinách'
+        houseNumber:
+          type: string
+          maxLength: 6
+          description: Descriptive (house) number. / Číslo popisné.
+          example: '16'
+        sequenceNumber:
+          type: string
+          maxLength: 6
+          description: Orientation (sequence) number. / Číslo orientační.
+          example: '82'
+        cityPart:
+          type: string
+          maxLength: 40
+          description: Part of the city. / Část obce.
+          example: 'Strašnice'
+        city:
+          type: string
+          maxLength: 40
+          description: City. / Obec.
+          example: 'Praha'
+        zipCode:
+          type: string
+          maxLength: 25
+          description: Postal code. / PSČ.
+          example: '10000'
+        isoCountry:
+          type: string
+          maxLength: 2
+          description: ISO code of the country. / ISO kód země.
+          default: 'CZ'
+          example: 'CZ'
+        subIsoCountry:
+          type: string
+          maxLength: 6
+          description: ISO code of the land. / ISO kód území.
+        addressCode:
+          type: integer
+          description: Code of address RUIAN. / Kód adresního místa RUIAN.
+
+    Bank:
+      type: object
+      additionalProperties: false
+      properties:
+        prefixAccount:
+          type: string
+          pattern: '^\d{6}$'
+          maxLength: 6
+          description: Prefix for account. / Predčíslí k účtu.
+          example: '100300'
+        account:
+          type: string
+          pattern: '^\d{10}$'
+          maxLength: 10
+          description: Account number. / Číslo účtu.
+          example: '0011225566'
+        bank:
+          type: string
+          pattern: '^\d{4}$'
+          maxLength: 4
+          description: Bank code. / Kód banky.
+          example: '0100'
+
+    MobilNumber:
+      type: string
+      description: Number of mobile phone. / Mobil.
+      example: '+420732222163'
+
+    PhoneNumber:
+      type: string
+      description: Phone number. / Telefon.
+      example: '+420221132060'
+
+    emailAddress:
+      type: string
+      description: Email address. / Email.
+      example: 'name.surname123@somemaildomain.cz'
+
+    adviceInfo:
+      type: object
+      additionalProperties: false
+      properties:
+        adviceInformationsList:
+          $ref: '#/components/schemas/adviceInformationsList'
+        adviceNote:
+          type: string
+          description: Note for delivery note. / Poznámka k dodejce.
+
+    adviceInformationsList:
+      type: array
+      items:
+        $ref: '#/components/schemas/adviceInformation'
+      maxItems: 6
+      description: Informations no.x to delivery note./ Informace č.x k dodejce.
+
+    adviceInformation:
+      type: string
+      description: Delivery note's information./ Informace k dodejce.
+      example: 'note info'
+
+    AddressCOMMON:
+      type: object
+      additionalProperties: false
+      properties:
+        street:
+          type: string
+          description: Street. / Ulice.
+          example: 'V olšinách'
+        houseNumber:
+          type: string
+          description: Descriptive (house) number. / Číslo popisné.
+          example: '16'
+        sequenceNumber:
+          type: string
+          description: Orientation (sequence) number. / Číslo orientační.
+          example: '82'
+        cityPart:
+          type: string
+          description: Part of the city. / Část obce.
+          example: 'Strašnice'
+        city:
+          type: string
+          description: City. / Obec.
+          example: 'Praha'
+        zipCode:
+          type: string
+          description: Postal code. / PSČ.
+          example: '10000'
+        isoCountry:
+          type: string
+          description: ISO code of the country. / ISO kód země.
+          default: 'CZ'
+          example: 'CZ'
+        subIsoCountry:
+          type: string
+          description: ISO code of the land. / ISO kód území.
+          example: 'ISO land'
+        addressCode:
+          type: integer
+          description: Code of address RUIAN. / Kód adresního místa RUIAN.
+
+    Contact:
+      type: object
+      additionalProperties: false
+      properties:
+        mobilNumber:
+          type: string
+          description: Number of mobile phone. / Mobil.
+          example: '+420732222163'
+        phoneNumber:
+          type: string
+          description: Phone number. / Telefon.
+          example: '+420221132060'
+        emailAddress:
+          type: string
+          description: Email address. / Email.
+          example: 'name.surname123@somemaildomain.cz'
+
+    Title:
+      type: object
+      additionalProperties: false
+      properties:
+        recordID:
+          type: string
+          maxLength: 20
+          description: Internal destination of the recipient./ Interní označení adresáta.
+          example: '1234568'
+        firstName:
+          type: string
+          description: First name. / Jméno.
+          example: 'Jane'
+        surname:
+          type: string
+          description: Surname. / Příjmení.
+          example: 'Doe-Doe'
+        company:
+          type: string
+          description: Company name. / Název společnosti.
+          example: 'The Great Company'
+        aditionAddress:
+          type: string
+          description: Aditional information. / Doplňujici informace k názvu adresáta.
+          example: 'Add info'
+        subject:
+          type: string
+          description: Recipient's type. / Typ adresáta.
+          example: 'type'
+        ic:
+          type: integer
+          description: CIN - company identification number. / IČO - identifikační číslo ekonomických subjektů.
+          example: 1234567
+        dic:
+          type: string
+          description: VATIN - value added tax identification number. / DIC - daňové identifikační Číslo.
+          example: 'CZ1234568'
+        specification:
+          type: string
+          description: Specification, eg. birthdate. / Specifikace, např. datum narození.
+          example: 'spec.info - 01.10.1960'
+
+
+    ParcelCustomsDeclaration:
+      type: object
+      additionalProperties: false
+      required:
+        - category
+        - customValCur
+        - parcelCustomGoods
+      properties:
+        category:
+          $ref: '#/components/schemas/Category'
+        note:
+          $ref: '#/components/schemas/Note'
+        customValCur:
+          $ref: '#/components/schemas/CustomValCur'
+        parcelCustomGoods:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParcelCustomGoods'
+          maxItems: 20
+      description: Datas of customs declaration. / Data celního prohlášení.
+
+    Category:
+      type: string
+      description: Parcel (Letter) category. / Kategorie zásilky.
+      example: '911'
+
+    CustomValCur:
+      type: string
+      description: ISO code of the customs value currency. / ISO kód měny celní hodnoty.
+
+    ParcelCustomGoods:
+      type: object
+      additionalProperties: false
+      required:
+        - sequence
+        - customCont
+        - quantity
+        - weight
+        - customVal
+        - hsCode
+        - iso
+      properties:
+        sequence:
+          $ref: '#/components/schemas/Sequence'
+        customCont:
+          type: string
+          description: Goods description. / Popis zboží.
+          example: 'boty'
+        quantity:
+          $ref: '#/components/schemas/Quantity'
+        weight:
+          $ref: '#/components/schemas/Weight'
+        customVal:
+          type: number
+          format: double
+          description: Custom value. / Celni hodnota.
+          example: 1500
+        hsCode:
+          type: string
+          description: HS code. / HS kód.
+          example: '123456'
+        iso:
+          type: string
+          description: Country of origin of the goods. / Země původu zboží.
+          example: 'CZ'
+
+    Quantity:
+      type: integer
+      description: Quantity. / Množství.
+      example: 1
+
+    Sequence:
+      type: integer
+      description: Sequence. / Pořadí.
+      example: 1
+
+    ResultSendParcelsListItem:
+      type: array
+      maxItems: 1000
+      items:
+        $ref: '#/components/schemas/ParcelParamsResult'
+
+    ParcelParamsResult:
+      type: object
+      additionalProperties: false
+      required:
+        - recordNumber
+        - parcelCode
+        - parcelStateResponse
+      properties:
+        recordNumber:
+          $ref: '#/components/schemas/RecordID'
+        parcelCode:
+          $ref: '#/components/schemas/ParcelCode'
+        parcelStateResponse:
+          $ref: '#/components/schemas/ParcelStateResponse'
+
+    ParcelStateResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/StatusResponseItem'
+
+
+    StatusResponseItem:
+      type: object
+      additionalProperties: false
+      required:
+        - responseCode
+        - responseText
+      properties:
+        responseCode:
+          type: integer
+          description: Code of failure. / Kód chyby.
+        responseText:
+          type: string
+          description: Description of failure. / Popis chyby.
+
+    StatsSendParcelsResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - importAll
+        - importErr
+        - importOK
+        - parcels
+      properties:
+        importAll:
+          type: integer
+          description: Sum of all imports. /Celkovy počet importů.
+          example: 16
+        importErr:
+          type: integer
+          description: Number of failed imports. /Počet chybných importů.
+          example: 13
+        importOK:
+          type: integer
+          description: Number of accepted imports. /Počet přijatých importů.
+          example: 3
+        parcels:
+          type: integer
+          description: Number of accepted parcels. /Počet přijatých zásilek.
+          example: 43
+
+    AsyncResponse:
+      description: Asynchronous header for B2B response
+      type: object
+      additionalProperties: false
+      properties:
+        idTransaction:
+          $ref: '#/components/schemas/IdTransaction'
+
+    IdTransaction:
+      type: string
+      maxLength: 50
+      description: Transaction ID assigned by the B2B module (asynchronous call). / ID transakce (pro asynchronní volání).
+      example: '28x97-B2B-10a24900bf-4384000-ca12'
+
+    IdContract:
+      type: string
+      description: ID defined for the B2B service of the relevant backend - ID CCK of submitter. / ID CČK složky podavatele.
+      example: '1112223334'
+
+    DateType:
+      type: string
+      format: date
+      description: Date format ISO8601. / Datum ve formátu ISO8601.
+
+    CreditedData:
+      type: object
+      additionalProperties: false
+      description: data of credited cash on delivery
+      properties:
+        deliveryPostCode:
+          type: string
+          maxLength: 5
+          description: The postal code of delivery office that paid the cash on delivery amount. /PSČ dodací pošty, která vyplatila dobírku.
+          example: '12000'
+        deliveryPostOfficeName:
+          type: string
+          description: Name of the delivery office. /Název dodací pošty.
+          example: 'Posta01'
+        paymentDate:
+          type: string
+          format: date
+          description: Date of payment in the delivery post office. / Datum vyplacení dobírky na dodací poště.
+        serialNumber:
+          type: string
+          description: Serial number of cash on delivery PK A. / podací číslo dobírkové PK A z APOSTU
+        serialSubnumber:
+          type: string
+          description: Subnumber of serial number. /Podčíslo podacího čísla.
+        transactionDate:
+          type: string
+          description: Date of the transaction. /Datum převodu.
+
+    ParcelStatusHistory:
+      type: object
+      additionalProperties: false
+      description: Parcel status for parcel history. /Stavy zásilek pro historii zásilky.
+      properties:
+        parcelCode:
+          $ref: '#/components/schemas/ParcelCode'
+        customerID:
+          $ref: '#/components/schemas/CustomerID'
+        date:
+          type: string
+          format: date-time
+          description: Date-time of the status. / Datum a čas vzniku stavu.
+        status:
+          type: string
+          description: Status of the parcel + name of the status. / Stav zásilky + název stavu.
+        statusPostCode:
+          type: string
+          description: Postal code and the post office name of the origin of the status. / PSČ vzniku stavu a název.
+        targetPostCode:
+          type: string
+          description: Postal code of the target. / PSČ cíle.
+
+    TransmissionEnd:
+      type: boolean
+      description: |
+        * Indication for closing tranmission action:
+        * if is not fill this atribute, the transmission of all dates of this request will be automatically closed / V případě, kdy není vůbec uvedeno, je podání pro všechna data předána v rámci tohoto requestu automaticky uzavřeno.
+        * 0 - datas of this request are accepted, but the transmission is not closed. (This is used for continuous sendings of datas by many request. It will be closed by the request with the indication with closed action of submission.) /
+        Data tohoto requestu jsou přijata, ale podání není uzavřeno (slouží pro průběžné zasílání dat jednotlivými requesty, které bude na závěr ukončeno předáním requestu s indikací o uzavření podání).
+        * 1 - datas of this request are accepted and the transmission of the previous datas (with indication transmissionEnd=0) will be closed
+    #          Tato funkcionalita byla dočasně pozastavena.
+
+    Error:
+      type: object
+      additionalProperties: false
+      properties:
+        x-request-id:
+          description: Identity uniquelly user transaction
+          type: string
+          example: ID-f81003313285-1592979767076-41-10
+        code:
+          type: integer
+          description: error code
+          example: -50
+        status:
+          type: string
+          description: error description
+          example: '500'
+        message:
+          type: string
+          description: error message
+          example: Internal error
+        moreInfo:
+          type: string
+          description: more info
+          example: Here is better detail of error. It could be some point to documentation or stacktrace and so on.
+        date:
+          type: string
+          example: '2022-02-16T10:48:11+01:00'
+      required:
+        - message

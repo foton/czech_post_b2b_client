@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<v1:b2bSyncResponse xmlns:v1="https://b2b.postaonline.cz/schema/B2BCommon-v1" xmlns:v1_1="https://b2b.postaonline.cz/schema/POLServices-v1">
+    <v1:header>
+        <v1:timeStamp>2020-10-27T10:47:44.111Z</v1:timeStamp>
+        <v1:b2bRequestHeader>
+            <v1:idExtTransaction>1</v1:idExtTransaction>
+            <v1:timeStamp>2020-10-27T10:47:42.401+01:00</v1:timeStamp>
+            <v1:idContract>356936003</v1:idContract>
+        </v1:b2bRequestHeader>
+    </v1:header>
+    <v1:serviceData>
+        <v1_1:parcelServiceSyncResponse>
+            <v1_1:responseHeader>
+                <v1_1:resultHeader>
+                    <v1_1:responseCode>19</v1_1:responseCode>
+                    <v1_1:responseText>BATCH_INVALID</v1_1:responseText>
+                </v1_1:resultHeader>
+                <v1_1:resultParcelData>
+                    <v1_1:recordNumber>62752</v1_1:recordNumber>
+                    <v1_1:parcelCode>BX0305100675L</v1_1:parcelCode>
+                    <v1_1:parcelDataResponse>
+                        <v1_1:responseCode>408</v1_1:responseCode>
+                        <v1_1:responseText>INFO_ADDRESS_WAS_MODIFIED</v1_1:responseText>
+                    </v1_1:parcelDataResponse>
+                    <v1_1:parcelDataResponse>
+                        <v1_1:responseCode>310</v1_1:responseCode>
+                        <v1_1:responseText>INVALID_PREFIX</v1_1:responseText>
+                    </v1_1:parcelDataResponse>
+                </v1_1:resultParcelData>
+            </v1_1:responseHeader>
+            <v1_1:responsePrintParams/>
+        </v1_1:parcelServiceSyncResponse>
+    </v1:serviceData>
+</v1:b2bSyncResponse>

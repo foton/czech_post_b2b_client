@@ -17,7 +17,7 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
   def run
     @processing_end_time_utc = nil
     @transaction_id = nil
-    import_parcels = :sync # options: :no, :sync, :async
+    import_parcels = :no # :sync # options: :no, :sync, :async
 
     case import_parcels
     when :async
@@ -31,16 +31,16 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
       @parcels = build_parcels_for(existing_parcel_codes)
     end
 
-    # print_all_template_sheets_for_parcel_codes # if you need to check available templates for parcel_types
+    print_all_template_sheets_for_parcel_codes # if you need to check available templates for parcel_types
 
     # print address sheets and stick it on right parcels
     # sync version get address sheet in response of import
-    print_address_sheets(print_options) unless import_parcels == :sync
+    # print_address_sheets(print_options) unless import_parcels == :sync
 
     ### here comes the human part: these parcels to post office
 
-    check_and_update_delivery_statuses
-    find_out_statistics
+    # check_and_update_delivery_statuses
+    # find_out_statistics
   end
 
   def download_xsds
@@ -52,14 +52,20 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
 
   def print_selected_combinations
     [
-      ['RR950397329CZ', 74],
-      ['CS229935172CZ', 74],
-      ['CS229890414CZ', 72],
-      ['CS229935209CZ', 41],
-      ['CV200650205CZ', 20],
-      ['RR0305100012L', 58],
-      ['RR0305100026L', 61]
+      ['BA0305127240L', 200],
+      ['BA0305117707L', 200],
+      ['BA0305127240L', 201],
+      ['BA0305117707L', 201],
+      ['BA0305127240L', 202],
+      ['BA0305117707L', 202]
     ].each { |p_code, t_id| print_template_for_package(t_id, p_code) }
+  end
+
+  def print_multisheets
+    [
+      [%w[BA0305127240L BA0305117707L], 200],
+      [%w[BA0305127240L BA0305117707L], 201]
+    ].each { |p_codes, t_id| print_template_for_packages(t_id, p_codes) }
   end
 
   private
@@ -70,9 +76,9 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
 
     { contract_id: '356936003', # from CP signed contract
       customer_id: 'L03051', # from CP signed contract
-      certificate_path: File.join(certs_path, 'squared_VCA12032726.pem'),
-      private_key_password: nil,
-      private_key_path: File.join(certs_path, 'squared_private.key'),
+      certificate_path: File.join(certs_path, 'squared_VCA12032726_2022.pem'),
+      private_key_password: File.read(File.join(certs_path, 'keypass.txt')),
+      private_key_path: File.join(certs_path, 'squared_private_2022.key'),
       sending_post_office_code: 12_000 }
   end
 
@@ -80,8 +86,7 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
     # If Import of parcels do not work for You yet,
     # You can insert parcels in Web PodaniOnline and then use this hack to check some services
 
-    %w[BA0305100216L RR0305100026L RR0305100012L BB0305100012L
-       BA0305100114L CV200650205CZ CS229935209CZ RR950397329CZ CS229890414CZ CS229935172CZ CS229935169CZ]
+    %w[RR0305128109L RR0305128090L BA0305127240L BA0305117707L]
   end
 
   def sending_data
@@ -225,7 +230,7 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
     if pdf_service.failure?
       raise "AddressSheetGenerator failed with errors: #{pdf_service.errors}" if raise_on_failure
     else
-      save_as_pdf(pdf_service.result.pdf_content, options)
+      save_sheet(result, options)
     end
   end
 
@@ -241,12 +246,32 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
   def print_template_for_package(t_klass_id, parcel_code)
     options = print_options.merge(template_id: t_klass_id, parcel_code: parcel_code)
     puts "AddressSheetGenerator [#{parcel_code} , #{t_klass_id}] : #{options}"
-    pdf_service = CzechPostB2bClient::Services::AddressSheetsGenerator.call(parcel_codes: [parcel_code],
-                                                                            options: options)
-    if pdf_service.failure?
-      save_as_txt(pdf_service.errors.to_s, options)
+    print_service = CzechPostB2bClient::Services::AddressSheetsGenerator.call(parcel_codes: [parcel_code],
+                                                                              options: options)
+    if print_service.failure?
+      File.write("#{filename(options)}_no_print.txt", print_service.errors.to_s)
     else
-      save_as_pdf(pdf_service.result.pdf_content, options)
+      save_sheet(print_service.result, options)
+    end
+  end
+
+  def print_template_for_packages(t_klass_id, parcel_codes)
+    options = print_options.merge(template_id: t_klass_id, parcel_code: parcel_codes.join('_'))
+    puts "AddressSheetGenerator [#{parcel_codes} , #{t_klass_id}] : #{options}"
+    print_service = CzechPostB2bClient::Services::AddressSheetsGenerator.call(parcel_codes: parcel_codes,
+                                                                              options: options)
+    if print_service.failure?
+      File.write("#{filename(options)}_no_print.txt", print_service.errors.to_s)
+    else
+      save_sheet(print_service.result, options)
+    end
+  end
+
+  def save_sheet(result, options)
+    if result.zpl_content.nil?
+      File.write("#{filename(options)}.pdf", result.pdf_content)
+    else
+      File.write("#{filename(options)}.zpl", result.zpl_content)
     end
   end
 
@@ -279,18 +304,6 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
     def_str += "top_#{options[:margin_in_mm][:top]}-"
     def_str += "left_#{options[:margin_in_mm][:left]}"
     def_str
-  end
-
-  def save_as_txt(content, options)
-    f_name = "#{filename(options)}_no_print.txt"
-    puts("saving: #{f_name}")
-    File.write(f_name, content)
-  end
-
-  def save_as_pdf(pdf_content, options)
-    f_name = "#{filename(options)}.pdf"
-    puts("saving: #{f_name}")
-    File.write(f_name, pdf_content)
   end
 
   def update_parcels_data_with(updated_parcels_hash)
@@ -393,6 +406,7 @@ class TryApiCalls # rubocop:disable Metrics/ClassLength
   end
 end
 
-TryApiCalls.new.run
+# TryApiCalls.new.run
 # TryApiCalls.new.download_xsds
 # TryApiCalls.new.print_selected_combinations
+TryApiCalls.new.print_multisheets

@@ -8,8 +8,8 @@ module CzechPostB2bClient
       def build_result
         super
         @result[:response][:state] = state_hash_from(printing_response_header_result['doPrintingStateResponse'])
-        @result[:printings] = { options: options_hash,
-                                pdf_content: pdf_content }
+        opt_hash = options_hash
+        @result[:printings] = { options: opt_hash }.merge(content_hash(opt_hash[:template_id]))
       end
 
       def options_hash
@@ -24,11 +24,23 @@ module CzechPostB2bClient
         }
       end
 
-      def pdf_content
-        pdf_content_encoded = response_root_node.dig('doPrintingDataResult', 'file')
-        return nil if pdf_content_encoded.nil?
+      def content_hash(template_id)
+        if zpl_template?(template_id)
+          { zpl_content: response_content.force_encoding('utf-8') }
+        else
+          { pdf_content: response_content }
+        end
+      end
 
-        ::Base64.decode64(pdf_content_encoded)
+      def zpl_template?(template_id)
+        CzechPostB2bClient::PrintingTemplates.find(template_id).content_type == :zpl
+      end
+
+      def response_content
+        content_encoded = response_root_node.dig('doPrintingDataResult', 'file')
+        return nil if content_encoded.nil?
+
+        ::Base64.decode64(content_encoded)
       end
 
       def response_root_node_name
