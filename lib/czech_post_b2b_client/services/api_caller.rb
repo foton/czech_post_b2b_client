@@ -73,15 +73,23 @@ module CzechPostB2bClient
         { 'Content-Type': 'text/xml' }
       end
 
+      def certificate
+        configuration.certificate || File.read(configuration.certificate_path)
+      end
+
+      def private_key
+        configuration.private_key || File.read(configuration.private_key_path)
+      end
+
       def connection_options
         {
           use_ssl: true,
           verify_mode: OpenSSL::SSL::VERIFY_PEER,
           keep_alive_timeout: 30,
           ciphers: secure_and_available_ciphers,
-          cert: OpenSSL::X509::Certificate.new(File.read(configuration.certificate_path)),
+          cert: OpenSSL::X509::Certificate.new(certificate),
           # cert_password: configuration.certificate_password,
-          key: OpenSSL::PKey::RSA.new(File.read(configuration.private_key_path), configuration.private_key_password),
+          key: OpenSSL::PKey::RSA.new(private_key, configuration.private_key_password),
           cert_store: post_signum_ca_store
         }
       end
