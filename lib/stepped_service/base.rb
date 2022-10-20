@@ -87,7 +87,13 @@ module SteppedService
     attr_reader :result
 
     def self.call(*args, **keyword_args)
-      new(*args, **keyword_args).call
+      if args.blank?
+        new(**keyword_args).call
+      elsif keyword_args.blank?
+        new(*args).call
+      else
+        new(*args, **keyword_args).call
+      end
     end
 
     # You can override it, to not use steps

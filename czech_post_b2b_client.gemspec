@@ -47,14 +47,14 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'ox', '~> 2.11'
+  spec.add_dependency 'ox'
 
-  spec.add_development_dependency 'bundler', '~> 2.1'
-  spec.add_development_dependency 'minitest', '~> 5.0'
-  spec.add_development_dependency 'minitest-reporters', '~> 1.0'
-  spec.add_development_dependency 'pry-byebug', '~> 3.0'
-  spec.add_development_dependency 'rake', '~> 13.0'
-  spec.add_development_dependency 'rubocop', '~> 1.26.1'
-  spec.add_development_dependency 'rubocop-minitest', '~> 0.6'
-  spec.add_development_dependency 'webmock', '~> 3.0'
+  spec.add_development_dependency 'bundler'
+  spec.add_development_dependency 'minitest'
+  spec.add_development_dependency 'minitest-reporters'
+  spec.add_development_dependency 'pry-byebug'
+  spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'rubocop'
+  spec.add_development_dependency 'rubocop-minitest'
+  spec.add_development_dependency 'webmock'
 end

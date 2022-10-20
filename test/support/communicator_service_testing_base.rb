@@ -43,7 +43,7 @@ module CzechPostB2bClient
         builder_service_class.stub(:call, builder) do
           api_caller_service_class.stub(:call, api_caller) do
             parser_service_class.stub(:call, parser) do
-              @service = tested_service_class.call(tested_service_args)
+              @service = tested_service_class.call(**tested_service_args)
             end
           end
         end
@@ -61,7 +61,7 @@ module CzechPostB2bClient
 
         builder_service_class.stub(:call, builder) do
           api_caller_service_class.stub(:call, not_to_be_called_mock('ApiCaller')) do
-            @service = tested_service_class.call(tested_service_args)
+            @service = tested_service_class.call(**tested_service_args)
           end
         end
 
@@ -78,7 +78,7 @@ module CzechPostB2bClient
         builder_service_class.stub(:call, builder) do
           api_caller_service_class.stub(:call, api_caller) do
             parser_service_class.stub(:call, not_to_be_called_mock('ResponseParser')) do
-              @service = tested_service_class.call(tested_service_args)
+              @service = tested_service_class.call(**tested_service_args)
             end
           end
         end
@@ -99,7 +99,7 @@ module CzechPostB2bClient
         builder_service_class.stub(:call, builder) do
           api_caller_service_class.stub(:call, api_caller) do
             parser_service_class.stub(:call, parser) do
-              @service = tested_service_class.call(tested_service_args)
+              @service = tested_service_class.call(**tested_service_args)
             end
           end
         end

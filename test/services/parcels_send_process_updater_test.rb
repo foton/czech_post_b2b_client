@@ -53,7 +53,7 @@ module CzechPostB2bClient
         builder_service_class.stub(:call, builder) do
           api_caller_service_class.stub(:call, api_caller) do
             parser_service_class.stub(:call, parser) do
-              @service = tested_service_class.call(tested_service_args)
+              @service = tested_service_class.call(**tested_service_args)
             end
           end
         end
