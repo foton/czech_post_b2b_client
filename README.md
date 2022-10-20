@@ -97,7 +97,11 @@ CzechPostB2bClient.configure do |config|
   config.contract_id = 'contract_id'
   config.customer_id = 'customer_id'
   config.certificate_path = 'full_path/to/your/postsignum_certificate.pem'
+  # or you can use cert directly from env
+  config.certificate = ENC['CP_CRT_CONTENT']
+
   config.private_key_path = 'full_path/to/your/postsignum_private.key'
+  # same here,  filepath or content directly
   config.private_key_password = 'your_password or nil'
 
   # these two just save Your time, can be overwritten for each call
